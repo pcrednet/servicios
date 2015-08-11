@@ -1,0 +1,216 @@
+{include="header"}
+
+<script type="text/javascript">
+   function buscar_lineas()
+   {
+      if(document.f_buscar_lineas.buscar_lineas.value == '')
+      {
+         $('#search_results').html('');
+      }
+      else
+      {
+         $.ajax({
+            type: 'POST',
+            url: '{$fsc->url()}',
+            dataType: 'html',
+            data: $('form[name=f_buscar_lineas]').serialize(),
+            success: function(datos) {
+               var re = /<!--(.*?)-->/g;
+               var m = re.exec( datos );
+               if( m[1] == document.f_buscar_lineas.buscar_lineas.value )
+               {
+                  $('#search_results').html(datos);
+               }
+            }
+         });
+      }
+   }
+   $(document).ready(function() {
+      document.f_custom_search.query.focus();
+      $('#b_buscar_lineas').click(function(event) {
+         event.preventDefault();
+         $('#modal_buscar_lineas').modal('show');
+         document.f_buscar_lineas.buscar_lineas.focus();
+      });
+      $('#f_buscar_lineas').keyup(function() {
+         buscar_lineas();
+      });
+      $('#f_buscar_lineas').submit(function(event) {
+         event.preventDefault();
+         buscar_lineas();
+      });
+   });
+</script>
+
+<div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
+   <div class="row">
+      <div class="col-xs-12 text-center visible-xs">
+         <h2 style="margin-top: 0px;">{$fsc->page->title}</h2>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-8 col-sm-7 col-xs-8">
+         <div class="btn-group hidden-xs">
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+               <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            {if="$fsc->page->is_default()"}
+            <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="desmarcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {else}
+            <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="marcar como página de inicio">
+               <span class="glyphicon glyphicon-home"></span>
+            </a>
+            {/if}
+         </div>
+         
+         <div class="btn-group">
+            <a class="btn btn-sm btn-success" href="index.php?page=nueva_venta&tipo=servicio">
+               <span class="glyphicon glyphicon-plus"></span>
+               <span class="hidden-xs"> &nbsp; Nuevo</span>
+            </a>
+            {loop="$fsc->extensions"}
+               {if="$value->type=='button'"}
+               <a href="index.php?page={$value->from}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
+               {/if}
+            {/loop}
+         </div>
+      </div>
+      <div class="col-md-2 col-sm-2 col-xs-4 text-right">
+         <div class="btn-group">
+            <a id="b_buscar_lineas" class="btn btn-sm btn-info" title="Buscar en líneas">
+               <span class="glyphicon glyphicon-search"></span>
+               <span class="hidden-sm hidden-xs"> &nbsp; Líneas</span>
+            </a>
+         </div>
+      </div>
+      <div class="col-md-2 col-sm-3 col-xs-12">
+         <div class="visible-xs"><br/></div>
+         <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+            <div class="input-group">
+               <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off" placeholder="Buscar">
+               <span class="input-group-btn hidden-sm">
+                  <button class="btn btn-primary" type="submit">
+                     <span class="glyphicon glyphicon-search"></span>
+                  </button>
+               </span>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+   <li{if="$fsc->mostrar=='todos'"} class="active"{/if}>
+      <a href="{$fsc->url()}" title="Todos los {#FS_SERVICIOS#}">
+         {if="$fsc->query==''"}
+         Todos los {#FS_SERVICIOS#}
+         {else}
+         <span class="glyphicon glyphicon-search"></span>
+         <span class="hidden-xs">&nbsp; Resultados de "{$fsc->query}"</span>
+         {/if}
+      </a>
+   </li>
+   <li{if="$fsc->mostrar=='pendientes'"} class="active"{/if}>
+      <a href="{$fsc->url()}&mostrar=pendientes" title="Pendientes">
+         <span class="glyphicon glyphicon-time"></span>
+         <span class="hidden-xs">&nbsp; Pendientes</span>
+         <span class="hidden-xs badge">{$fsc->total_pendientes()}</span>
+      </a>
+   </li>
+   <li{if="$fsc->mostrar=='rechazados'"} class="active"{/if}>
+      <a href="{$fsc->url()}&mostrar=rechazados" title="Rechazados">
+         <span class="glyphicon glyphicon-remove"></span>
+         <span class="hidden-xs">&nbsp; Rechazados</span>
+      </a>
+   </li>
+</ul>
+
+<div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th></th>
+            <th class="text-left">Código + {#FS_NUMERO2#}</th>
+            <th class="text-left">Cliente</th>
+            <th class="text-left">Observaciones</th>
+            <th class="text-right">Total</th>
+            <th class="text-right">Fecha</th>
+            <th class="text-right hidden-sm">Hora</th>
+         </tr>
+      </thead>
+      {loop="$fsc->resultados"}
+      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} bg-warning{/if}" href="{$value->url()}">
+         <td class="text-center">
+            {if condition="$value->idalbaran"}
+            <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
+            {/if}
+            {if condition="$value->status==2"}
+            <span class="glyphicon glyphicon-remove" title="El {#FS_SERVICIO#} ha sido rechazado"></span>
+            {/if}
+         </td>
+         <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
+         <td>
+            {$value->nombrecliente}
+            <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
+         </td>
+         <td>{$value->observaciones_resume()}</td>
+         <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
+         <td class="text-right">
+            {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if}
+         </td>
+         <td class="text-right hidden-sm">{$value->show_hora()}</td>
+      </tr>
+      {else}
+      <tr class="bg-warning">
+         <td></td>
+         <td colspan="6">Ningún {#FS_SERVICIO#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+      </tr>
+      {/loop}
+   </table>
+</div>
+
+<ul class="pager">
+   {if="$fsc->anterior_url()!=''"}
+   <li class="previous">
+      <a href="{$fsc->anterior_url()}">
+         <span class="glyphicon glyphicon-chevron-left"></span> &nbsp; Anteriores
+      </a>
+   </li>
+   {/if}
+   
+   {if="$fsc->siguiente_url()!=''"}
+   <li class="next">
+      <a href="{$fsc->siguiente_url()}">
+         Siguientes &nbsp; <span class="glyphicon glyphicon-chevron-right"></span>
+      </a>
+   </li>
+   {/if}
+</ul>
+
+<form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action="{$fsc->url()}" method="post">
+   <div class="modal" id="modal_buscar_lineas">
+      <div class="modal-dialog" style="width: 99%; max-width: 950px;">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title">Buscar en las líneas</h4>
+            </div>
+            <div class="modal-body">
+               <div class="input-group">
+                  <input class="form-control" type="text" name="buscar_lineas" placeholder="Referencia" autocomplete="off"/>
+                  <span class="input-group-btn">
+                     <button class="btn btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                     </button>
+                  </span>
+               </div>
+            </div>
+            <div id="search_results" class="table-responsive"></div>
+         </div>
+      </div>
+   </div>
+</form>
+
+{include="footer"}
