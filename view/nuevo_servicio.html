@@ -1,96 +1,520 @@
 {include="header"}
-<div class="modal" id="modal_nuevo_sat">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Nuevo SAT...</h4>
+
+{if="$fsc->cliente_s"}
+<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
+<script type="text/javascript">
+   fs_nf0 = {#FS_NF0#};
+   all_impuestos = {function="json_encode($fsc->impuesto->all())"};
+   all_series = {function="json_encode($fsc->serie->all())"};
+   cliente = {function="json_encode($fsc->cliente_s)"};
+   nueva_venta_url = '{$fsc->url()}';
+   kiwimaru_url = '{#FS_COMMUNITY_URL#}/index.php?page=kiwimaru';
+   
+   $(document).ready(function() {
+      usar_serie();
+      recalcular();
+   });
+</script>
+
+<form id="f_new_servicio" class="form" name="f_new_servicio" action="{$fsc->url()}" method="post">
+   <input type="hidden" name="petition_id" value="{$fsc->random_string()}"/>
+   <input type="hidden" id="numlineas" name="numlineas" value="0"/>
+   <input type="hidden" name="cliente" value="{$fsc->cliente_s->codcliente}"/>
+   <input type="hidden" name="redir" value="TRUE"/>
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-sm-8">
+            <h1 style="margin-top: 5px;">
+               <a href="{$fsc->cliente_s->url()}">{$fsc->cliente_s->nombre}</a>
+            </h1>
          </div>
-         <div role="tabpanel">
-            <ul class="nav nav-tabs nav-justified" role="tablist">
-               <li role="presentation" class="active">
-                  <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span> &nbsp; Buscar cliente
-                  </a>
-               </li>
-               <li role="presentation">
-                  <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
-                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Nuevo cliente
-                  </a>
-               </li>
-            </ul>
-            <div class="modal-body">
-               <div class="tab-content">
-                  <div role="tabpanel" class="tab-pane active" id="home" style="margin-top: 10px;">
-                     <form name="f_nuevo_sat" class="form" action="index.php" method="get">
-                        <input type="hidden" name="codcliente"/>
-                        <input type="hidden" name="nuevosat" value="TRUE"/>
-                        <input type="hidden" name="page" value="{$fsc->page->name}"/>
-                        <div class="input-group">
-                           <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Buscar..." autocomplete="off"/>
-                           <span class="input-group-btn">
-                              <button class="btn btn-primary" type="submit" onclick="this.disabled = true;this.form.submit();">
-                                 <span class="glyphicon glyphicon-share"></span>
-                              </button>
-                           </span>
-                        </div>
-                     </form>
+         <div class="col-sm-2">
+            <div class="form-group">
+               Fecha:
+               <input type="text" name="fecha" class="form-control datepicker" value="{$fsc->today()}" autocomplete="off"/>
+            </div>
+         </div>
+         <div class="col-sm-2">
+            <div class="form-group">
+               Hora:
+               <input type="text" name="hora" class="form-control" value="{$fsc->hour()}" autocomplete="off"/>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   <div role="tabpanel">
+      <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active">
+            <a href="#servicio" aria-controls="servicios" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Servicio</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#lineas" aria-controls="lineas" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Líneas</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#direccion" aria-controls="direccion" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Dirección</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#opciones" aria-controls="opciones" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Opciones</span>
+            </a>
+         </li>
+      </ul>
+      <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="servicio">
+          <div class="container-fluid" style="margin-top: 10px;">   
+          <div class="row">
+                  <div class="col-sm-4">
+                     <div class="form-group">
+                        Material entregado:
+                        <textarea class="form-control" name="material" rows="5">{$fsc->servicio->material}</textarea>
+                     </div>
                   </div>
-                  <div role="tabpanel" class="tab-pane" id="profile">
-                     <form name="f_nuevo_cliente" action="{$fsc->url()}" method="post" class="form">
-                        <input type="hidden" name="nuevosat" value="TRUE"/>
-                        <div class="form-group">
-                           Nombre:
-                           <input class="form-control" type="text" name="nombre" autocomplete="off" autofocus=""/>
-                        </div>
-                        <div class="form-group">
-                           {#FS_CIFNIF#}:
-                           <input class="form-control" type="text" name="cifnif" autocomplete="off"/>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           Teléfono:
-                           <input class="form-control" type="text" name="telefono1" autocomplete="off"/>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           Móvil:
-                           <input class="form-control" type="text" name="telefono2" autocomplete="off"/>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           <a href="{$fsc->pais->url()}">País</a>:
-                           <select class="form-control" name="pais">
-                              {loop="$fsc->pais->all()"}
-                              <option value="{$value->codpais}"{if condition="$value->is_default()"} selected="selected"{/if}>{$value->nombre}</option>
+                 
+                  <div class="col-sm-4">
+                     <div class="form-group">
+                        Estado del material:
+                        <textarea class="form-control" name="material_estado" rows="5">{$fsc->servicio->material_estado}</textarea>
+                     </div>
+                  </div>
+                  <div class="col-sm-4">
+                     <div class="form-group">
+                        Accesorios que entrega
+                        <textarea class="form-control" name="accesorios" rows="5">{$fsc->servicio->accesorios}</textarea>
+                     </div>
+                  </div>
+          </div>            
+          <div class="row">
+                  <div class="col-sm-6">
+                     <div class="form-group">
+                        Descripción de la reparación:
+                        <textarea class="form-control" name="descripcion" rows="5">{$fsc->servicio->descripcion}</textarea>
+                     </div>
+                  </div>
+                 
+                  <div class="col-sm-6">
+                     <div class="form-group">
+                        Solución
+                        <textarea class="form-control" name="solucion" rows="5">{$fsc->servicio->solucion}</textarea>
+                     </div>
+                  </div>
+           </div>   
+              
+          </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="lineas">
+            <div class="table-responsive">
+               <table class="table table-condensed">
+                  <thead>
+                     <tr>
+                        <th class="text-left" width="180">Referencia</th>
+                        <th class="text-left">Descripción</th>
+                        <th class="text-right" width="90">Cantidad</th>
+                        <th width="60"></th>
+                        <th class="text-right" width="110">Precio</th>
+                        <th class="text-right" width="90">Dto. %</th>
+                        <th class="text-right" width="130">Neto</th>
+                        <th class="text-right" width="115">{#FS_IVA#}</th>
+                        <th class="text-right recargo">RE %</th>
+                        <th class="text-right irpf">{#FS_IRPF#} %</th>
+                        <th class="text-right" width="140">Total</th>
+                     </tr>
+                  </thead>
+                  <tbody id="lineas_albaran"></tbody>
+                  <tbody>
+                     <tr class="bg-info">
+                        <td><input id="i_new_line" class="form-control" type="text" placeholder="Buscar para añadir..." autocomplete="off"/></td>
+                        <td>
+                           <a href="#" class="btn btn-sm btn-default" title="Añadir sin buscar" onclick="return add_linea_libre()">
+                              <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                           </a>
+                        </td>
+                        <td colspan="4" class="text-right">Totales:</td>
+                        <td>  
+                           <div id="aneto" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                        </td>
+                        <td>
+                           <div id="aiva" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                        </td>
+                        <td class="recargo">
+                           <div id="are" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                        </td>
+                        <td class="irpf">
+                           <div id="airpf" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                        </td>
+                        <td>
+                           <input type="text" name="atotal" id="atotal" class="form-control text-right" style="font-weight: bold;"
+                                  value="0" onchange="recalcular()" autocomplete="off"/>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="direccion">
+            <div class="container-fluid" style="margin-top: 10px;">
+               <div class="row">
+                  <div class="col-sm-3">
+                     <div class="form-group">
+                        <a href="{$fsc->pais->url()}">País</a>:
+                        <select class="form-control" name="codpais">
+                        {if="$fsc->direccion"}
+                           {loop="$fsc->pais->all()"}
+                           <option value="{$value->codpais}"{if="$value->codpais==$fsc->direccion->codpais"} selected="selected"{/if}>{$value->nombre}</option>
+                           {/loop}
+                        {else}
+                           {loop="$fsc->pais->all()"}
+                           <option value="{$value->codpais}"{if="$value->is_default()"} selected="selected"{/if}>{$value->nombre}</option>
+                           {/loop}
+                        {/if}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-3">
+                     <div class="form-group">
+                        <span class="text-capitalize">{#FS_PROVINCIA#}</span>:
+                        {if="$fsc->direccion"}
+                        <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->direccion->provincia}"/>
+                        {else}
+                        <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->empresa->provincia}"/>
+                        {/if}
+                     </div>
+                  </div>
+                  <div class="col-sm-3">
+                     <div class="form-group">
+                        Ciudad:
+                        {if="$fsc->direccion"}
+                        <input class="form-control" type="text" name="ciudad" autocomplete="off" value="{$fsc->direccion->ciudad}"/>
+                        {else}
+                        <input class="form-control" type="text" name="ciudad" autocomplete="off" value="{$fsc->empresa->ciudad}"/>
+                        {/if}
+                     </div>
+                  </div>
+                  <div class="col-sm-3">
+                     <div class="form-group">
+                        Código Postal:
+                        {if="$fsc->direccion"}
+                        <input class="form-control" type="text" name="codpostal" autocomplete="off" value="{$fsc->direccion->codpostal}"/>
+                        {else}
+                        <input class="form-control" type="text" name="codpostal" autocomplete="off" value="{$fsc->empresa->codpostal}"/>
+                        {/if}
+                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <div class="form-group">
+                        Dirección:
+                        {if="$fsc->direccion"}
+                        <input class="form-control" type="text" name="direccion" value="{$fsc->direccion->direccion}" autocomplete="off"/>
+                        {else}
+                        <input class="form-control" type="text" name="direccion" value="C/ " autocomplete="off"/>
+                        {/if}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="opciones">
+            <div class="container-fluid" style="margin-top: 10px;">
+               <div class="row">
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->agente->url()}">Empleado</a>:
+                        <select name="codagente" class="form-control">
+                           <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
+                           {if="$fsc->user->admin"}
+                              <option value="{$fsc->agente->codagente}">-----</option>
+                              {loop="$fsc->agente->all()"}
+                              <option value="{$value->codagente}">{$value->get_fullname()}</option>
                               {/loop}
-                           </select>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           <div class="text-capitalize">{#FS_PROVINCIA#}:</div>
-                           <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->empresa->provincia}"/>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           Ciudad:
-                           <input class="form-control" type="text" name="ciudad" autocomplete="off" value="{$fsc->empresa->ciudad}"/>
-                        </div>
-                        <div class="form-group col-lg-6">
-                           Código Postal:
-                           <input class="form-control" type="text" name="codpostal" autocomplete="off" value="{$fsc->empresa->codpostal}"/>
-                        </div>
+                           {/if}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
                         <div class="form-group">
-                           Dirección:
-                           <input class="form-control" type="text" name="direccion" value="C/ " autocomplete="off"/>
-                        </div>
-                        <div class="text-right">
-                           <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true; this.form.submit();">
-                              <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar y seleccionar
-                           </button>
-                        </div>
-                     </form>
+                                <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
+                                <select name="forma_pago" class="form-control">
+                                {loop="$fsc->forma_pago->all()"}
+                                   {if="$fsc->cliente_s->codpago==$value->codpago"}
+                                   <option value="{$value->codpago}" selected="selected">{$value->descripcion}</option>
+                                   {else}
+                                   <option value="{$value->codpago}">{$value->descripcion}</option>
+                                   {/if}
+                                {/loop}
+                                </select>
+                             </div>
+                   </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->almacen->url()}">Almacén</a>:
+                        <select name="almacen" class="form-control">
+                           {loop="$fsc->almacen->all()"}
+                           <option value="{$value->codalmacen}"{if="$value->is_default()"} selected="selected"{/if}>{$value->nombre}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->serie->url()}">Serie</a>:
+                        <select name="serie" class="form-control" id="codserie" onchange="usar_serie();recalcular();">
+                        {loop="$fsc->serie->all()"}
+                           {if="$value->codserie==$fsc->cliente_s->codserie"}
+                           <option value="{$value->codserie}" selected="selected">{$value->descripcion}</option>
+                           {else}
+                           <option value="{$value->codserie}">{$value->descripcion}</option>
+                           {/if}
+                        {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->divisa->url()}">Divisa</a>:
+                        <select name="divisa" class="form-control">
+                           {loop="$fsc->divisa->all()"}
+                           <option value="{$value->coddivisa}"{if="$value->is_default()"} selected="selected"{/if}>{$value->descripcion}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        Tasa de conversión a €
+                        <input type="text" name="tasaconv" class="form-control" placeholder="(predeterminada)" autocomplete="off"/>
+                     </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
    </div>
+   
+   <div class="container-fluid" style="margin-top: 10px;">
+      <div class="row">
+         <div class="col-sm-6">
+            <button class="btn btn-sm btn-default" type="button" onclick="window.location.href='{$fsc->url()}';">
+               <span class="glyphicon glyphicon-refresh"></span> &nbsp; Reiniciar
+            </button>   
+         </div>
+         <div class="col-sm-6 text-right">
+            <button class="btn btn-sm btn-primary" type="button" onclick="this.disabled=true;this.form.submit();">
+               <input type="hidden" name="guardar" value="TRUE"/>
+               <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+            </button>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-lg-12" style="margin-top: 20px;">
+            <div class="form-group">
+               Observaciones:
+               <textarea class="form-control" name="observaciones" rows="3"></textarea>
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
+
+<div class="modal" id="modal_articulos">
+   <div class="modal-dialog" style="width: 99%; max-width: 1000px;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Buscar artículos</h4>
+         </div>
+         <div class="modal-body">
+            <form id="f_buscar_articulos" name="f_buscar_articulos" action="{$fsc->url()}" method="post" class="form">
+               <input type="hidden" name="codcliente" value="{$fsc->cliente_s->codcliente}"/>
+               <div class="container-fluid">
+                  <div class="row">
+                     <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="input-group">
+                           <input class="form-control" type="text" name="query" autocomplete="off"/>
+                           <span class="input-group-btn">
+                              <button class="btn btn-primary" type="submit">
+                                 <span class="glyphicon glyphicon-search"></span>
+                              </button>
+                           </span>
+                        </div>
+                        <label>
+                           <input type="checkbox" name="con_stock" value="TRUE" onchange="buscar_articulos()"/>
+                           sólo con stock
+                        </label>
+                     </div>
+                     <div class="col-lg-6 col-md-6 col-sm-6">
+                        <select class="form-control" name="codfamilia" onchange="buscar_articulos()">
+                           <option value="">Todas las familias</option>
+                           <option value="">------</option>
+                           {loop="$fsc->familia->all()"}
+                           <option value="{$value->codfamilia}">{$value->nivel}{$value->descripcion}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <ul class="nav nav-tabs" id="nav_articulos" style="display: none;">
+            <li id="li_mis_articulos"><a href="#" id="b_mis_articulos">Mi catálogo</a></li>
+            <li id="li_kiwimaru"><a href="#" id="b_kiwimaru">Internet</a></li>
+            <li id="li_nuevo_articulo"><a href="#" id="b_nuevo_articulo">Nuevo</a></li>
+         </ul>
+         <div id="search_results"></div>
+         <div id="kiwimaru_results"></div>
+         <div id="nuevo_articulo" class="modal-body" style="display: none;">
+            <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
+               <div class="container-fluid">
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <div class="form-group">
+                           Referencia:
+                           <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
+                        </div>
+                     </div>
+                     <div class="col-sm-8">
+                        <div class="form-group">
+                           Descripción:
+                           <textarea name="descripcion" rows="1" class="form-control"></textarea>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <div class="form-group">
+                           <a href="{$fsc->familia->url()}">Familia</a>:
+                           <select name="codfamilia" class="form-control">
+                              {loop="$fsc->familia->all()"}
+                              <option value="{$value->codfamilia}">{$value->nivel}{$value->descripcion}</option>
+                              {/loop}
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col-sm-4">
+                        <div class="form-group">
+                           <a href="{$fsc->impuesto->url()}">{#FS_IVA#}</a>:
+                           <select name="codimpuesto" class="form-control">
+                              {loop="$fsc->impuesto->all()"}
+                              <option value="{$value->codimpuesto}"{if="$value->is_default()"} selected="selected"{/if}>{$value->descripcion}</option>
+                              {/loop}
+                           </select>
+                        </div>
+                     </div>
+                     <div class="col-sm-4">
+                        <div class="form-group">
+                           Precio:
+                           <input type="text" name="pvp" value="0" class="form-control" autocomplete="off"/>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-sm-12 text-right">
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="new_articulo();return false;">
+                           <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar y seleccionar
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
 </div>
+{elseif="!$fsc->user->get_agente()"}
+<div class="well well-lg">
+   <h1>No puedes entrar aquí</h1>
+   <p>
+      No tienes un emleado asociado a tu <a href="{$fsc->user->url()}">usuario</a>.
+      Habla con el administrador para que te asigne un empleado.
+   </p>
+   <p>Si crees que es un error de FacturaScripts, haz clic en el botón de ayuda, arriba a la derecha, e infórmanos del error.</p>
+</div>
+{else}
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#modal_cliente").modal('show');
+      document.f_nueva_venta.ac_cliente.focus();
+      $("#ac_cliente").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_cliente',
+         onSelect: function (suggestion) {
+            if(suggestion)
+            {
+               if(document.f_nueva_venta.cliente.value != suggestion.data)
+               {
+                  document.f_nueva_venta.cliente.value = suggestion.data;
+               }
+            }
+         }
+      });
+   });
+</script>
+
+<form name="f_nueva_venta" class="form" action="{$fsc->url()}" method="post">
+   <input type="hidden" name="cliente"/>
+   <div class="modal" id="modal_cliente">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title">Selecciona el cliente</h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                  <div class="input-group">
+                     <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Buscar" autocomplete="off"/>
+                     <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+                           <span class="glyphicon glyphicon-share-alt"></span>
+                        </button>
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <ul class="nav nav-tabs">
+               <li role="presentation" class="active">
+                  <a href="#">
+                     <span class="glyphicon glyphicon-plus"></span> &nbsp; Nuevo cliente
+                  </a>
+               </li>
+            </ul>
+            <div class="modal-body">
+               <div class="form-group">
+                  Nombre:
+                  <input type="text" name="nuevo_cliente" class="form-control" autocomplete="off"/>
+               </div>
+               <div class="form-group">
+                  {#FS_CIFNIF#}:
+                  <input type="text" name="nuevo_dni" class="form-control" autocomplete="off"/>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
+
+<div class="container" style="margin-top: 10px; margin-bottom: 100px;">
+   <div class="row">
+      <div class="col-lg-12">
+         <h1>Paso 1:</h1>
+         <p>Selecciona el cliente al que quieres realizar la venta.</p>
+         <a href="#" class="btn btn-block btn-default" data-toggle="modal" data-target="#modal_cliente">Selecciona el cliente</a>
+         <h2>Paso 2:</h2>
+         <p>Introduce línea a línea todos los artículos de la venta.</p>
+         <h2>Paso 3:</h2>
+         <p>Pulsa el botón guardar.</p>
+      </div>
+   </div>
+</div>
+{/if}
 
 {include="footer"}

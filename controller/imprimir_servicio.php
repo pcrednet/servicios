@@ -85,8 +85,8 @@ class imprimir_servicio extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_servicio',
               'type' => 'pdf',
-              'text' => ucfirst(FS_PEDIDO).' simple',
-              'params' => '&servicio_p=TRUE'
+              'text' => ucfirst(FS_SERVICIO).' simple',
+              'params' => '&servicio=TRUE'
           ),
           array(
               'name' => 'email_servicio',
@@ -223,8 +223,8 @@ class imprimir_servicio extends fs_controller
                array(
                    'campo1' => "<b>Material que entrega:</b>",
                    'dato1' => $this->fix_html($this->servicio->material),
-                   'campo2' => "<b>Estado del material</b>",
-                   'dato2' => $this->servicio->estado
+                   'campo2' => "<b>material_estado del material</b>",
+                   'dato2' => $this->servicio->material_estado
                )
             );
             $pdf_doc->add_table_row(

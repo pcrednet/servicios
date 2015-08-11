@@ -155,7 +155,7 @@ class ventas_servicio extends fs_controller
       $this->servicio->descripcion = $_POST['descripcion'];
       $this->servicio->solucion = $_POST['solucion'];
       $this->servicio->material = $_POST['material'];
-      $this->servicio->estado = $_POST['estado'];
+      $this->servicio->material_estado = $_POST['material_estado'];
       $this->servicio->accesorios = $_POST['accesorios'];
       
 

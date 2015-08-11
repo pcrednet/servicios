@@ -163,7 +163,7 @@
       <nulo>YES</nulo>
    </columna>
    <columna>
-      <nombre>estado</nombre>
+      <nombre>material_estado</nombre>
       <tipo>text</tipo>
       <nulo>YES</nulo>
    </columna>

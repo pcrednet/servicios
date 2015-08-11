@@ -18,501 +18,533 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_model('almacen.php');
 require_model('articulo.php');
+require_model('asiento_factura.php');
 require_model('cliente.php');
 require_model('divisa.php');
-require_model('ejercicio.php');
-require_model('albaran_cliente.php');
 require_model('familia.php');
 require_model('forma_pago.php');
+require_model('grupo_clientes.php');
 require_model('impuesto.php');
-require_model('linea_servicio_cliente.php');
 require_model('pais.php');
 require_model('servicio_cliente.php');
-require_model('regularizacion_iva.php');
+require_model('presupuesto_cliente.php');
 require_model('serie.php');
+require_model('tarifa.php');
 
 class nuevo_servicio extends fs_controller
 {
    public $agente;
+   public $almacen;
+   public $articulo;
    public $cliente;
    public $cliente_s;
+   public $direccion;
    public $divisa;
-   public $ejercicio;
    public $familia;
    public $forma_pago;
    public $impuesto;
-   public $nuevo_servicio_url;
    public $pais;
-   public $servicio;
+   public $results;
    public $serie;
-
+   public $descripcion;
+   public $solucion;
+   public $material;
+   public $material_estado;
+   public $accesorios;
+   
    public function __construct()
    {
-      parent::__construct(__CLASS__, ucfirst(FS_SERVICIO), 'ventas', FALSE, FALSE);
+      parent::__construct(__CLASS__, 'nueva venta', 'ventas', FALSE, FALSE);
    }
-
+   
    protected function process()
    {
-      $this->ppage = $this->page->get('ventas_servicios');
-      $this->agente = FALSE;
-
-      $servicio = new servicio_cliente();
-      $this->servicio = FALSE;
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
-      $this->divisa = new divisa();
-      $this->ejercicio = new ejercicio();
+      $this->direccion = FALSE;
       $this->familia = new familia();
-      $this->forma_pago = new forma_pago();
       $this->impuesto = new impuesto();
-      $this->nuevo_servicio_url = FALSE;
-      $this->pais = new pais();
-      $this->serie = new serie();
+      $this->results = array();
+      $this->descripcion = NULL;
+      $this->solucion = NULL;
+      $this->material = NULL;
+      $this->material_estado = NULL;
+      $this->accesorios = NULL;
       
-      /// ¿El usuario tiene permiso para eliminar en esta página?
-      $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
-
-      /**
-       * Comprobamos si el usuario tiene acceso a nueva_venta,
-       * necesario para poder añadir líneas.
-       */
-      if( $this->user->have_access_to('nueva_venta', FALSE) )
+      
+      if( isset($_REQUEST['buscar_cliente']) )
       {
-         $nuevopedp = $this->page->get('nueva_venta');
-         if($nuevopedp)
-            $this->nuevo_servicio_url = $nuevopedp->url();
+         $this->buscar_cliente();
       }
-
-      if( isset($_POST['idservicio']) )
+      else if( isset($_REQUEST['datoscliente']) )
       {
-         $this->servicio = $servicio->get($_POST['idservicio']);
-         $this->modificar();
+         $this->datos_cliente();
       }
-      else if( isset($_GET['id']) )
+      else if( isset($_REQUEST['new_articulo']) )
       {
-         $this->servicio = $servicio->get($_GET['id']);
+         $this->new_articulo();
       }
-
-      if($this->servicio)
+      else if($this->query != '')
       {
-         $this->page->title = $this->servicio->codigo;
-
-         /// cargamos el agente
-         if (!is_null($this->servicio->codagente))
+         $this->new_search();
+      }
+      else if( isset($_POST['referencia4precios']) )
+      {
+         $this->get_precios_articulo();
+      }
+      else if( isset($_POST['cliente']) )
+      {
+         $this->cliente_s = $this->cliente->get($_POST['cliente']);
+         
+         if( isset($_POST['nuevo_cliente']) )
+         {
+            if($_POST['nuevo_cliente'] != '')
+            {
+               $this->cliente_s = FALSE;
+               if($_POST['nuevo_dni'] != '')
+               {
+                  $this->cliente_s = $this->cliente->get_by_cifnif($_POST['nuevo_dni']);
+                  if($this->cliente_s)
+                  {
+                     $this->new_advice('Ya existe un cliente con ese '.FS_CIFNIF.'. Se ha seleccionado.');
+                  }
+               }
+               
+               if(!$this->cliente_s)
+               {
+                  $this->cliente_s = new cliente();
+                  $this->cliente_s->codcliente = $this->cliente_s->get_new_codigo();
+                  $this->cliente_s->nombre = $this->cliente_s->razonsocial = $_POST['nuevo_cliente'];
+                  $this->cliente_s->cifnif = $_POST['nuevo_dni'];
+                  $this->cliente_s->save();
+               }
+            }
+         }
+         
+         if($this->cliente_s)
+         {
+            foreach($this->cliente_s->get_direcciones() as $dir)
+            {
+               if($dir->domfacturacion)
+               {
+                  $this->direccion = $dir;
+                  break;
+               }
+            }
+         }
+         
+         if( isset($_POST['codagente']) )
          {
             $agente = new agente();
-            $this->agente = $agente->get($this->servicio->codagente);
+            $this->agente = $agente->get($_POST['codagente']);
          }
-
-         /// cargamos el cliente
-         $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
-
-         /// comprobamos el servicio
-         if ($this->servicio->full_test())
+         else
+            $this->agente = $this->user->get_agente();
+         
+         $this->almacen = new almacen();
+         $this->serie = new serie();
+         $this->forma_pago = new forma_pago();
+         $this->divisa = new divisa();
+         $this->pais = new pais();
+         
+         if( isset($_POST['guardar']) )
          {
-            if (isset($_REQUEST['status']))
-            {
-               $this->servicio->status = intval($_REQUEST['status']);
-               
-               if($this->servicio->status == 1 AND is_null($this->servicio->idalbaran))
-               {
-                  $this->generar_albaran();
-               }
-               elseif ($this->servicio->save())
-               {
-                  $this->new_message(ucfirst(FS_SERVICIO)." modificado correctamente.");
-               }
-               else
-               {
-                  $this->new_error_msg("¡Imposible modificar el ".FS_SERVICIO."!");
-               }
-            }
-         }
+          $this->nuevo_servicio_cliente();
+         
+                if(!$this->direccion)
+                {
+                $this->direccion = new direccion_cliente();
+                $this->direccion->codcliente = $this->cliente_s->codcliente;
+                $this->direccion->codpais = $_POST['codpais'];
+                $this->direccion->provincia = $_POST['provincia'];
+                $this->direccion->ciudad = $_POST['ciudad'];
+                $this->direccion->codpostal = $_POST['codpostal'];
+                $this->direccion->direccion = $_POST['direccion'];
+                $this->direccion->descripcion = 'Principal';
+                $this->direccion->save();
+                }
+         }     
       }
-      else
-         $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " de cliente no encontrado!");
    }
-
+   
    public function url()
    {
-      if (!isset($this->servicio))
+      return 'index.php?page='.__CLASS__;
+   }
+   
+   private function buscar_cliente()
+   {
+      /// desactivamos la plantilla HTML
+      $this->template = FALSE;
+      
+      $json = array();
+      foreach($this->cliente->search($_REQUEST['buscar_cliente']) as $cli)
       {
-         return parent::url();
+         $json[] = array('value' => $cli->nombre, 'data' => $cli->codcliente);
       }
-      else if ($this->servicio)
+      
+      header('Content-Type: application/json');
+      echo json_encode( array('query' => $_REQUEST['buscar_cliente'], 'suggestions' => $json) );
+   }
+   
+   private function datos_cliente()
+   {
+      /// desactivamos la plantilla HTML
+      $this->template = FALSE;
+      
+      header('Content-Type: application/json');
+      echo json_encode( $this->cliente->get($_REQUEST['datoscliente']) );
+   }
+   
+   private function new_articulo()
+   {
+      /// desactivamos la plantilla HTML
+      $this->template = FALSE;
+      
+      $art0 = new articulo();
+      $art0->referencia = $_REQUEST['referencia'];
+      if( $art0->exists() )
       {
-         return $this->servicio->url();
+         $this->results[] = $art0->get($_REQUEST['referencia']);
       }
       else
-         return $this->page->url();
+      {
+         $art0->descripcion = $_REQUEST['descripcion'];
+         $art0->set_impuesto($_REQUEST['codimpuesto']);
+         $art0->set_pvp( floatval($_REQUEST['pvp']) );
+         
+         if($_POST['codfamilia'] != '')
+         {
+            $art0->codfamilia = $_REQUEST['codfamilia'];
+         }
+         
+         if( $art0->save() )
+         {
+            $this->results[] = $art0;
+         }
+      }
+      
+      header('Content-Type: application/json');
+      echo json_encode($this->results);
+   }
+   
+   private function new_search()
+   {
+      /// desactivamos la plantilla HTML
+      $this->template = FALSE;
+      
+      $articulo = new articulo();
+      $codfamilia = '';
+      if( isset($_REQUEST['codfamilia']) )
+      {
+         $codfamilia = $_REQUEST['codfamilia'];
+      }
+      
+      $con_stock = isset($_REQUEST['con_stock']);
+      $this->results = $articulo->search($this->query, 0, $codfamilia, $con_stock);
+      
+      /// añadimos la busqueda, el descuento y la cantidad
+      foreach($this->results as $i => $value)
+      {
+         $this->results[$i]->query = $this->query;
+         $this->results[$i]->dtopor = 0;
+         $this->results[$i]->cantidad = 1;
+      }
+      
+      /// ejecutamos las funciones de las extensiones
+      foreach($this->extensions as $ext)
+      {
+         if($ext->type == 'function' AND $ext->params == 'new_search')
+         {
+            $name = $ext->text;
+            $name($this->db, $this->results);
+         }
+      }
+      
+      /// buscamos el grupo de clientes y la tarifa
+      if( isset($_REQUEST['codcliente']) )
+      {
+         $cliente = $this->cliente->get($_REQUEST['codcliente']);
+         if($cliente->codgrupo)
+         {
+            $grupo0 = new grupo_clientes();
+            $tarifa0 = new tarifa();
+            
+            $grupo = $grupo0->get($cliente->codgrupo);
+            if($grupo)
+            {
+               $tarifa = $tarifa0->get($grupo->codtarifa);
+               if($tarifa)
+               {
+                  $tarifa->set_precios($this->results);
+                  }
+               }
+            }
+         }
+      
+      header('Content-Type: application/json');
+      echo json_encode($this->results);
+   }
+   
+   private function get_precios_articulo()
+   {
+      /// cambiamos la plantilla HTML
+      $this->template = 'ajax/nueva_venta_precios';
+      
+      $articulo = new articulo();
+      $this->articulo = $articulo->get($_POST['referencia4precios']);
+   }
+   
+   public function get_tarifas_articulo($ref)
+   {
+      $tarlist = array();
+      $articulo = new articulo();
+      $tarifa = new tarifa();
+      
+      foreach($tarifa->all() as $tar)
+      {
+         $art = $articulo->get($ref);
+         if($art)
+         {
+            $art->dtopor = 0;
+            $aux = array($art);
+            $tar->set_precios($aux);
+            $tarlist[] = $aux[0];
+         }
+      }
+      
+      return $tarlist;
+   }
+	/**
+    * Devuelve los tipos de documentos a guardar,
+    * así para añadir tipos no hay que tocar la vista.
+    * @return type
+    */
+   public function tipos_a_guardar()
+   {
+      $tipos = array();
+      
+      if( $this->user->have_access_to('ventas_presupuesto') AND class_exists('presupuesto_cliente') )
+      {
+         $tipos[] = array('tipo' => 'presupuesto', 'nombre' => ucfirst(FS_PRESUPUESTO).' para cliente');
+      }
+      
+      if( $this->user->have_access_to('ventas_servicio') AND class_exists('servicio_cliente') )
+      {
+         $tipos[] = array('tipo' => 'servicio', 'nombre' => ucfirst(FS_SERVICIO).' de cliente');
+      }
+      
+      if( $this->user->have_access_to('ventas_albaran') )
+      {
+         $tipos[] = array('tipo' => 'albaran', 'nombre' => ucfirst(FS_ALBARAN).' de cliente');
+      }
+      
+      if( $this->user->have_access_to('ventas_factura') )
+      {
+         $tipos[] = array('tipo' => 'factura', 'nombre' => 'Factura de cliente');
+      }
+      
+      return $tipos;
    }
 
-   private function modificar()
+
+   
+   private function nuevo_servicio_cliente()
    {
-      $this->servicio->observaciones = $_POST['observaciones'];
-      $this->servicio->numero2 = $_POST['numero2'];
-      $this->servicio->descripcion = $_POST['descripcion'];
-      $this->servicio->solucion = $_POST['solucion'];
-      $this->servicio->material = $_POST['material'];
-      $this->servicio->estado = $_POST['estado'];
-      $this->servicio->accesorios = $_POST['accesorios'];
+      $continuar = TRUE;
       
-
-      if (is_null($this->servicio->idalbaran))
+      $cliente = $this->cliente->get($_POST['cliente']);
+      if( $cliente )
+         $this->save_codcliente( $cliente->codcliente );
+      else
       {
-         /// obtenemos los datos del ejercicio para acotar la fecha
-         $eje0 = $this->ejercicio->get($this->servicio->codejercicio);
-         if ($eje0)
+         $this->new_error_msg('Cliente no encontrado.');
+         $continuar = FALSE;
+      }
+      
+      $almacen = $this->almacen->get($_POST['almacen']);
+      if( $almacen )
+         $this->save_codalmacen( $almacen->codalmacen );
+      else
+      {
+         $this->new_error_msg('Almacén no encontrado.');
+         $continuar = FALSE;
+      }
+      
+      $eje0 = new ejercicio();
+      $ejercicio = $eje0->get_by_fecha($_POST['fecha']);
+      if( $ejercicio )
+         $this->save_codejercicio( $ejercicio->codejercicio );
+      else
+      {
+         $this->new_error_msg('Ejercicio no encontrado.');
+         $continuar = FALSE;
+      }
+      
+      $serie = $this->serie->get($_POST['serie']);
+      if( !$serie )
+      {
+         $this->new_error_msg('Serie no encontrada.');
+         $continuar = FALSE;
+      }
+      
+      $forma_pago = $this->forma_pago->get($_POST['forma_pago']);
+      if( $forma_pago )
+         $this->save_codpago( $forma_pago->codpago );
+      else
+      {
+         $this->new_error_msg('Forma de pago no encontrada.');
+         $continuar = FALSE;
+      }
+      
+      $divisa = $this->divisa->get($_POST['divisa']);
+      if( $divisa )
+         $this->save_coddivisa( $divisa->coddivisa );
+      else
+      {
+         $this->new_error_msg('Divisa no encontrada.');
+         $continuar = FALSE;
+      }
+      
+      $servicio = new servicio_cliente();
+      
+      if( $this->duplicated_petition($_POST['petition_id']) )
+      {
+         $this->new_error_msg('Petición duplicada. Has hecho doble clic sobre el botón guardar
+               y se han enviado dos peticiones. Mira en <a href="'.$servicio->url().'">Servicios</a>
+               para ver si el servicio se ha guardado correctamente.');
+         $continuar = FALSE;
+      }
+      
+      if($continuar)
+      {
+         $servicio->fecha = $_POST['fecha'];
+         $servicio->codalmacen = $almacen->codalmacen;
+         $servicio->codejercicio = $ejercicio->codejercicio;
+         $servicio->codserie = $serie->codserie;
+         $servicio->codpago = $forma_pago->codpago;
+         $servicio->coddivisa = $divisa->coddivisa;
+         $servicio->tasaconv = $divisa->tasaconv;
+         
+         if($_POST['tasaconv'] != '')
          {
-            $this->servicio->fecha = $eje0->get_best_fecha($_POST['fecha'], TRUE);
-            $this->servicio->hora = $_POST['hora'];
-         }
-         else
-            $this->new_error_msg('No se encuentra el ejercicio asociado al ' . FS_SERVICIO);
-
-         /// ¿cambiamos el cliente?
-         if ($_POST['cliente'] != $this->servicio->codcliente)
-         {
-            $cliente = $this->cliente->get($_POST['cliente']);
-            if ($cliente)
-            {
-               foreach ($cliente->get_direcciones() as $d)
-               {
-                  if ($d->domfacturacion)
-                  {
-                     $this->servicio->codcliente = $cliente->codcliente;
-                     $this->servicio->cifnif = $cliente->cifnif;
-                     $this->servicio->nombrecliente = $cliente->razonsocial;
-                     $this->servicio->apartado = $d->apartado;
-                     $this->servicio->ciudad = $d->ciudad;
-                     $this->servicio->coddir = $d->id;
-                     $this->servicio->codpais = $d->codpais;
-                     $this->servicio->codpostal = $d->codpostal;
-                     $this->servicio->direccion = $d->direccion;
-                     $this->servicio->provincia = $d->provincia;
-                     break;
-                  }
-               }
-            }
-            else
-               die('No se ha encontrado el cliente.');
-         }
-         else
-         {
-            $this->servicio->codpais = $_POST['codpais'];
-            $this->servicio->provincia = $_POST['provincia'];
-            $this->servicio->ciudad = $_POST['ciudad'];
-            $this->servicio->codpostal = $_POST['codpostal'];
-            $this->servicio->direccion = $_POST['direccion'];
-            
-            $cliente = $this->cliente->get($this->servicio->codcliente);
-         }
-
-         $serie = $this->serie->get($this->servicio->codserie);
-
-         /// ¿cambiamos la serie?
-         if ($_POST['serie'] != $this->servicio->codserie)
-         {
-            $serie2 = $this->serie->get($_POST['serie']);
-            if ($serie2)
-            {
-               $this->servicio->codserie = $serie2->codserie;
-               $this->servicio->irpf = $serie2->irpf;
-               $this->servicio->new_codigo();
-
-               $serie = $serie2;
-            }
+            $servicio->tasaconv = floatval($_POST['tasaconv']);
          }
          
-         $this->servicio->codpago = $_POST['forma_pago'];
+         $servicio->codagente = $this->agente->codagente;
+         $servicio->observaciones = $_POST['observaciones'];
+         $servicio->numero2 = $_POST['numero2'];
+         $servicio->irpf = $serie->irpf;
+         $servicio->porcomision = $this->agente->porcomision;
          
-         /// ¿Cambiamos la divisa?
-         if($_POST['divisa'] != $this->servicio->coddivisa)
+         $servicio->codcliente = $cliente->codcliente;
+         $servicio->cifnif = $cliente->cifnif;
+         $servicio->nombrecliente = $cliente->razonsocial;
+         $servicio->ciudad = $_POST['ciudad'];
+         $servicio->codpais = $_POST['codpais'];
+         $servicio->codpostal = $_POST['codpostal'];
+         $servicio->direccion = $_POST['direccion'];
+         $servicio->provincia = $_POST['provincia'];
+         $servicio->descripcion = $_POST['descripcion'];
+         $servicio->solucion = $_POST['solucion'];
+         $servicio->material = $_POST['material'];
+         $servicio->material_estado = $_POST['material_estado'];
+         $servicio->accesorios = $_POST['accesorios'];
+         if( $servicio->save() )
          {
-            $divisa = $this->divisa->get($_POST['divisa']);
-            if($divisa)
+            $art0 = new articulo();
+            $n = floatval($_POST['numlineas']);
+            for($i = 0; $i <= $n; $i++)
             {
-               $this->servicio->coddivisa = $divisa->coddivisa;
-               $this->servicio->tasaconv = $divisa->tasaconv;
-            }
-         }
-         else if($_POST['tasaconv'] != '')
-         {
-            $this->servicio->tasaconv = floatval($_POST['tasaconv']);
-         }
-         
-         if (isset($_POST['numlineas']))
-         {
-            $numlineas = intval($_POST['numlineas']);
-
-            $this->servicio->neto = 0;
-            $this->servicio->totaliva = 0;
-            $this->servicio->totalirpf = 0;
-            $this->servicio->totalrecargo = 0;
-            $lineas = $this->servicio->get_lineas();
-            $articulo = new articulo();
-
-            /// eliminamos las líneas que no encontremos en el $_POST
-            foreach ($lineas as $l)
-            {
-               $encontrada = FALSE;
-               for ($num = 0; $num <= $numlineas; $num++)
+               if( isset($_POST['referencia_'.$i]) )
                {
-                  if (isset($_POST['idlinea_' . $num]))
+                  $linea = new linea_servicio_cliente();
+                  $linea->idservicio = $servicio->idservicio;
+                  $linea->descripcion = $_POST['desc_'.$i];
+                  
+                  if( !$serie->siniva AND $cliente->regimeniva != 'Exento' )
                   {
-                     if ($l->idlinea == intval($_POST['idlinea_' . $num]))
+                     $imp0 = $this->impuesto->get_by_iva($_POST['iva_'.$i]);
+                     if($imp0)
                      {
-                        $encontrada = TRUE;
-                        break;
-                     }
-                  }
-               }
-               if (!$encontrada)
-               {
-                  if (!$l->delete())
-                     $this->new_error_msg("¡Imposible eliminar la línea del artículo " . $l->referencia . "!");
-               }
-            }
-
-            /// modificamos y/o añadimos las demás líneas
-            for ($num = 0; $num <= $numlineas; $num++)
-            {
-               $encontrada = FALSE;
-               if (isset($_POST['idlinea_' . $num]))
-               {
-                  foreach ($lineas as $k => $value)
-                  {
-                     /// modificamos la línea
-                     if ($value->idlinea == intval($_POST['idlinea_' . $num]))
-                     {
-                        $encontrada = TRUE;
-                        $lineas[$k]->cantidad = floatval($_POST['cantidad_' . $num]);
-                        $lineas[$k]->pvpunitario = floatval($_POST['pvp_' . $num]);
-                        $lineas[$k]->dtopor = floatval($_POST['dto_' . $num]);
-                        $lineas[$k]->pvpsindto = ($value->cantidad * $value->pvpunitario);
-                        $lineas[$k]->pvptotal = ($value->cantidad * $value->pvpunitario * (100 - $value->dtopor) / 100);
-                        $lineas[$k]->descripcion = $_POST['desc_' . $num];
-
-                        $lineas[$k]->codimpuesto = NULL;
-                        $lineas[$k]->iva = 0;
-                        $lineas[$k]->recargo = 0;
-                        $lineas[$k]->irpf = $this->servicio->irpf;
-                        if (!$serie->siniva AND $cliente->regimeniva != 'Exento')
-                        {
-                           $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
-                           if ($imp0)
-                              $lineas[$k]->codimpuesto = $imp0->codimpuesto;
-
-                           $lineas[$k]->iva = floatval($_POST['iva_' . $num]);
-                           $lineas[$k]->recargo = floatval($_POST['recargo_' . $num]);
-                        }
-
-                        if ($lineas[$k]->save())
-                        {
-                           $this->servicio->neto += $value->pvptotal;
-                           $this->servicio->totaliva += $value->pvptotal * $value->iva / 100;
-                           $this->servicio->totalirpf += $value->pvptotal * $value->irpf / 100;
-                           $this->servicio->totalrecargo += $value->pvptotal * $value->recargo / 100;
-                        }
-                        else
-                           $this->new_error_msg("¡Imposible modificar la línea del artículo " . $value->referencia . "!");
-                        break;
-                     }
-                  }
-
-                  /// añadimos la línea
-                  if (!$encontrada AND intval($_POST['idlinea_' . $num]) == -1 AND isset($_POST['referencia_' . $num]))
-                  {
-                     $linea = new linea_servicio_cliente();
-                     $linea->idservicio = $this->servicio->idservicio;
-                     $linea->descripcion = $_POST['desc_' . $num];
-                     
-                     if (!$serie->siniva AND $cliente->regimeniva != 'Exento')
-                     {
-                        $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
-                        if($imp0)
-                           $linea->codimpuesto = $imp0->codimpuesto;
-                        
-                        $linea->iva = floatval($_POST['iva_' . $num]);
-                        $linea->recargo = floatval($_POST['recargo_' . $num]);
-                     }
-                     
-                     $linea->irpf = floatval($_POST['irpf_'.$num]);
-                     $linea->cantidad = floatval($_POST['cantidad_' . $num]);
-                     $linea->pvpunitario = floatval($_POST['pvp_' . $num]);
-                     $linea->dtopor = floatval($_POST['dto_' . $num]);
-                     $linea->pvpsindto = ($linea->cantidad * $linea->pvpunitario);
-                     $linea->pvptotal = ($linea->cantidad * $linea->pvpunitario * (100 - $linea->dtopor) / 100);
-                     
-                     $art0 = $articulo->get($_POST['referencia_' . $num]);
-                     if($art0)
-                     {
-                        $linea->referencia = $art0->referencia;
-                     }
-                     
-                     if( $linea->save() )
-                     {
-                        $this->servicio->neto += $linea->pvptotal;
-                        $this->servicio->totaliva += $linea->pvptotal * $linea->iva / 100;
-                        $this->servicio->totalirpf += $linea->pvptotal * $linea->irpf / 100;
-                        $this->servicio->totalrecargo += $linea->pvptotal * $linea->recargo / 100;
+                        $linea->codimpuesto = $imp0->codimpuesto;
+                        $linea->iva = floatval($_POST['iva_'.$i]);
+                        $linea->recargo = floatval($_POST['recargo_'.$i]);
                      }
                      else
-                        $this->new_error_msg("¡Imposible guardar la línea del artículo " . $linea->referencia . "!");
+                     {
+                        $linea->iva = floatval($_POST['iva_'.$i]);
+                        $linea->recargo = floatval($_POST['recargo_'.$i]);
+                     }
                   }
-               }
-            }
-
-            /// redondeamos
-            $this->servicio->neto = round($this->servicio->neto, FS_NF0);
-            $this->servicio->totaliva = round($this->servicio->totaliva, FS_NF0);
-            $this->servicio->totalirpf = round($this->servicio->totalirpf, FS_NF0);
-            $this->servicio->totalrecargo = round($this->servicio->totalrecargo, FS_NF0);
-            $this->servicio->total = $this->servicio->neto + $this->servicio->totaliva - $this->servicio->totalirpf + $this->servicio->totalrecargo;
-
-            if (abs(floatval($_POST['atotal']) - $this->servicio->total) >= .02)
-            {
-               $this->new_error_msg("El total difiere entre el controlador y la vista (" . $this->servicio->total .
-                       " frente a " . $_POST['atotal'] . "). Debes informar del error.");
-            }
-         }
-      }
-
-      if ($this->servicio->save())
-      {
-         $this->new_message(ucfirst(FS_SERVICIO) . " modificado correctamente.");
-         $this->new_change(ucfirst(FS_SERVICIO) . ' Cliente ' . $this->servicio->codigo, $this->servicio->url());
-      }
-      else
-         $this->new_error_msg("¡Imposible modificar el " . FS_SERVICIO . "!");
-   }
-
-   private function generar_albaran()
-   {
-      $albaran = new albaran_cliente();
-      $albaran->apartado = $this->servicio->apartado;
-      $albaran->automatica = TRUE;
-      $albaran->cifnif = $this->servicio->cifnif;
-      $albaran->ciudad = $this->servicio->ciudad;
-      $albaran->codagente = $this->servicio->codagente;
-      $albaran->codalmacen = $this->servicio->codalmacen;
-      $albaran->codcliente = $this->servicio->codcliente;
-      $albaran->coddir = $this->servicio->coddir;
-      $albaran->coddivisa = $this->servicio->coddivisa;
-      $albaran->tasaconv = $this->servicio->tasaconv;
-      $albaran->codpago = $this->servicio->codpago;
-      $albaran->codpais = $this->servicio->codpais;
-      $albaran->codpostal = $this->servicio->codpostal;
-      $albaran->codserie = $this->servicio->codserie;
-      $albaran->direccion = $this->servicio->direccion;
-      $albaran->editable = TRUE;
-      $albaran->neto = $this->servicio->neto;
-      $albaran->nombrecliente = $this->servicio->nombrecliente;
-      $albaran->observaciones = $this->servicio->observaciones;
-      $albaran->provincia = $this->servicio->provincia;
-      $albaran->total = $this->servicio->total;
-      $albaran->totaliva = $this->servicio->totaliva;
-      $albaran->numero2 = $this->servicio->numero2;
-      $albaran->irpf = $this->servicio->irpf;
-      $albaran->porcomision = $this->servicio->porcomision;
-      $albaran->recfinanciero = $this->servicio->recfinanciero;
-      $albaran->totalirpf = $this->servicio->totalirpf;
-      $albaran->totalrecargo = $this->servicio->totalrecargo;
-      $albaran->idservicio = $this->servicio->idservicio;
-
-      /**
-       * Obtenemos el ejercicio para la fecha de hoy (puede que
-       * no sea el mismo ejercicio que el del servicio, por ejemplo
-       * si hemos cambiado de año)
-       */
-      $eje0 = $this->ejercicio->get_by_fecha($albaran->fecha);
-      $albaran->codejercicio = $eje0->codejercicio;
-
-      $regularizacion = new regularizacion_iva();
-
-      if (!$eje0->abierto())
-      {
-         $this->new_error_msg("El ejercicio está cerrado.");
-      }
-      else if ($regularizacion->get_fecha_inside($albaran->fecha))
-      {
-         $this->new_error_msg("El IVA de ese periodo ya ha sido regularizado. No se pueden añadir más " . FS_ALBARANES . " en esa fecha.");
-      }
-      else if ($albaran->save())
-      {
-         $continuar = TRUE;
-         $art0 = new articulo();
-
-         foreach ($this->servicio->get_lineas() as $l)
-         {
-            $n = new linea_albaran_cliente();
-            $n->idlineaservicio = $l->idlinea;
-            $n->idservicio = $l->idservicio;
-            $n->idalbaran = $albaran->idalbaran;
-            $n->cantidad = $l->cantidad;
-            $n->codimpuesto = $l->codimpuesto;
-            $n->descripcion = $l->descripcion;
-            $n->dtopor = $l->dtopor;
-            $n->irpf = $l->irpf;
-            $n->iva = $l->iva;
-            $n->pvpsindto = $l->pvpsindto;
-            $n->pvptotal = $l->pvptotal;
-            $n->pvpunitario = $l->pvpunitario;
-            $n->recargo = $l->recargo;
-            $n->referencia = $l->referencia;
-
-            if ($n->save())
-            {
-               /// descontamos del stock
-               if( !is_null($n->referencia) )
-               {
-                  $articulo = $art0->get($n->referencia);
+                  
+                  $linea->irpf = floatval($_POST['irpf_'.$i]);
+                  $linea->pvpunitario = floatval($_POST['pvp_'.$i]);
+                  $linea->cantidad = floatval($_POST['cantidad_'.$i]);
+                  $linea->dtopor = floatval($_POST['dto_'.$i]);
+                  $linea->pvpsindto = ($linea->pvpunitario * $linea->cantidad);
+                  $linea->pvptotal = floatval($_POST['neto_'.$i]);
+                  
+                  $articulo = $art0->get($_POST['referencia_'.$i]);
                   if($articulo)
                   {
-                     $articulo->sum_stock($albaran->codalmacen, 0 - $l->cantidad);
+                     $linea->referencia = $articulo->referencia;
+                  }
+                  
+                  if( $linea->save() )
+                  {
+                     $servicio->neto += $linea->pvptotal;
+                     $servicio->totaliva += ($linea->pvptotal * $linea->iva/100);
+                     $servicio->totalirpf += ($linea->pvptotal * $linea->irpf/100);
+                     $servicio->totalrecargo += ($linea->pvptotal * $linea->recargo/100);
+                  }
+                  else
+                  {
+                     $this->new_error_msg("¡Imposible guardar la linea con referencia: ".$linea->referencia);
+                     $continuar = FALSE;
                   }
                }
             }
-            else
-            {
-               $continuar = FALSE;
-               $this->new_error_msg("¡Imposible guardar la línea el artículo " . $n->referencia . "! ");
-               break;
-            }
-         }
-
-         if ($continuar)
-         {
-            $this->servicio->idalbaran = $albaran->idalbaran;
-            $this->servicio->editable = FALSE;
             
-            if ($this->servicio->save())
+            if($continuar)
             {
-               $this->new_message("<a href='" . $albaran->url() . "'>" . ucfirst(FS_ALBARAN) . '</a> generado correctamente.');
-            }
-            else
-            {
-               $this->new_error_msg("¡Imposible vincular el ".FS_SERVICIO." con el nuevo " . FS_ALBARAN . "!");
-               if ($albaran->delete())
+               /// redondeamos
+               $servicio->neto = round($servicio->neto, FS_NF0);
+               $servicio->totaliva = round($servicio->totaliva, FS_NF0);
+               $servicio->totalirpf = round($servicio->totalirpf, FS_NF0);
+               $servicio->totalrecargo = round($servicio->totalrecargo, FS_NF0);
+               $servicio->total = $servicio->neto + $servicio->totaliva - $servicio->totalirpf + $servicio->totalrecargo;
+               
+               if( abs(floatval($_POST['atotal']) - $servicio->total) >= .02)
                {
-                  $this->new_error_msg("El " . FS_ALBARAN . " se ha borrado.");
+                  $this->new_error_msg("El total difiere entre el controlador y la vista (".
+                          $servicio->total." frente a ".$_POST['atotal']."). Debes informar del error.");
+                  $servicio->delete();
+               }
+               else if( $servicio->save() )
+               {
+                  $this->new_message("<a href='".$servicio->url()."'>".ucfirst(FS_SERVICIO)."</a> guardado correctamente.");
+                  $this->new_change(ucfirst(FS_SERVICIO)." a Cliente ".$servicio->codigo, $servicio->url(), TRUE);
+                  
+                  if($_POST['redir'] == 'TRUE')
+                  {
+                     header('Location: '.$servicio->url());
+                  }
                }
                else
-                  $this->new_error_msg("¡Imposible borrar el " . FS_ALBARAN . "!");
+                  $this->new_error_msg("¡Imposible actualizar el <a href='".$servicio->url()."'>".FS_SERVICIO."</a>!");
             }
-         }
-         else
-         {
-            if ($albaran->delete())
+            else if( $servicio->delete() )
             {
-               $this->new_error_msg("El " . FS_ALBARAN . " se ha borrado.");
+               $this->new_message(ucfirst(FS_SERVICIO)." eliminado correctamente.");
             }
             else
-               $this->new_error_msg("¡Imposible borrar el " . FS_ALBARAN . "!");
+               $this->new_error_msg("¡Imposible eliminar el <a href='".$servicio->url()."'>".FS_SERVICIO."</a>!");
          }
+         else
+            $this->new_error_msg("¡Imposible guardar el ".FS_SERVICIO."!");
       }
-      else
-         $this->new_error_msg("¡Imposible guardar el " . FS_ALBARAN . "!");
    }
 }

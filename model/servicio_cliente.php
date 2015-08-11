@@ -69,12 +69,10 @@ class servicio_cliente extends fs_model {
    public $observaciones;
    public $status;
    public $editable;
-   public $servido;
-   public $fechasalida;
    public $descripcion;
    public $solucion;
    public $material;
-   public $estado;
+   public $material_estado;
    public $accesorios;
 
    public function __construct($s = FALSE)
@@ -123,7 +121,7 @@ class servicio_cliente extends fs_model {
          $this->descripcion = $s['descripcion'];
          $this->solucion = $s['solucion'];
          $this->material = $s['material'];
-         $this->estado = $s['estado'];
+         $this->material_estado = $s['material_estado'];
          $this->accesorios = $s['accesorios'];
          $this->status = $s['status'];
 
@@ -176,7 +174,7 @@ class servicio_cliente extends fs_model {
          $this->descripcion = NULL;
          $this->solucion = NULL;
          $this->material = NULL;
-         $this->estado = NULL;
+         $this->material_estado = NULL;
          $this->accesorios = NULL;
 
          $this->editable = TRUE;
@@ -432,7 +430,7 @@ class servicio_cliente extends fs_model {
                provincia = " . $this->var2str($this->provincia) . ", recfinanciero = " . $this->var2str($this->recfinanciero) . ",
                servido = " . $this->var2str($this->servido) . ", tasaconv = " . $this->var2str($this->tasaconv) . ",
                descripcion = " . $this->var2str($this->descripcion) . ", solucion = " . $this->var2str($this->solucion) . ",
-               material = " . $this->var2str($this->material) . ", estado = " . $this->var2str($this->estado) . ", accesorios = " . $this->var2str($this->accesorios) . ",
+               material = " . $this->var2str($this->material) . ", material_estado = " . $this->var2str($this->material_estado) . ", accesorios = " . $this->var2str($this->accesorios) . ",
                total = " . $this->var2str($this->total) . ", totaleuros = " . $this->var2str($this->totaleuros) . ",
                totalirpf = " . $this->var2str($this->totalirpf) . ", totaliva = " . $this->var2str($this->totaliva) . ",
                totalrecargo = " . $this->var2str($this->totalrecargo) . " WHERE idservicio = " . $this->var2str($this->idservicio) . ";";
@@ -446,7 +444,7 @@ class servicio_cliente extends fs_model {
                codcliente,coddir,coddivisa,codejercicio,codigo,codpais,codpago,codpostal,codserie,
                direccion,editable,fecha,hora,fechasalida,idalbaran,irpf,neto,nombrecliente,
                numero,observaciones,status,porcomision,provincia,recfinanciero,servido,tasaconv,total,totaleuros,
-               totalirpf,totaliva,totalrecargo,descripcion,solucion,material,estado,accesorios,numero2) VALUES (" . $this->var2str($this->apartado) . "," . $this->var2str($this->cifnif) . ",
+               totalirpf,totaliva,totalrecargo,descripcion,solucion,material,material_estado,accesorios,numero2) VALUES (" . $this->var2str($this->apartado) . "," . $this->var2str($this->cifnif) . ",
                " . $this->var2str($this->ciudad) . "," . $this->var2str($this->codagente) . "," . $this->var2str($this->codalmacen) . ",
                " . $this->var2str($this->codcliente) . "," . $this->var2str($this->coddir) . "," . $this->var2str($this->coddivisa) . ",
                " . $this->var2str($this->codejercicio) . "," . $this->var2str($this->codigo) . "," . $this->var2str($this->codpais) . ",
@@ -459,7 +457,7 @@ class servicio_cliente extends fs_model {
                " . $this->var2str($this->tasaconv) . "," . $this->var2str($this->total) . "," . $this->var2str($this->totaleuros) . ",
                " . $this->var2str($this->totalirpf) . "," . $this->var2str($this->totaliva) . "," . $this->var2str($this->totalrecargo) . ",
                " . $this->var2str($this->descripcion) . "," . $this->var2str($this->solucion) . "," . $this->var2str($this->material) . ", 
-               " . $this->var2str($this->estado) . "," . $this->var2str($this->accesorios) . ",
+               " . $this->var2str($this->material_estado) . "," . $this->var2str($this->accesorios) . ",
                " . $this->var2str($this->numero2) . ");";
 
             if ($this->db->exec($sql))
