@@ -53,6 +53,7 @@ class nuevo_servicio extends fs_controller
    public $material;
    public $material_estado;
    public $accesorios;
+   public $grupo;
    
    public function __construct()
    {
@@ -72,6 +73,7 @@ class nuevo_servicio extends fs_controller
       $this->material = NULL;
       $this->material_estado = NULL;
       $this->accesorios = NULL;
+      $this->grupo = new grupo_clientes();
       
       
       if( isset($_REQUEST['buscar_cliente']) )
