@@ -145,7 +145,7 @@
       <div class="row">
          <div class="col-md-12">
             <h3 class="text-capitalize" style="margin-bottom: 0px;">
-               <a href="{$fsc->ppage->url()}">{#FS_SERVICIOS#}</a> /
+               <a href="{$fsc->ppage->url()}">{#Servicios#}</a> /
                <a href="{$fsc->servicio->cliente_url()}">{$fsc->servicio->nombrecliente}</a> /
                {$fsc->servicio->codigo}
             </h3>
@@ -279,7 +279,33 @@
                      </div>
                   </div>
            </div>   
-              
+           <div class="row bg-info">
+                <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
+                        <select name="estado" class="form-control">
+                           {loop="$fsc->estado->all()"}
+                           <option value="{$value->id}"{if="$value->id==$fsc->servicio->estado"} selected="selected"{/if}>{$value->descripcion}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        Fecha prevista de finalización:
+                        <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->servicio->fechafin}" autocomplete="off"/>
+                     </div>
+                  </div>
+                <div class="col-sm-1">
+                  <div class="checkbox">
+                     <label>
+                           <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}/>
+                        Es garantía
+                     </label>
+                  </div>
+               </div>
+                
+            </div>     
           </div>
          </div>
          <div role="tabpanel" class="tab-pane" id="lineas_p">

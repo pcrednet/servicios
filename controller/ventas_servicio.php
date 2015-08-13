@@ -31,6 +31,7 @@ require_model('pais.php');
 require_model('servicio_cliente.php');
 require_model('regularizacion_iva.php');
 require_model('serie.php');
+require_model('estados_servicios.php');
 
 class ventas_servicio extends fs_controller
 {
@@ -46,6 +47,9 @@ class ventas_servicio extends fs_controller
    public $pais;
    public $servicio;
    public $serie;
+   public $estado;
+   
+  
 
    public function __construct()
    {
@@ -56,7 +60,7 @@ class ventas_servicio extends fs_controller
    {
       $this->ppage = $this->page->get('ventas_servicios');
       $this->agente = FALSE;
-
+      $this->estado = new estados_servicios();
       $servicio = new servicio_cliente();
       $this->servicio = FALSE;
       $this->cliente = new cliente();
@@ -69,7 +73,6 @@ class ventas_servicio extends fs_controller
       $this->nuevo_servicio_url = FALSE;
       $this->pais = new pais();
       $this->serie = new serie();
-      
       /// ¿El usuario tiene permiso para eliminar en esta página?
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
 
@@ -157,10 +160,14 @@ class ventas_servicio extends fs_controller
       $this->servicio->material = $_POST['material'];
       $this->servicio->material_estado = $_POST['material_estado'];
       $this->servicio->accesorios = $_POST['accesorios'];
+      $this->servicio->estado = $_POST['estado'];
+      $this->servicio->fechafin = $_POST['fechafin'];
+      $this->servicio->garantia = $_POST['garantia'];
       
 
       if (is_null($this->servicio->idalbaran))
       {
+         $this->servicio->editable = TRUE;
          /// obtenemos los datos del ejercicio para acotar la fecha
          $eje0 = $this->ejercicio->get($this->servicio->codejercicio);
          if ($eje0)
@@ -486,7 +493,7 @@ class ventas_servicio extends fs_controller
          {
             $this->servicio->idalbaran = $albaran->idalbaran;
             $this->servicio->editable = FALSE;
-            
+          
             if ($this->servicio->save())
             {
                $this->new_message("<a href='" . $albaran->url() . "'>" . ucfirst(FS_ALBARAN) . '</a> generado correctamente.');
@@ -515,4 +522,6 @@ class ventas_servicio extends fs_controller
       else
          $this->new_error_msg("¡Imposible guardar el " . FS_ALBARAN . "!");
    }
+ 
+   
 }

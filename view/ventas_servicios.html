@@ -103,9 +103,9 @@
 
 <ul class="nav nav-tabs" role="tablist">
    <li{if="$fsc->mostrar=='todos'"} class="active"{/if}>
-      <a href="{$fsc->url()}" title="Todos los {#FS_SERVICIOS#}">
+      <a href="{$fsc->url()}" title="Todos los {#Servicios#}">
          {if="$fsc->query==''"}
-         Todos los {#FS_SERVICIOS#}
+         Todos los {#Servicios#}
          {else}
          <span class="glyphicon glyphicon-search"></span>
          <span class="hidden-xs">&nbsp; Resultados de "{$fsc->query}"</span>
@@ -153,7 +153,7 @@
          <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
          <td>
             {$value->nombrecliente}
-            <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
+            <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#Servicios#} de {$value->nombrecliente}">[+]</a>
          </td>
          <td>{$value->observaciones_resume()}</td>
          <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
