@@ -56,7 +56,7 @@ class imprimir_servicio extends fs_controller
       $this->impresion = $fsvar->array_get($this->impresion, FALSE);
       
      
-     if (isset($_REQUEST['id']) )
+     if( isset($_REQUEST['servicio']) AND isset($_REQUEST['id']) )
       {
          $serv = new servicio_cliente();
          $this->servicio = $serv->get($_REQUEST['id']);
@@ -86,7 +86,7 @@ class imprimir_servicio extends fs_controller
               'page_to' => 'ventas_servicio',
               'type' => 'pdf',
               'text' => ucfirst(FS_SERVICIO).' simple',
-              'params' => ''
+              'params' => '&servicio=TRUE'
           ),
           array(
               'name' => 'email_servicio',
@@ -94,7 +94,7 @@ class imprimir_servicio extends fs_controller
               'page_to' => 'ventas_servicio',
               'type' => 'email',
               'text' => ucfirst(FS_SERVICIO).' simple',
-              'params' => ''
+              'params' => '&servicio=TRUE'
           ),    
      );
       foreach($extensiones as $ext)

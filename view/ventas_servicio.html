@@ -103,13 +103,13 @@
                   {elseif="$fsc->servicio->status==1"}
                   <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown">
                      <span class="glyphicon glyphicon-ok"></span>
-                     <span class="hidden-xs"> &nbsp; Albaraneado</span>
+                     <span class="hidden-xs"> &nbsp; Aprobado</span>
                      <span class="caret"></span>
                   </button>
                   {elseif="$fsc->servicio->status==2"}
                   <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown">
                      <span class="glyphicon glyphicon-remove"></span>
-                     <span class="hidden-xs"> &nbsp; No repara</span>
+                     <span class="hidden-xs"> &nbsp; Rechazado</span>
                      <span class="caret"></span>
                   </button>
                   {/if}
@@ -118,10 +118,10 @@
                      <li><a href="{$fsc->url()}&status=0"><span class="glyphicon glyphicon-time"></span> &nbsp; Pendiente</a></li>
                      {/if}
                      {if="$fsc->servicio->status!=1"}
-                     <li><a href="{$fsc->url()}&status=1"><span class="glyphicon glyphicon-ok"></span> &nbsp; Generar Albaran</a></li>
+                     <li><a href="{$fsc->url()}&status=1"><span class="glyphicon glyphicon-ok"></span> &nbsp; Aprobado</a></li>
                      {/if}
                      {if="$fsc->servicio->status!=2"}
-                     <li><a href="{$fsc->url()}&status=2"><span class="glyphicon glyphicon-remove"></span> &nbsp; No repara</a></li>
+                     <li><a href="{$fsc->url()}&status=2"><span class="glyphicon glyphicon-remove"></span> &nbsp; Rechazado</a></li>
                      {/if}
                   </ul>
                </div>
@@ -129,7 +129,7 @@
          </div>
          <div class="col-md-4 col-sm-4 col-xs-4 text-right">
             <div class="btn-group">
-               {if="$fsc->allow_delete && $fsc->servicio->status!=1"}
+               {if="$fsc->allow_delete"}
                <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
                   <span class="glyphicon glyphicon-trash"></span>
                   <span class="hidden-xs"> &nbsp; Eliminar</span>
@@ -242,7 +242,6 @@
       </ul>
       <div class="tab-content">
          <div role="tabpanel" class="tab-pane active" id="servicio">
-          {if="$fsc->servicio->editable"}
           <div class="container-fluid" style="margin-top: 10px;">   
           <div class="row">
                   <div class="col-sm-4">
@@ -279,7 +278,7 @@
                         <textarea class="form-control" name="solucion" rows="5">{$fsc->servicio->solucion}</textarea>
                      </div>
                   </div>
-           </div>
+           </div>   
            <div class="row bg-info">
                 <div class="col-sm-2">
                      <div class="form-group">
@@ -306,11 +305,9 @@
                   </div>
                </div>
                 
-            </div> 
-              
+            </div>     
           </div>
          </div>
-          {/if}
          <div role="tabpanel" class="tab-pane" id="lineas_p">
             <div class="table-responsive">
                {if="$fsc->servicio->editable"}
@@ -336,6 +333,14 @@
                         <td>
                            <input type="hidden" name="idlinea_{$counter}" value="{$value->idlinea}"/>
                            <input type="hidden" name="referencia_{$counter}" value="{$value->referencia}"/>
+                           <div class="form-control">
+                              {if="$value->idlineapresupuesto"}
+                              <a target="_blank" href="index.php?page=ventas_presupuesto&id={$value->idpresupuesto}" title="ver {#FS_PRESUPUESTO#}">
+                                 <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                              </a> &nbsp;
+                              {/if}
+                              <a target="_blank" href="{$value->articulo_url()}">{$value->referencia}</a>
+                           </div>
                         </td>
                         <td><textarea class="form-control" name="desc_{$counter}" rows="1" onclick="this.select()">{$value->descripcion}</textarea></td>
                         <td>

@@ -58,6 +58,8 @@ class nuevo_servicio extends fs_controller
    public $estado;
    public $fechaprevista;
    public $servicios_setup;
+   public $fechafin;
+   public $garantia;
    
    
    public function __construct()

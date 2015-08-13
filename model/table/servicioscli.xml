@@ -86,11 +86,6 @@
       <nulo>NO</nulo>
    </columna>
    <columna>
-      <nombre>garantia</nombre>
-      <tipo>boolean</tipo>
-      <nulo>YES</nulo>
-   </columna>
-   <columna>
       <nombre>fecha</nombre>
       <tipo>date</tipo>
       <nulo>NO</nulo>
@@ -102,7 +97,7 @@
       <defecto>now()</defecto>
    </columna>
    <columna>
-      <nombre>fechafin</nombre>
+      <nombre>fechasalida</nombre>
       <tipo>date</tipo>
       <nulo>YES</nulo>
    </columna>
@@ -191,11 +186,6 @@
       <nombre>recfinanciero</nombre>
       <tipo>double precision</tipo>
       <nulo>NO</nulo>
-   </columna>
-   <columna>
-      <nombre>estado</nombre>
-      <tipo>integer</tipo>
-      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>tasaconv</nombre>

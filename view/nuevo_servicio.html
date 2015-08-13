@@ -1,13 +1,13 @@
 {include="header"}
 
 {if="$fsc->cliente_s"}
-<script type="text/javascript" src="{$fsc->get_js_location('nuevo_servicio.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
    fs_nf0 = {#FS_NF0#};
    all_impuestos = {function="json_encode($fsc->impuesto->all())"};
    all_series = {function="json_encode($fsc->serie->all())"};
    cliente = {function="json_encode($fsc->cliente_s)"};
-   nuevo_servicio_url = '{$fsc->url()}';
+   nueva_venta_url = '{$fsc->url()}';
    kiwimaru_url = '{#FS_COMMUNITY_URL#}/index.php?page=kiwimaru';
    
    $(document).ready(function() {
@@ -109,7 +109,7 @@
                      </div>
                   </div>
            </div>   
-           <div class="row bg-info">    
+             <div class="row bg-info">    
                 <div class="col-sm-3">
                      <div class="form-group">
                         <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
@@ -468,16 +468,16 @@
 <script type="text/javascript">
    $(document).ready(function() {
       $("#modal_cliente").modal('show');
-      document.f_nuevo_servicio.ac_cliente.focus();
+      document.f_nueva_venta.ac_cliente.focus();
       $("#ac_cliente").autocomplete({
          serviceUrl: '{$fsc->url()}',
          paramName: 'buscar_cliente',
          onSelect: function (suggestion) {
             if(suggestion)
             {
-               if(document.f_nuevo_servicio.cliente.value != suggestion.data)
+               if(document.f_nueva_venta.cliente.value != suggestion.data)
                {
-                  document.f_nuevo_servicio.cliente.value = suggestion.data;
+                  document.f_nueva_venta.cliente.value = suggestion.data;
                }
             }
          }
@@ -485,7 +485,7 @@
    });
 </script>
 
-<form name="f_nuevo_servicio" class="form" action="{$fsc->url()}" method="post">
+<form name="f_nueva_venta" class="form" action="{$fsc->url()}" method="post">
    <input type="hidden" name="cliente"/>
    <div class="modal" id="modal_cliente">
       <div class="modal-dialog">
@@ -521,16 +521,6 @@
                <div class="form-group">
                   {#FS_CIFNIF#}:
                   <input type="text" name="nuevo_dni" class="form-control" autocomplete="off"/>
-               </div>
-               <div class="form-group">
-                  <a href="{$fsc->grupo->url()}">Grupo de clientes</a>:
-                  <select class="form-control" name="codgrupo">
-                     <option value="">Ninguno</option>
-                     <option value="">-----</option>
-                     {loop="$fsc->grupo->all()"}
-                     <option value="{$value->codgrupo}">{$value->nombre}</option>
-                     {/loop}
-                  </select>
                </div>
             </div>
          </div>
