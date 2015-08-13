@@ -86,6 +86,11 @@
       <nulo>NO</nulo>
    </columna>
    <columna>
+      <nombre>garantia</nombre>
+      <tipo>boolean</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
       <nombre>fecha</nombre>
       <tipo>date</tipo>
       <nulo>NO</nulo>
@@ -97,7 +102,7 @@
       <defecto>now()</defecto>
    </columna>
    <columna>
-      <nombre>fechasalida</nombre>
+      <nombre>fechafin</nombre>
       <tipo>date</tipo>
       <nulo>YES</nulo>
    </columna>
@@ -188,9 +193,9 @@
       <nulo>NO</nulo>
    </columna>
    <columna>
-      <nombre>servido</nombre>
-      <tipo>character varying(10)</tipo>
-      <nulo>NO</nulo>
+      <nombre>estado</nombre>
+      <tipo>integer</tipo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>tasaconv</nombre>

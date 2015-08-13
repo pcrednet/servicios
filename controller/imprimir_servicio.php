@@ -86,7 +86,7 @@ class imprimir_servicio extends fs_controller
               'page_to' => 'ventas_servicio',
               'type' => 'pdf',
               'text' => ucfirst(FS_SERVICIO).' simple',
-              
+              'params' => ''
           ),
           array(
               'name' => 'email_servicio',
@@ -94,7 +94,7 @@ class imprimir_servicio extends fs_controller
               'page_to' => 'ventas_servicio',
               'type' => 'email',
               'text' => ucfirst(FS_SERVICIO).' simple',
-              
+              'params' => ''
           ),    
      );
       foreach($extensiones as $ext)

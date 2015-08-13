@@ -32,6 +32,7 @@ require_model('servicio_cliente.php');
 require_model('presupuesto_cliente.php');
 require_model('serie.php');
 require_model('tarifa.php');
+require_model('estados_servicios.php');
 
 class nuevo_servicio extends fs_controller
 {
@@ -54,14 +55,28 @@ class nuevo_servicio extends fs_controller
    public $material_estado;
    public $accesorios;
    public $grupo;
+   public $estado;
+   public $fechaprevista;
+   public $servicios_setup;
+   
    
    public function __construct()
    {
-      parent::__construct(__CLASS__, 'nueva venta', 'ventas', FALSE, FALSE);
+      parent::__construct(__CLASS__, 'nuevo servicio', 'ventas', FALSE, FALSE);
    }
    
    protected function process()
    {
+       //cargamos configuración de servicios
+       $fsvar = new fs_var();
+       $this->servicios_setup = $fsvar->array_get(
+         array(
+              'servicios_diasfin' => 10
+         ),
+         FALSE
+      );
+       
+       
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
       $this->direccion = FALSE;
@@ -74,6 +89,9 @@ class nuevo_servicio extends fs_controller
       $this->material_estado = NULL;
       $this->accesorios = NULL;
       $this->grupo = new grupo_clientes();
+      $this->estado = new estados_servicios();
+      $this->fechaprevista = date('d-m-Y', strtotime($Date. '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
+
       
       
       if( isset($_REQUEST['buscar_cliente']) )
@@ -454,6 +472,9 @@ class nuevo_servicio extends fs_controller
          $servicio->material = $_POST['material'];
          $servicio->material_estado = $_POST['material_estado'];
          $servicio->accesorios = $_POST['accesorios'];
+         $servicio->estado = $_POST['estado'];
+         $servicio->fechafin = $_POST['fechafin'];
+         $servicio->garantia = $_POST['garantia'];
          if( $servicio->save() )
          {
             $art0 = new articulo();

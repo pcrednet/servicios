@@ -22,6 +22,7 @@ require_model('albaran_cliente.php');
 require_model('cliente.php');
 require_model('linea_servicio_cliente.php');
 require_model('secuencia.php');
+require_model('estados_servicios.php');
 
 /**
  * Pedido de cliente
@@ -74,6 +75,11 @@ class servicio_cliente extends fs_model {
    public $material;
    public $material_estado;
    public $accesorios;
+   public $estado;
+   public $fechafin;
+   public $garantia;
+   
+   private static $estados;
 
    public function __construct($s = FALSE)
    {
@@ -121,18 +127,31 @@ class servicio_cliente extends fs_model {
          $this->descripcion = $s['descripcion'];
          $this->solucion = $s['solucion'];
          $this->material = $s['material'];
+         $this->status = $s['status'];
          $this->material_estado = $s['material_estado'];
          $this->accesorios = $s['accesorios'];
-         $this->status = $s['status'];
-
+         $this->estado = $s['estado'];
+         $this->fechafin = Date('d-m-Y', strtotime($s['fechafin']));
+         $this->garantia = $s['garantia'];
          
+         $this->servicio->garantia = $_POST['garantia'];
          
-         $this->editable = $this->str2bool($s['editable']);
-         $this->servido = $this->str2bool($s['servido']);
-
-         $this->fechasalida = NULL;
-         if (isset($s['fechasalida']))
-            $this->fechasalida = Date('d-m-Y', strtotime($s['fechasalida']));
+         if (is_null($this->servicio->idalbaran))
+         {
+              $this->editable = TRUE;
+             
+              if ($this->status == 2)
+                {
+                 $this->status = 2;
+                }
+              else
+                $this->status = 0;
+         }    
+         else
+         {
+              $this->editable = FALSE;
+         }
+         
       }
       else
       {
@@ -178,8 +197,14 @@ class servicio_cliente extends fs_model {
          $this->accesorios = NULL;
 
          $this->editable = TRUE;
-         $this->servido = FALSE;
-         $this->fechasalida = NULL;
+         $this->fechafin = Date('d-m-Y');
+         $this->garantia = FALSE;
+      }
+      
+       if( !isset(self::$estados) )
+      {
+         $estado = new estados_servicios();
+         self::$estados = $estado->all();
       }
    }
 
@@ -422,15 +447,16 @@ class servicio_cliente extends fs_model {
                codpais = " . $this->var2str($this->codpais) . ", codpostal = " . $this->var2str($this->codpostal) . ",
                codserie = " . $this->var2str($this->codserie) . ", direccion = " . $this->var2str($this->direccion) . ",
                editable = " . $this->var2str($this->editable) . ", fecha = " . $this->var2str($this->fecha) . ", hora = " . $this->var2str($this->hora) . ",
-               fechasalida = " . $this->var2str($this->fechasalida) . ", idalbaran = " . $this->var2str($this->idalbaran) . ",
+               fechafin = " . $this->var2str($this->fechafin) . ", idalbaran = " . $this->var2str($this->idalbaran) . ",
                irpf = " . $this->var2str($this->irpf) . ", neto = " . $this->var2str($this->neto) . ",
                nombrecliente = " . $this->var2str($this->nombrecliente) . ", numero = " . $this->var2str($this->numero) . ",
                numero2 = " . $this->var2str($this->numero2) . ", observaciones = " . $this->var2str($this->observaciones) . ", 
                status = " . $this->var2str($this->status) . ", porcomision = " . $this->var2str($this->porcomision) . ",
                provincia = " . $this->var2str($this->provincia) . ", recfinanciero = " . $this->var2str($this->recfinanciero) . ",
-               servido = " . $this->var2str($this->servido) . ", tasaconv = " . $this->var2str($this->tasaconv) . ",
+               tasaconv = " . $this->var2str($this->tasaconv) . ",
                descripcion = " . $this->var2str($this->descripcion) . ", solucion = " . $this->var2str($this->solucion) . ",
                material = " . $this->var2str($this->material) . ", material_estado = " . $this->var2str($this->material_estado) . ", accesorios = " . $this->var2str($this->accesorios) . ",
+               estado = " . $this->var2str($this->estado) . ", garantia = " . $this->var2str($this->garantia) . ",
                total = " . $this->var2str($this->total) . ", totaleuros = " . $this->var2str($this->totaleuros) . ",
                totalirpf = " . $this->var2str($this->totalirpf) . ", totaliva = " . $this->var2str($this->totaliva) . ",
                totalrecargo = " . $this->var2str($this->totalrecargo) . " WHERE idservicio = " . $this->var2str($this->idservicio) . ";";
@@ -442,18 +468,19 @@ class servicio_cliente extends fs_model {
             $this->new_codigo();
             $sql = "INSERT INTO " . $this->table_name . " (apartado,cifnif,ciudad,codagente,codalmacen,
                codcliente,coddir,coddivisa,codejercicio,codigo,codpais,codpago,codpostal,codserie,
-               direccion,editable,fecha,hora,fechasalida,idalbaran,irpf,neto,nombrecliente,
-               numero,observaciones,status,porcomision,provincia,recfinanciero,servido,tasaconv,total,totaleuros,
+               direccion,editable,fecha,hora,idalbaran,irpf,neto,nombrecliente,
+               numero,observaciones,status,porcomision,estado,fechafin,garantia,provincia,recfinanciero,tasaconv,total,totaleuros,
                totalirpf,totaliva,totalrecargo,descripcion,solucion,material,material_estado,accesorios,numero2) VALUES (" . $this->var2str($this->apartado) . "," . $this->var2str($this->cifnif) . ",
                " . $this->var2str($this->ciudad) . "," . $this->var2str($this->codagente) . "," . $this->var2str($this->codalmacen) . ",
                " . $this->var2str($this->codcliente) . "," . $this->var2str($this->coddir) . "," . $this->var2str($this->coddivisa) . ",
                " . $this->var2str($this->codejercicio) . "," . $this->var2str($this->codigo) . "," . $this->var2str($this->codpais) . ",
                " . $this->var2str($this->codpago) . "," . $this->var2str($this->codpostal) . "," . $this->var2str($this->codserie) . ",
                " . $this->var2str($this->direccion) . "," . $this->var2str($this->editable) . "," . $this->var2str($this->fecha) . ",
-               " . $this->var2str($this->hora) . "," . $this->var2str($this->fechasalida) . "," . $this->var2str($this->idalbaran) . ",
+               " . $this->var2str($this->hora) . "," . $this->var2str($this->idalbaran) . ",
                " . $this->var2str($this->irpf) . "," . $this->var2str($this->neto) . "," . $this->var2str($this->nombrecliente) . ",
                " . $this->var2str($this->numero) . "," . $this->var2str($this->observaciones) . "," . $this->var2str($this->status) . "," . $this->var2str($this->porcomision) . ",
-               " . $this->var2str($this->provincia) . "," . $this->var2str($this->recfinanciero) . "," . $this->var2str($this->servido) . ",
+               " . $this->var2str($this->estado) . "," . $this->var2str($this->fechafin) . "," . $this->var2str($this->garantia) . ",
+               " . $this->var2str($this->provincia) . "," . $this->var2str($this->recfinanciero) . ",
                " . $this->var2str($this->tasaconv) . "," . $this->var2str($this->total) . "," . $this->var2str($this->totaleuros) . ",
                " . $this->var2str($this->totalirpf) . "," . $this->var2str($this->totaliva) . "," . $this->var2str($this->totalrecargo) . ",
                " . $this->var2str($this->descripcion) . "," . $this->var2str($this->solucion) . "," . $this->var2str($this->material) . ", 
@@ -650,4 +677,37 @@ class servicio_cliente extends fs_model {
       $this->db->exec("UPDATE ".$this->table_name." SET status = '0', idalbaran = NULL "
               . "WHERE status = '1' AND idalbaran NOT IN (SELECT idalbaran FROM albaranescli);");
    }
+   
+   public function color_estado()
+   {
+      $color = 'FFFFFF';
+      
+      foreach(self::$estados as $est)
+      {
+         if($est->id == $this->estado)
+         {
+            $color = $est->color;
+            break;
+         }
+      }
+      
+      return $color;
+   }
+   
+    public function nombre_estado()
+   {
+      $nombre = '';
+      
+      foreach(self::$estados as $est)
+      {
+         if($est->id == $this->estado)
+         {
+            $nombre = $est->descripcion;
+            break;
+         }
+      }
+      
+      return $nombre;
+   }
+     
 }

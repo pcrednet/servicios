@@ -102,7 +102,7 @@
 </div>
 
 <ul class="nav nav-tabs" role="tablist">
-   <li{if="$fsc->mostrar=='todos'"} class="active"{/if}>
+   <li {if="$fsc->mostrar=='todos'"} class="active"{/if}>
       <a href="{$fsc->url()}" title="Todos los {#Servicios#}">
          {if="$fsc->query==''"}
          Todos los {#Servicios#}
@@ -141,7 +141,7 @@
          </tr>
       </thead>
       {loop="$fsc->resultados"}
-      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} bg-warning{/if}" href="{$value->url()}">
+      <tr class="clickableRow" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
          <td class="text-center">
             {if condition="$value->idalbaran"}
             <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
