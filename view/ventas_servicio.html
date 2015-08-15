@@ -128,6 +128,7 @@
             {/if}
          </div>
          <div class="col-md-4 col-sm-4 col-xs-4 text-right">
+           <div class="form-group">  
             <div class="btn-group">
                {if="$fsc->allow_delete"}
                <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
@@ -135,10 +136,12 @@
                   <span class="hidden-xs"> &nbsp; Eliminar</span>
                </a>
                {/if}
-               <button class="btn btn-sm btn-primary" type="button" onclick="this.disabled = true;this.form.submit();">
+               
+               <button class="btn btn-sm btn-primary" type="submit">
                   <span class="glyphicon glyphicon-floppy-disk"></span>
                   <span class="hidden-xs"> &nbsp; Guardar</span>
                </button>
+               </div>
             </div>
          </div>
       </div>
@@ -245,37 +248,37 @@
           <div class="container-fluid" style="margin-top: 10px;">   
           <div class="row">
                   <div class="col-sm-4">
-                     <div class="form-group">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_material']"}has-error{/if}">
                         Material entregado:
-                        <textarea class="form-control" name="material" rows="5">{$fsc->servicio->material}</textarea>
+                        <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->material}</textarea>
                      </div>
                   </div>
                  
                   <div class="col-sm-4">
-                     <div class="form-group">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_material_estado']"}has-error{/if}">
                         Estado del material:
-                        <textarea class="form-control" name="material_estado" rows="5">{$fsc->servicio->material_estado}</textarea>
+                        <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->material_estado}</textarea>
                      </div>
                   </div>
                   <div class="col-sm-4">
-                     <div class="form-group">
+                    <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
                         Accesorios que entrega
-                        <textarea class="form-control" name="accesorios" rows="5">{$fsc->servicio->accesorios}</textarea>
+                        <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->accesorios}</textarea>
                      </div>
                   </div>
           </div>            
           <div class="row">
                   <div class="col-sm-6">
-                     <div class="form-group">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_descripcion']"}has-error{/if}">
                         Descripción de la reparación:
-                        <textarea class="form-control" name="descripcion" rows="5">{$fsc->servicio->descripcion}</textarea>
+                        <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->descripcion}</textarea>
                      </div>
                   </div>
                  
                   <div class="col-sm-6">
-                     <div class="form-group">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_solucion']"}has-error{/if}">
                         Solución
-                        <textarea class="form-control" name="solucion" rows="5">{$fsc->servicio->solucion}</textarea>
+                        <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->solucion}</textarea>
                      </div>
                   </div>
            </div>   
@@ -291,7 +294,7 @@
                      </div>
                 </div>
                   <div class="col-sm-2">
-                     <div class="form-group">
+                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                         Fecha prevista de finalización:
                         <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->servicio->fechafin}" autocomplete="off"/>
                      </div>
@@ -334,11 +337,6 @@
                            <input type="hidden" name="idlinea_{$counter}" value="{$value->idlinea}"/>
                            <input type="hidden" name="referencia_{$counter}" value="{$value->referencia}"/>
                            <div class="form-control">
-                              {if="$value->idlineapresupuesto"}
-                              <a target="_blank" href="index.php?page=ventas_presupuesto&id={$value->idpresupuesto}" title="ver {#FS_PRESUPUESTO#}">
-                                 <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
-                              </a> &nbsp;
-                              {/if}
                               <a target="_blank" href="{$value->articulo_url()}">{$value->referencia}</a>
                            </div>
                         </td>

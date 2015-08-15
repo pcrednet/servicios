@@ -136,7 +136,7 @@ class servicio_cliente extends fs_model {
          
          $this->servicio->garantia = $_POST['garantia'];
          
-         if (is_null($this->servicio->idalbaran))
+          if (is_null($this->idalbaran))
          {
               $this->editable = TRUE;
              
@@ -249,8 +249,7 @@ class servicio_cliente extends fs_model {
 
    public function albaran_url()
    {
-      if (is_null($this->idalbaran))
-      {
+      if (is_null($this->idalbaran)){
          return 'index.php?page=ventas_albaran';
       }
       else

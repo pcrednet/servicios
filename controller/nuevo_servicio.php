@@ -69,11 +69,17 @@ class nuevo_servicio extends fs_controller
    
    protected function process()
    {
-       //cargamos configuración de servicios
+      //cargamos configuración de servicios
        $fsvar = new fs_var();
        $this->servicios_setup = $fsvar->array_get(
          array(
-              'servicios_diasfin' => 10
+            'servicios_diasfin' => 10,
+            'servicios_material' => 0,
+            'servicios_material_estado' => 0,
+            'servicios_accesorios' => 0,
+            'servicios_descripcion' => 0,
+            'servicios_solucion' => 0,
+            'servicios_fechafin' => 0, 
          ),
          FALSE
       );
@@ -94,7 +100,6 @@ class nuevo_servicio extends fs_controller
       $this->estado = new estados_servicios();
       $this->fechaprevista = date('d-m-Y', strtotime($Date. '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
 
-      
       
       if( isset($_REQUEST['buscar_cliente']) )
       {

@@ -16,7 +16,7 @@
 </script>
 
 <br/>
-
+ <form action="{$fsc->url()}" method="post" class="form">
 <div class="container">
    <div class="row">
       <div class="col-sm-4">
@@ -27,8 +27,13 @@
             <span class="glyphicon glyphicon-arrow-left"></span> &nbsp; Atrás
          </a>
       </div>
-      <div class="col-sm-8 text-right">
+      <div class="col-sm-4 text-right">
          <h2 style="margin-top: 0px;">Opciones</h2>
+      </div>
+      <div class="col-sm-4 text-right">
+                  <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true; this.form.submit();">
+                     <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                  </button>
       </div>
    </div>
    <div class="row">
@@ -37,6 +42,11 @@
             <li role="presentation" class="active">
                <a href="#general" aria-controls="general" role="tab" data-toggle="tab">
                   <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> &nbsp; General
+               </a>
+            </li>
+            <li role="presentation">
+               <a href="#requeridos" aria-controls="requeridos" role="tab" data-toggle="tab">
+                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> &nbsp; Requeridos
                </a>
             </li>
             <li role="presentation">
@@ -50,7 +60,7 @@
    <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="general">
          <br/>
-         <form action="{$fsc->url()}" method="post" class="form">
+        
             <input type="hidden" name="servicios_setup" value="TRUE"/>
             <div class="row">
                <div class="col-sm-3">
@@ -70,15 +80,71 @@
                   </div>
                </div>
             </div>
-            <div class="row">
-               <div class="col-sm-12 text-right">
-                  <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true; this.form.submit();">
-                     <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
-                  </button>
-               </div>
-            </div>
-         </form>
+           
+        
       </div>
+      <div role="tabpanel" class="tab-pane" id="requeridos">
+         <div class="row bg-info">
+             <div class="col-sm-12">
+           Aquí podrás configurar que valores quieres que sean requeridos para poder guardar un servicio.
+            </div>
+         </div>
+         <div class="row">
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_material" value="TRUE"{if="$fsc->servicios_setup['servicios_material']"} checked="checked"{/if}/>
+                        Material
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_material_estado" value="TRUE"{if="$fsc->servicios_setup['servicios_material_estado']"} checked="checked"{/if}/>
+                        Estado del material
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_accesorios" value="TRUE"{if="$fsc->servicios_setup['servicios_accesorios']"} checked="checked"{/if}/>
+                        Accesorios
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_descripcion" value="TRUE"{if="$fsc->servicios_setup['servicios_descripcion']"} checked="checked"{/if}/>
+                        Descripción
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_solucion" value="TRUE"{if="$fsc->servicios_setup['servicios_solucion']"} checked="checked"{/if}/>
+                        Solución
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="servicios_fechafin" value="TRUE"{if="$fsc->servicios_setup['servicios_fechafin']"} checked="checked"{/if}/>
+                        Fecha finalización
+                     </label>
+                  </div>
+          </div>
+         </div>   
+      </div>  
+       
+       
+       
+       
+    </form>
       <div role="tabpanel" class="tab-pane" id="estados">
          <div class="table-responsive">
             <table class="table">

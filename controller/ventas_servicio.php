@@ -48,6 +48,8 @@ class ventas_servicio extends fs_controller
    public $servicio;
    public $serie;
    public $estado;
+   public $servicios_setup;
+
    
   
 
@@ -75,7 +77,21 @@ class ventas_servicio extends fs_controller
       $this->serie = new serie();
       /// ¿El usuario tiene permiso para eliminar en esta página?
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
-
+      
+       //cargamos configuración de servicios
+       $fsvar = new fs_var();
+       $this->servicios_setup = $fsvar->array_get(
+         array(
+            'servicios_diasfin' => 10,
+            'servicios_material' => 0,
+            'servicios_material_estado' => 0,
+            'servicios_accesorios' => 0,
+            'servicios_descripcion' => 0,
+            'servicios_solucion' => 0,
+            'servicios_fechafin' => 0, 
+         ),
+         FALSE
+      );
       /**
        * Comprobamos si el usuario tiene acceso a nueva_venta,
        * necesario para poder añadir líneas.
