@@ -25,7 +25,7 @@ require_model('secuencia.php');
 require_model('estados_servicios.php');
 
 /**
- * Pedido de cliente
+ * Servicio de cliente
  */
 class servicio_cliente extends fs_model {
 
@@ -80,6 +80,10 @@ class servicio_cliente extends fs_model {
    public $garantia;
    
    private static $estados;
+   
+   
+   
+   
 
    public function __construct($s = FALSE)
    {
@@ -134,7 +138,6 @@ class servicio_cliente extends fs_model {
          $this->fechafin = Date('d-m-Y', strtotime($s['fechafin']));
          $this->garantia = $s['garantia'];
          
-         $this->servicio->garantia = $_POST['garantia'];
          
           if (is_null($this->idalbaran))
          {
