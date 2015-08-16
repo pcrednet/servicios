@@ -293,6 +293,12 @@
                         </select>
                      </div>
                 </div>
+               <div class="col-sm-2">
+                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
+                        Fecha de inicio:
+                        <input class="form-control datepicker" type="text" name="fechainicio" value="{$fsc->today()}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
+                     </div>
+                  </div>
                   <div class="col-sm-2">
                       <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                         Fecha prevista de finalización:
@@ -307,7 +313,16 @@
                      </label>
                   </div>
                </div>
-                
+               <div class="col-sm-2">
+                     <div class="form-group">
+                         Prioridad:                       
+                        <select name="prioridad" class="form-control">
+                           {loop="$fsc->servicio->listar_prioridad()"}
+                           <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == $fsc->servicio->prioridad"} selected="selected"{/if}>{$value['nombre_prioridad']}</option>
+                           {/loop}
+                        </select>
+                     </div>
+               </div>   
             </div>     
           </div>
          </div>

@@ -133,15 +133,18 @@
          <tr>
             <th></th>
             <th class="text-left">Código + {#FS_NUMERO2#}</th>
+            <th class="text-left">Prioridad</th>
             <th class="text-left">Cliente</th>
+            <th class="text-left">Estado</th>
             <th class="text-left">Observaciones</th>
             <th class="text-right">Total</th>
-            <th class="text-right">Fecha</th>
-            <th class="text-right hidden-sm">Hora</th>
+            <th class="text-right">Fecha creación</th>
+            <th class="text-right">Fecha inicio</th>
+            <th class="text-right">Fecha Prev. Fin</th>
          </tr>
       </thead>
       {loop="$fsc->resultados"}
-      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} bg-warning{/if}" href="{$value->url()}">
+      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} bg-warning{/if}" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
          <td class="text-center">
             {if condition="$value->idalbaran"}
             <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
@@ -152,15 +155,26 @@
          </td>
          <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
          <td>
+             {$value->estrellas_prioridad()}
+         </td>
+         <td>
             {$value->nombrecliente}
             <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
+         </td>
+         <td>
+             {$value->nombre_estado()}
          </td>
          <td>{$value->observaciones_resume()}</td>
          <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
          <td class="text-right">
-            {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if}
+            {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
          </td>
-         <td class="text-right hidden-sm">{$value->show_hora()}</td>
+         <td class="text-right">
+            {$value->fechainicio}
+         </td>
+         <td class="text-right">
+            {$value->fechafin}
+         </td>
       </tr>
       {else}
       <tr class="bg-warning">

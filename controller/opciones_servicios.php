@@ -65,6 +65,7 @@ class opciones_servicios extends fs_controller
             'servicios_descripcion' => 0,
             'servicios_solucion' => 0,
             'servicios_fechafin' => 0,
+            'servicios_fechainicio' => 0,
             'servicios_condiciones' => "Condiciones del deposito:\nLos presupuestos realizados tienen una".
                " validez de 15 días.\nUna vez avisado al cliente para que recoja el producto este dispondrá".
                " de un plazo máximo de 2 meses para recogerlo, de no ser así y no haber aviso por parte del".
@@ -84,6 +85,7 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['servicios_descripcion'] = ( isset($_POST['servicios_descripcion']) ? 1 : 0 );
          $this->servicios_setup['servicios_solucion'] = ( isset($_POST['servicios_solucion']) ? 1 : 0 );
          $this->servicios_setup['servicios_fechafin'] = ( isset($_POST['servicios_fechafin']) ? 1 : 0 );
+         $this->servicios_setup['servicios_fechainicio'] = ( isset($_POST['servicios_fechainicio']) ? 1 : 0 );
          $this->servicios_setup['servicios_condiciones'] = $fsvar->no_html($_POST['condiciones']);
          
          if( $fsvar->array_save($this->servicios_setup) )

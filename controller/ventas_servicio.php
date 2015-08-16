@@ -50,7 +50,7 @@ class ventas_servicio extends fs_controller
    public $estado;
    public $servicios_setup;
 
-   
+  
   
 
    public function __construct()
@@ -88,7 +88,8 @@ class ventas_servicio extends fs_controller
             'servicios_accesorios' => 0,
             'servicios_descripcion' => 0,
             'servicios_solucion' => 0,
-            'servicios_fechafin' => 0, 
+            'servicios_fechafin' => 0,
+            'servicios_fechainicio' => 0,
          ),
          FALSE
       );
@@ -178,7 +179,9 @@ class ventas_servicio extends fs_controller
       $this->servicio->accesorios = $_POST['accesorios'];
       $this->servicio->estado = $_POST['estado'];
       $this->servicio->fechafin = $_POST['fechafin'];
+      $this->servicio->fechainicio = $_POST['fechainicio'];
       $this->servicio->garantia = $_POST['garantia'];
+      $this->servicio->prioridad = $_POST['prioridad'];
       
 
       if (is_null($this->servicio->idalbaran))

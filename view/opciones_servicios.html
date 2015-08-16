@@ -114,7 +114,7 @@
                      </label>
                   </div>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-1">
                   <div class="checkbox">
                      <label>
                         <input type="checkbox" name="servicios_descripcion" value="TRUE"{if="$fsc->servicios_setup['servicios_descripcion']"} checked="checked"{/if}/>
@@ -122,7 +122,7 @@
                      </label>
                   </div>
           </div>
-          <div class="col-sm-2">
+          <div class="col-sm-1">
                   <div class="checkbox">
                      <label>
                         <input type="checkbox" name="servicios_solucion" value="TRUE"{if="$fsc->servicios_setup['servicios_solucion']"} checked="checked"{/if}/>
@@ -133,11 +133,19 @@
           <div class="col-sm-2">
                   <div class="checkbox">
                      <label>
+                        <input type="checkbox" name="servicios_fechainicio" value="TRUE"{if="$fsc->servicios_setup['servicios_fechainicio']"} checked="checked"{/if}/>
+                        Fecha de inicio
+                     </label>
+                  </div>
+          </div>
+          <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
                         <input type="checkbox" name="servicios_fechafin" value="TRUE"{if="$fsc->servicios_setup['servicios_fechafin']"} checked="checked"{/if}/>
                         Fecha finalización
                      </label>
                   </div>
-          </div>
+          </div>          
          </div>   
       </div>  
        

@@ -25,7 +25,7 @@ require_model('secuencia.php');
 require_model('estados_servicios.php');
 
 /**
- * Servicio de cliente
+ * Pedido de cliente
  */
 class servicio_cliente extends fs_model {
 
@@ -43,7 +43,7 @@ class servicio_cliente extends fs_model {
    public $coddir;
    public $codpostal;
    public $numero;
-
+   public $prioridad;  
    /**
     * Número opcional a disposición del usuario.
     * @var type 
@@ -77,13 +77,10 @@ class servicio_cliente extends fs_model {
    public $accesorios;
    public $estado;
    public $fechafin;
+   public $fechainicio;
    public $garantia;
    
    private static $estados;
-   
-   
-   
-   
 
    public function __construct($s = FALSE)
    {
@@ -136,8 +133,9 @@ class servicio_cliente extends fs_model {
          $this->accesorios = $s['accesorios'];
          $this->estado = $s['estado'];
          $this->fechafin = Date('d-m-Y', strtotime($s['fechafin']));
+         $this->fechainicio = Date('d-m-Y', strtotime($s['fechainicio']));
          $this->garantia = $s['garantia'];
-         
+         $this->prioridad = $s['prioridad'];
          
           if (is_null($this->idalbaran))
          {
@@ -198,9 +196,10 @@ class servicio_cliente extends fs_model {
          $this->material = NULL;
          $this->material_estado = NULL;
          $this->accesorios = NULL;
-
+         $this->prioridad = 3;
          $this->editable = TRUE;
          $this->fechafin = Date('d-m-Y');
+         $this->fechainicio = Date('d-m-Y');
          $this->garantia = FALSE;
       }
       
@@ -450,12 +449,12 @@ class servicio_cliente extends fs_model {
                codserie = " . $this->var2str($this->codserie) . ", direccion = " . $this->var2str($this->direccion) . ",
                editable = " . $this->var2str($this->editable) . ", fecha = " . $this->var2str($this->fecha) . ", hora = " . $this->var2str($this->hora) . ",
                fechafin = " . $this->var2str($this->fechafin) . ", idalbaran = " . $this->var2str($this->idalbaran) . ",
-               irpf = " . $this->var2str($this->irpf) . ", neto = " . $this->var2str($this->neto) . ",
+               irpf = " . $this->var2str($this->irpf) . ", neto = " . $this->var2str($this->neto) . ", fechainicio = " . $this->var2str($this->fechainicio) . ", 
                nombrecliente = " . $this->var2str($this->nombrecliente) . ", numero = " . $this->var2str($this->numero) . ",
                numero2 = " . $this->var2str($this->numero2) . ", observaciones = " . $this->var2str($this->observaciones) . ", 
                status = " . $this->var2str($this->status) . ", porcomision = " . $this->var2str($this->porcomision) . ",
                provincia = " . $this->var2str($this->provincia) . ", recfinanciero = " . $this->var2str($this->recfinanciero) . ",
-               tasaconv = " . $this->var2str($this->tasaconv) . ",
+               tasaconv = " . $this->var2str($this->tasaconv) . ", prioridad = " . $this->var2str($this->prioridad) . ",
                descripcion = " . $this->var2str($this->descripcion) . ", solucion = " . $this->var2str($this->solucion) . ",
                material = " . $this->var2str($this->material) . ", material_estado = " . $this->var2str($this->material_estado) . ", accesorios = " . $this->var2str($this->accesorios) . ",
                estado = " . $this->var2str($this->estado) . ", garantia = " . $this->var2str($this->garantia) . ",
@@ -471,8 +470,8 @@ class servicio_cliente extends fs_model {
             $sql = "INSERT INTO " . $this->table_name . " (apartado,cifnif,ciudad,codagente,codalmacen,
                codcliente,coddir,coddivisa,codejercicio,codigo,codpais,codpago,codpostal,codserie,
                direccion,editable,fecha,hora,idalbaran,irpf,neto,nombrecliente,
-               numero,observaciones,status,porcomision,estado,fechafin,garantia,provincia,recfinanciero,tasaconv,total,totaleuros,
-               totalirpf,totaliva,totalrecargo,descripcion,solucion,material,material_estado,accesorios,numero2) VALUES (" . $this->var2str($this->apartado) . "," . $this->var2str($this->cifnif) . ",
+               numero,observaciones,status,porcomision,estado,fechafin,fechainicio,garantia,provincia,recfinanciero,tasaconv,total,totaleuros,
+               totalirpf,totaliva,totalrecargo,descripcion,solucion,material,material_estado,accesorios,prioridad,numero2) VALUES (" . $this->var2str($this->apartado) . "," . $this->var2str($this->cifnif) . ",
                " . $this->var2str($this->ciudad) . "," . $this->var2str($this->codagente) . "," . $this->var2str($this->codalmacen) . ",
                " . $this->var2str($this->codcliente) . "," . $this->var2str($this->coddir) . "," . $this->var2str($this->coddivisa) . ",
                " . $this->var2str($this->codejercicio) . "," . $this->var2str($this->codigo) . "," . $this->var2str($this->codpais) . ",
@@ -481,13 +480,13 @@ class servicio_cliente extends fs_model {
                " . $this->var2str($this->hora) . "," . $this->var2str($this->idalbaran) . ",
                " . $this->var2str($this->irpf) . "," . $this->var2str($this->neto) . "," . $this->var2str($this->nombrecliente) . ",
                " . $this->var2str($this->numero) . "," . $this->var2str($this->observaciones) . "," . $this->var2str($this->status) . "," . $this->var2str($this->porcomision) . ",
-               " . $this->var2str($this->estado) . "," . $this->var2str($this->fechafin) . "," . $this->var2str($this->garantia) . ",
+               " . $this->var2str($this->estado) . "," . $this->var2str($this->fechafin) . "," . $this->var2str($this->fechainicio) . "," . $this->var2str($this->garantia) . ",
                " . $this->var2str($this->provincia) . "," . $this->var2str($this->recfinanciero) . ",
                " . $this->var2str($this->tasaconv) . "," . $this->var2str($this->total) . "," . $this->var2str($this->totaleuros) . ",
                " . $this->var2str($this->totalirpf) . "," . $this->var2str($this->totaliva) . "," . $this->var2str($this->totalrecargo) . ",
                " . $this->var2str($this->descripcion) . "," . $this->var2str($this->solucion) . "," . $this->var2str($this->material) . ", 
                " . $this->var2str($this->material_estado) . "," . $this->var2str($this->accesorios) . ",
-               " . $this->var2str($this->numero2) . ");";
+               " . $this->var2str($this->prioridad) . "," . $this->var2str($this->numero2) . ");";
 
             if ($this->db->exec($sql))
             {
@@ -711,5 +710,59 @@ class servicio_cliente extends fs_model {
       
       return $nombre;
    }
+   
+   public function listar_prioridad()
+   {
+      $prioridad = array();
+
+      /**
+       * En servicio_cliente::prioridad() nos devuelve un array con todos los prioridades,
+       * pero como queremos también el id, pues hay que hacer este bucle para sacarlos.
+       */
+      foreach ($this->prioridad() as $i => $value)
+         $prioridad[] = array('id_prioridad' => $i, 'nombre_prioridad' => $value);
+
+      return $prioridad;
+   }
+   
+   
      
+   public function prioridad()
+   {
+      $prioridad = array(
+          1 => 'Urgente',
+          2 => 'Prioridad alta',
+          3 => 'Prioridad media',
+          4 => 'Prioridad baja',
+      );
+      
+      return $prioridad;
+   }
+   
+   public function nombre_prioridad()
+   {
+      $prioridades = $this->prioridad();
+      return $prioridades[$this->prioridad];
+   }
+   
+   public function estrellas_prioridad()
+   {
+      $retorno = '';
+      $estrella = '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>';
+      $no_estrella = '<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>';
+      
+      $i = 0;
+      for(;$i < 5-$this->prioridad; $i++)
+      {
+         $retorno .= $estrella;
+      }
+      
+      while($i < 4)
+      {
+         $retorno .= $no_estrella;
+         $i++;
+      }
+      
+      return $retorno;
+   }
 }

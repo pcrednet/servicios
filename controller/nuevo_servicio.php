@@ -59,7 +59,10 @@ class nuevo_servicio extends fs_controller
    public $fechaprevista;
    public $servicios_setup;
    public $fechafin;
+   public $fechainicio;
    public $garantia;
+   public $prioridad;
+   public $servicio;
    
    
    public function __construct()
@@ -79,12 +82,13 @@ class nuevo_servicio extends fs_controller
             'servicios_accesorios' => 0,
             'servicios_descripcion' => 0,
             'servicios_solucion' => 0,
-            'servicios_fechafin' => 0, 
+            'servicios_fechafin' => 0,
+            'servicios_fechainicio' => 0
          ),
          FALSE
       );
        
-       
+      $this->servicio = new servicio_cliente(); 
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
       $this->direccion = FALSE;
@@ -93,6 +97,7 @@ class nuevo_servicio extends fs_controller
       $this->results = array();
       $this->descripcion = NULL;
       $this->solucion = NULL;
+      $this->prioridad = 3;
       $this->material = NULL;
       $this->material_estado = NULL;
       $this->accesorios = NULL;
@@ -375,8 +380,7 @@ class nuevo_servicio extends fs_controller
       
       return $tipos;
    }
-
-
+  
    
    private function nuevo_servicio_cliente()
    {
@@ -475,12 +479,13 @@ class nuevo_servicio extends fs_controller
          $servicio->direccion = $_POST['direccion'];
          $servicio->provincia = $_POST['provincia'];
          $servicio->descripcion = $_POST['descripcion'];
-         $servicio->solucion = $_POST['solucion'];
+         $servicio->prioridad = intval($_POST['prioridad']);
          $servicio->material = $_POST['material'];
          $servicio->material_estado = $_POST['material_estado'];
          $servicio->accesorios = $_POST['accesorios'];
          $servicio->estado = $_POST['estado'];
          $servicio->fechafin = $_POST['fechafin'];
+         $servicio->fechainicio = $_POST['fechainicio'];
          $servicio->garantia = $_POST['garantia'];
          if( $servicio->save() )
          {

@@ -11,6 +11,10 @@
       <nulo>YES</nulo>
    </columna>
    <columna>
+      <nombre>prioridad</nombre>
+      <tipo>integer</tipo>
+   </columna>
+   <columna>
       <nombre>cifnif</nombre>
       <tipo>character varying(12)</tipo>
       <nulo>NO</nulo>
@@ -86,6 +90,11 @@
       <nulo>NO</nulo>
    </columna>
    <columna>
+      <nombre>garantia</nombre>
+      <tipo>boolean</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
       <nombre>fecha</nombre>
       <tipo>date</tipo>
       <nulo>NO</nulo>
@@ -97,7 +106,12 @@
       <defecto>now()</defecto>
    </columna>
    <columna>
-      <nombre>fechasalida</nombre>
+      <nombre>fechafin</nombre>
+      <tipo>date</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
+      <nombre>fechainicio</nombre>
       <tipo>date</tipo>
       <nulo>YES</nulo>
    </columna>
