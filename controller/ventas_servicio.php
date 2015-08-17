@@ -32,6 +32,7 @@ require_model('servicio_cliente.php');
 require_model('regularizacion_iva.php');
 require_model('serie.php');
 require_model('estados_servicios.php');
+require_model('detalle_servicio.php');
 
 class ventas_servicio extends fs_controller
 {
@@ -49,6 +50,7 @@ class ventas_servicio extends fs_controller
    public $serie;
    public $estado;
    public $servicios_setup;
+   public $garantia;
 
   
   
@@ -114,9 +116,33 @@ class ventas_servicio extends fs_controller
          $this->servicio = $servicio->get($_GET['id']);
       }
 
+      if( isset($_GET['delete_detalle']) )
+         {
+            $det0 = new detalle_servicio();
+            $detalle = $det0->get($_GET['delete_detalle']);
+            if($detalle)
+            {
+               if( $detalle->delete() )
+               {
+                  $this->new_message('Detalle eliminado correctamente.');
+               }
+               else
+                  $this->new_error_msg('Error al eliminar el detalle.');
+            }
+            else
+               $this->new_error_msg('Detalle no encontrado.');
+         }
+
+        
+      
       if($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
+         
+         if( isset($_POST['detalle']) )
+         {
+            $this->agrega_detalle();
+         }
 
          /// cargamos el agente
          if (!is_null($this->servicio->codagente))
@@ -180,9 +206,20 @@ class ventas_servicio extends fs_controller
       $this->servicio->estado = $_POST['estado'];
       $this->servicio->fechafin = $_POST['fechafin'];
       $this->servicio->fechainicio = $_POST['fechainicio'];
+       if( isset($_POST['garantia']) )
+      {
       $this->servicio->garantia = $_POST['garantia'];
+      }
+      
       $this->servicio->prioridad = $_POST['prioridad'];
       
+      if($this->estado != $_POST['estado'])
+            {
+               ///si tiene el mismo estado no tiene que hacer nada sino tiene que añadir un detalle
+               $this->estado = $_POST['estado'];
+               $this->agrega_detalle_estado($_POST['estado']);
+            }
+         
 
       if (is_null($this->servicio->idalbaran))
       {
@@ -412,6 +449,11 @@ class ventas_servicio extends fs_controller
       }
       else
          $this->new_error_msg("¡Imposible modificar el " . FS_SERVICIO . "!");
+      
+      
+      
+      
+      
    }
 
    private function generar_albaran()
@@ -542,5 +584,49 @@ class ventas_servicio extends fs_controller
          $this->new_error_msg("¡Imposible guardar el " . FS_ALBARAN . "!");
    }
  
+   public function listar_servicio_detalle()
+   {
+      $detalle = new detalle_servicio();
+      return $detalle->all_from_servicio($this->servicio->idservicio);
+   }
+   
+   private function agrega_detalle()
+   {
+      $detalle = new detalle_servicio();
+      $detalle->descripcion = $_POST['detalle'];
+      $detalle->idservicio = $this->servicio->idservicio;
+      $detalle->nick = $this->user->nick;
+      
+      if( $detalle->save() )
+      {
+         $this->new_message('Detalle guardados correctamente.');
+      }
+      else
+      {
+         $this->new_error_msg('Imposible guardar el detalle.');
+      }
+   }
+
+   private function agrega_detalle_estado($id)
+   {
+      $this->estado = new estados_servicios();
+      $estado = $this->estado->get($id);
+      if($estado)
+      {
+         $detalle = new detalle_servicio();
+         $detalle->descripcion = "Se a cambiado el estado a: " . $estado->descripcion;
+         $detalle->idservicio = $this->servicio->idservicio;
+         $detalle->nick = $this->user->nick;
+         
+         if( $detalle->save() )
+         {
+            $this->new_message('Detalle guardados correctamente.');
+         }
+         else
+         {
+            $this->new_error_msg('Imposible guardar el detalle.');
+         }
+      }
+   }
    
 }

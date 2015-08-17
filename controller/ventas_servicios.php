@@ -33,7 +33,7 @@ class ventas_servicios extends fs_controller
 
    public function __construct()
    {
-      parent::__construct(__CLASS__, ucfirst(Servicios) . ' de cliente', 'ventas');
+      parent::__construct(__CLASS__, FS_SERVICIOS. ' de cliente', 'ventas');
    }
 
    protected function process()
@@ -208,7 +208,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_cliente',
               'type' => 'button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(Servicios),
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS,
               'params' => ''
           ),
           array(
@@ -216,7 +216,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'admin_agente',
               'type' => 'button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(Servicios) . ' de cliente',
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS . ' de cliente',
               'params' => ''
           ),
           array(
@@ -224,7 +224,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_articulo',
               'type' => 'tab_button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(Servicios) . ' de cliente',
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS . ' de cliente',
               'params' => ''
           ),
       );

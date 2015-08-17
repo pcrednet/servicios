@@ -18,6 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*Esto es temporal*/
+define('FS_SERVICIOS', 'servicios');
+define('FS_SERVICIO', 'servicio');
+
 require_model('albaran_cliente.php');
 require_model('cliente.php');
 require_model('linea_servicio_cliente.php');
@@ -764,5 +768,21 @@ class servicio_cliente extends fs_model {
       }
       
       return $retorno;
+   }
+   
+   public function num_detalles()
+   {
+      $num = 0;
+      
+      if( $this->db->table_exists('detalles_servicios') )
+      {
+         $result = $this->db->select("SELECT count(*) as num FROM detalles_servicios WHERE idservicio = ".$this->var2str($this->idservicio).";");
+         if($result)
+         {
+            $num = intval($result[0]['num']);
+         }
+      }
+      
+      return $num;
    }
 }
