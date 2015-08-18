@@ -138,7 +138,7 @@ class detalle_servicio extends fs_model
       $detalleslist = array();
       
       $sql = "SELECT d.id,d.descripcion,d.idservicio,d.fecha,d.hora,d.nick FROM servicioscli s, detalles_servicios d".
-              " WHERE d.idservicio = s.idservicio AND d.idservicio = ".$this->var2str($idservicio)." ORDER BY d.fecha ASC, d.id ASC;";
+              " WHERE d.idservicio = s.idservicio AND d.idservicio = ".$this->var2str($idservicio)." ORDER BY d.fecha DESC, d.id DESC;";
       $data = $this->db->select($sql);
       if($data)
       {

@@ -116,25 +116,6 @@ class ventas_servicio extends fs_controller
          $this->servicio = $servicio->get($_GET['id']);
       }
 
-      if( isset($_GET['delete_detalle']) )
-         {
-            $det0 = new detalle_servicio();
-            $detalle = $det0->get($_GET['delete_detalle']);
-            if($detalle)
-            {
-               if( $detalle->delete() )
-               {
-                  $this->new_message('Detalle eliminado correctamente.');
-               }
-               else
-                  $this->new_error_msg('Error al eliminar el detalle.');
-            }
-            else
-               $this->new_error_msg('Detalle no encontrado.');
-         }
-
-        
-      
       if($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
@@ -196,6 +177,13 @@ class ventas_servicio extends fs_controller
 
    private function modificar()
    {
+      if($this->servicio->estado != $_POST['estado'])
+            {
+               ///si tiene el mismo estado no tiene que hacer nada sino tiene que añadir un detalle
+               $this->estado = $_POST['estado'];
+               $this->agrega_detalle_estado($_POST['estado']);
+            }
+            
       $this->servicio->observaciones = $_POST['observaciones'];
       $this->servicio->numero2 = $_POST['numero2'];
       $this->servicio->descripcion = $_POST['descripcion'];
@@ -212,14 +200,7 @@ class ventas_servicio extends fs_controller
       }
       
       $this->servicio->prioridad = $_POST['prioridad'];
-      
-      if($this->estado != $_POST['estado'])
-            {
-               ///si tiene el mismo estado no tiene que hacer nada sino tiene que añadir un detalle
-               $this->estado = $_POST['estado'];
-               $this->agrega_detalle_estado($_POST['estado']);
-            }
-         
+
 
       if (is_null($this->servicio->idalbaran))
       {
@@ -450,7 +431,22 @@ class ventas_servicio extends fs_controller
       else
          $this->new_error_msg("¡Imposible modificar el " . FS_SERVICIO . "!");
       
-      
+      if( isset($_GET['delete_detalle']) )
+         {
+            $det0 = new detalle_servicio();
+            $detalle = $det0->get($_GET['delete_detalle']);
+            if($detalle)
+            {
+               if( $detalle->delete() )
+               {
+                  $this->new_message('Detalle eliminado correctamente.');
+               }
+               else
+                  $this->new_error_msg('Error al eliminar el detalle.');
+            }
+            else
+               $this->new_error_msg('Detalle no encontrado.');
+         }
       
       
       
