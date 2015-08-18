@@ -103,7 +103,7 @@ class nuevo_servicio extends fs_controller
       $this->accesorios = NULL;
       $this->grupo = new grupo_clientes();
       $this->estado = new estados_servicios();
-      $this->fechaprevista = date('d-m-Y', strtotime($Date. '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
+      $this->fechaprevista = date('d-m-Y', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
 
       
       if( isset($_REQUEST['buscar_cliente']) )
@@ -466,7 +466,13 @@ class nuevo_servicio extends fs_controller
          
          $servicio->codagente = $this->agente->codagente;
          $servicio->observaciones = $_POST['observaciones'];
-         $servicio->numero2 = $_POST['numero2'];
+         
+         if( isset($_POST['numero2']) )
+         {
+            $servicio->numero2 = $_POST['numero2'];
+         }
+         
+         
          $servicio->irpf = $serie->irpf;
          $servicio->porcomision = $this->agente->porcomision;
          
@@ -486,7 +492,12 @@ class nuevo_servicio extends fs_controller
          $servicio->estado = $_POST['estado'];
          $servicio->fechafin = $_POST['fechafin'];
          $servicio->fechainicio = $_POST['fechainicio'];
-         $servicio->garantia = $_POST['garantia'];
+         
+         if( isset($_POST['garantia']) )
+         {
+            $servicio->garantia = $_POST['garantia'];
+         }
+      
          if( $servicio->save() )
          {
             $art0 = new articulo();
