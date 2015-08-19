@@ -34,6 +34,7 @@ class imprimir_servicio extends fs_controller
    public $impresion;
    public $impuesto;
    public $servicio;
+   public $st;
    
    public function __construct()
    {
@@ -42,6 +43,22 @@ class imprimir_servicio extends fs_controller
    
    protected function process()
    {
+      /*Cargamos traduccion*/
+       $fsvar = new fs_var();
+       $this->st = $fsvar->array_get(
+         array(
+            'st_servicio' => "Servicio",
+            'st_servicios' => "Servicios",
+            'st_material' => "Material",
+            'st_material_estado' => "Estado del material entregado",
+            'st_accesorios' => "Accesorios que entrega",
+            'st_descripcion' => "Descripción de la averia",
+            'st_solucion' => "Solución"
+         ),
+         FALSE
+      );  
+       
+       
       $this->cliente = FALSE;
       $this->impuesto = new impuesto();
       $this->servicio = FALSE;
@@ -56,7 +73,7 @@ class imprimir_servicio extends fs_controller
       $this->impresion = $fsvar->array_get($this->impresion, FALSE);
       
      
-     if( isset($_REQUEST['servicio']) AND isset($_REQUEST['id']) )
+     if( isset($_REQUEST['id']) )
       {
          $serv = new servicio_cliente();
          $this->servicio = $serv->get($_REQUEST['id']);
@@ -85,8 +102,8 @@ class imprimir_servicio extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_servicio',
               'type' => 'pdf',
-              'text' => ucfirst(FS_SERVICIO).' simple',
-              'params' => '&servicio=TRUE'
+              'text' => ucfirst(FS_PEDIDO).' simple',
+              'params' => ''
           ),
           array(
               'name' => 'email_servicio',
@@ -94,7 +111,7 @@ class imprimir_servicio extends fs_controller
               'page_to' => 'ventas_servicio',
               'type' => 'email',
               'text' => ucfirst(FS_SERVICIO).' simple',
-              'params' => '&servicio=TRUE'
+              'params' => ''
           ),    
      );
       foreach($extensiones as $ext)
@@ -120,25 +137,7 @@ class imprimir_servicio extends fs_controller
       $pdf_doc->pdf->addInfo('Subject', ucfirst(FS_SERVICIO).' de cliente ' . $this->servicio->codigo);
       $pdf_doc->pdf->addInfo('Author', $this->empresa->nombre);
       
-      $lineas = $this->servicio->get_lineas();
-      $lineas_iva = $this->get_lineas_iva($lineas);
-      if($lineas)
-      {
-         $linea_actual = 0;
-         $pagina = 1;
-         
-         /// imprimimos las páginas necesarias
-         while( $linea_actual < count($lineas) )
-         {
-            $lppag = 35;
-            
-            /// salto de página
-            if($linea_actual > 0)
-            {
-               $pdf_doc->pdf->ezNewPage();
-            }
-            
-            /// ¿Añadimos el logo?
+      /// ¿Añadimos el logo?
             if( file_exists('tmp/'.FS_TMP_NAME.'logo.png') )
             {
                if( function_exists('imagecreatefromstring') )
@@ -169,16 +168,19 @@ class imprimir_servicio extends fs_controller
                $pdf_doc->pdf->ezText($this->fix_html($direccion), 9, array('justification' => 'center'));
             }
             
-            /*
+      
+      
+      
+      /*
              * Esta es la tabla con los datos del cliente:
-             * Pedido:             Fecha:
+             * Servicio:             Fecha:
              * Cliente:             CIF/NIF:
              * Dirección:           Teléfonos:
              */
             $pdf_doc->new_table();
             $pdf_doc->add_table_row(
                array(
-                   'campo1' => "<b>".ucfirst(FS_SERVICIO).":</b>",
+                   'campo1' => "<b>".$this->st['st_servicio'].":</b>",
                    'dato1' => $this->servicio->codigo,
                    'campo2' => "<b>Fecha:</b>",
                    'dato2' => $this->servicio->fecha
@@ -221,23 +223,25 @@ class imprimir_servicio extends fs_controller
             $pdf_doc->new_table();
             $pdf_doc->add_table_row(
                array(
-                   'campo1' => "<b>Material que entrega:</b>",
+                   'campo1' => "<b>".$this->st['st_material'].":</b>",
                    'dato1' => $this->fix_html($this->servicio->material),
-                   'campo2' => "<b>material_estado del material</b>",
+                   'campo2' => "<b>".$this->st['st_material_estado'].":</b>",
                    'dato2' => $this->servicio->material_estado
                )
             );
             $pdf_doc->add_table_row(
                array(
-                   'campo1' => "<b>Accesorios que entrega</b>",
+                   'campo1' => "<b>".$this->st['st_accesorios'].":</b>",
                    'dato1' => $this->fix_html($this->servicio->accesorios),
+                   'campo2' => "",
+                   'dato2' => ""
                )
             ); 
             $pdf_doc->add_table_row(
                array(
-                   'campo1' => "<b>Descripción de la averia:</b>",
+                   'campo1' => "<b>".$this->st['st_descripcion'].":</b>",
                    'dato1' => $this->fix_html($this->servicio->descripcion),
-                   'campo2' => "<b>Solución: </b>",
+                   'campo2' => "<b>".$this->st['st_solucion'].": </b>",
                    'dato2' => $this->servicio->solucion
                )
             );
@@ -255,6 +259,25 @@ class imprimir_servicio extends fs_controller
                )
             );
             $pdf_doc->pdf->ezText("\n", 10);
+      
+      
+      $lineas = $this->servicio->get_lineas();
+      $lineas_iva = $this->get_lineas_iva($lineas);
+      if($lineas)
+      {
+         $linea_actual = 0;
+         $pagina = 1;
+         
+         /// imprimimos las páginas necesarias
+         while( $linea_actual < count($lineas) )
+         {
+            $lppag = 35;
+            
+            /// salto de página
+            if($linea_actual > 0)
+            {
+               $pdf_doc->pdf->ezNewPage();
+            }
             
             
             /*

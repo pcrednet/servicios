@@ -31,6 +31,7 @@ class opciones_servicios extends fs_controller
    public $estado;
    public $maps_api_key;
    public $servicios_setup;
+   public $st;
    
    public function __construct()
    {
@@ -105,13 +106,45 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['servicios_mostrar_fechainicio'] = ( isset($_POST['servicios_mostrar_fechainicio']) ? 1 : 0 );
          $this->servicios_setup['servicios_mostrar_garantia'] = ( isset($_POST['servicios_mostrar_garantia']) ? 1 : 0 );
          $this->servicios_setup['servicios_condiciones'] = $fsvar->no_html($_POST['condiciones']);
-         
          if( $fsvar->array_save($this->servicios_setup) )
          {
             $this->new_message('Datos guardados correctamente.');
          }
          else
             $this->new_error_msg('Error al guardar los datos.');
+         
+      }  
+        /// cargamos la traduccion
+        $this->st = $fsvar->array_get(
+         array(
+            'st_servicio' => "Servicio",
+            'st_servicios' => "Servicios",
+            'st_material' => "Material",
+            'st_material_estado' => "Estado del material entregado",
+            'st_accesorios' => "Accesorios que entrega",
+            'st_descripcion' => "Descripción de la averia",
+            'st_solucion' => "Solución"
+         ),
+         FALSE
+      );
+      
+      if( isset($_POST['st']) )
+      {
+         $this->st['st_servicio'] =($_POST['st_servicio']);
+         $this->st['st_servicios'] =($_POST['st_servicios']);
+         $this->st['st_material'] =($_POST['st_material']);
+         $this->st['st_material_estado'] =($_POST['st_material_estado']);
+         $this->st['st_accesorios'] =($_POST['st_accesorios']);
+         $this->st['st_descripcion'] =($_POST['st_descripcion']);
+         $this->st['st_solucion'] =($_POST['st_solucion']);
+           
+         if( $fsvar->array_save($this->st) )
+         {
+            $this->new_message('Datos guardados correctamente.');
+         }
+         else
+            $this->new_error_msg('Error al guardar los datos.');
+         
       }
       else if( isset($_GET['delete_estado']) )
       {

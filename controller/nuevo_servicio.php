@@ -97,6 +97,21 @@ class nuevo_servicio extends fs_controller
          FALSE
       );
        
+       /*Cargamos traduccion*/
+       $fsvar = new fs_var();
+       $this->st = $fsvar->array_get(
+         array(
+            'st_servicio' => "Servicio",
+            'st_servicios' => "Servicios",
+            'st_material' => "Material",
+            'st_material_estado' => "Estado del material entregado",
+            'st_accesorios' => "Accesorios que entrega",
+            'st_descripcion' => "Descripción de la averia",
+            'st_solucion' => "Solución"
+         ),
+         FALSE
+      );
+       
       $this->servicio = new servicio_cliente(); 
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;

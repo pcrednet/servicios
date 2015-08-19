@@ -58,6 +58,11 @@
                   <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> &nbsp; Estados
                </a>
             </li>
+            <li role="presentation">
+               <a href="#traducciones" aria-controls="traducciones" role="tab" data-toggle="tab">
+                  <span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span> &nbsp; Traducciones
+               </a>
+            </li>
          </ul>
       </div>
    </div>
@@ -83,9 +88,7 @@
                      <textarea name="condiciones" class="form-control" rows="10">{$fsc->servicios_setup['servicios_condiciones']}</textarea>
                   </div>
                </div>
-            </div>
-           
-        
+            </div>        
       </div>
       <div role="tabpanel" class="tab-pane" id="opciones-campos">
          <div class="row">
@@ -320,6 +323,56 @@
             </table>
          </div>
       </div>
+      <div role="tabpanel" class="tab-pane" id="traducciones">
+         <br/>
+            <input type="hidden" name="st" value="TRUE"/>
+               <div class="row bg-info">
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Servicios:</span>
+                        <input type="text" name="st_servicios" value="{$fsc->st['st_servicios']}" class="form-control" autocomplete="off"/>
+                     </div>
+                  </div>
+
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Servicio:</span>
+                        <input type="text" name="st_servicio" value="{$fsc->st['st_servicio']}" class="form-control" autocomplete="off"/>
+                     </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Material</span>
+                        <input type="text" name="st_material" value="{$fsc->st['st_material']}" class="form-control" autocomplete="off"/>
+                     </div>
+                  </div>
+                   <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Estado Material</span>
+                        <input type="text" name="st_material_estado" value="{$fsc->st['st_material_estado']}" class="form-control" autocomplete="off"/>
+                     </div>
+                  </div>
+            </div>
+            <div class="row bg-info">
+                    <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Accesorios</span>
+                        <input type="text" name="st_accesorios" value="{$fsc->st['st_accesorios']}" class="form-control" autocomplete="off"/>
+                     </div>
+                  </div>
+                <div class="col-md-3 col-sm-3">
+                     <div class="form-group">
+                        <span class="text-uppercase">Descripción</span>
+                        <input type="text" name="st_descripcion" value="{$fsc->st['st_descripcion']}" class="form-control" autocomplete="off"/>
+                     </div>
+                   </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="form-group">
+                        <span class="text-uppercase">Solución</span>
+                        <input type="text" name="st_solucion" value="{$fsc->st['st_solucion']}" class="form-control" autocomplete="off"/>
+                     </div>
+            </div>
+           </div>
    </div>
 </div>
 

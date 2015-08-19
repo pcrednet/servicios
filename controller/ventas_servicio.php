@@ -79,6 +79,7 @@ class ventas_servicio extends fs_controller
       $this->serie = new serie();
       /// ¿El usuario tiene permiso para eliminar en esta página?
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
+      
        //cargamos configuración de servicios
        $fsvar = new fs_var();
        $this->servicios_setup = $fsvar->array_get(
@@ -103,10 +104,45 @@ class ventas_servicio extends fs_controller
          ),
          FALSE
       );
+       
+       /*Cargamos traduccion*/
+       $fsvar = new fs_var();
+       $this->st = $fsvar->array_get(
+         array(
+            'st_servicio' => "Servicio",
+            'st_servicios' => "Servicios",
+            'st_material' => "Material",
+            'st_material_estado' => "Estado del material entregado",
+            'st_accesorios' => "Accesorios que entrega",
+            'st_descripcion' => "Descripción de la averia",
+            'st_solucion' => "Solución"
+         ),
+         FALSE
+      );
+       
       /**
        * Comprobamos si el usuario tiene acceso a nueva_venta,
        * necesario para poder añadir líneas.
        */
+       
+       if( isset($_GET['delete_detalle']) )
+         {
+            $det0 = new detalle_servicio();
+            $detalle = $det0->get($_GET['delete_detalle']);
+            if($detalle)
+            {
+               if( $detalle->delete() )
+               {
+                  $this->new_message('Detalle eliminado correctamente.');
+               }
+               else
+                  $this->new_error_msg('Error al eliminar el detalle.');
+            }
+            else
+               $this->new_error_msg('Detalle no encontrado.');
+         }
+       
+       
       if( $this->user->have_access_to('nueva_venta', FALSE) )
       {
          $nuevopedp = $this->page->get('nueva_venta');
@@ -461,24 +497,6 @@ class ventas_servicio extends fs_controller
       }
       else
          $this->new_error_msg("¡Imposible modificar el " . FS_SERVICIO . "!");
-      
-      if( isset($_GET['delete_detalle']) )
-         {
-            $det0 = new detalle_servicio();
-            $detalle = $det0->get($_GET['delete_detalle']);
-            if($detalle)
-            {
-               if( $detalle->delete() )
-               {
-                  $this->new_message('Detalle eliminado correctamente.');
-               }
-               else
-                  $this->new_error_msg('Error al eliminar el detalle.');
-            }
-            else
-               $this->new_error_msg('Detalle no encontrado.');
-         }
-      
       
       
    }
