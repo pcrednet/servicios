@@ -79,19 +79,27 @@ class ventas_servicio extends fs_controller
       $this->serie = new serie();
       /// ¿El usuario tiene permiso para eliminar en esta página?
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
-      
        //cargamos configuración de servicios
        $fsvar = new fs_var();
        $this->servicios_setup = $fsvar->array_get(
          array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
+            'servicios_mostrar_material' => 0,
             'servicios_material_estado' => 0,
+            'servicios_mostrar_material_estado' => 0,             
             'servicios_accesorios' => 0,
+            'servicios_mostrar_accesorios' => 0,             
             'servicios_descripcion' => 0,
+            'servicios_mostrar_descripcion' => 0,            
             'servicios_solucion' => 0,
+            'servicios_mostrar_solucion' => 0,             
             'servicios_fechafin' => 0,
+            'servicios_mostrar_fechafin' => 0,             
             'servicios_fechainicio' => 0,
+            'servicios_mostrar_fechainicio' => 0,
+            'servicios_mostrar_garantia' => 0,
+            'servicios_garantia' => 0,
          ),
          FALSE
       );
@@ -186,18 +194,41 @@ class ventas_servicio extends fs_controller
             
       $this->servicio->observaciones = $_POST['observaciones'];
       $this->servicio->numero2 = $_POST['numero2'];
-      $this->servicio->descripcion = $_POST['descripcion'];
-      $this->servicio->solucion = $_POST['solucion'];
-      $this->servicio->material = $_POST['material'];
-      $this->servicio->material_estado = $_POST['material_estado'];
-      $this->servicio->accesorios = $_POST['accesorios'];
       $this->servicio->estado = $_POST['estado'];
-      $this->servicio->fechafin = $_POST['fechafin'];
-      $this->servicio->fechainicio = $_POST['fechainicio'];
-       if( isset($_POST['garantia']) )
-      {
-      $this->servicio->garantia = $_POST['garantia'];
-      }
+      if( isset($_POST['material']) )
+         {
+           $this->servicio->material = $_POST['material'];
+         }
+         if( isset($_POST['material_estado']) )
+         {
+            $this->servicio->material_estado = $_POST['material_estado'];
+         }
+         if( isset($_POST['accesorios']) )
+         {
+            $this->servicio->accesorios = $_POST['accesorios'];
+         }
+         if( isset($_POST['descripcion']) )
+         {
+            $this->servicio->descripcion = $_POST['descripcion'];
+         }
+         if( isset($_POST['solucion']) )
+         {
+            $this->servicio->solucion = $_POST['solucion'];
+         }
+         if( isset($_POST['fechainicio']) )
+         {
+            $this->servicio->fechainicio = $_POST['fechainicio'];
+         }
+         if( isset($_POST['fechafin']) )
+         {
+            $this->servicio->fechafin = $_POST['fechafin'];
+         }         
+         if( isset($_POST['garantia']) )
+         {
+            $this->servicio->garantia = $_POST['garantia'];
+         }
+         else
+            $this->servicio->garantia = FALSE;
       
       $this->servicio->prioridad = $_POST['prioridad'];
 

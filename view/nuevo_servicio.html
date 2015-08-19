@@ -84,40 +84,48 @@ $(function()
         <div role="tabpanel" class="tab-pane active" id="servicio">
           <div class="container-fluid" style="margin-top: 10px;">   
           <div class="row">
+              {if="$fsc->servicios_setup['servicios_mostrar_material']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material']"}has-error{/if}">
                         Material entregado:
                         <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}>{$fsc->servicio->material}</textarea>
                      </div>
                   </div>
-                 
+                 {/if}
+                 {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material_estado']"}has-error{/if}">
                         Estado del material:
                         <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}>{$fsc->servicio->material_estado}</textarea>
                      </div>
                   </div>
+                 {/if}
+                 {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
                   <div class="col-sm-4">
                     <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
                         Accesorios que entrega
                         <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required{/if}>{$fsc->servicio->accesorios}</textarea>
                      </div>
                   </div>
+                  {/if}
           </div>            
           <div class="row">
+                 {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_descripcion']"}has-error{/if}">
                         Descripción de la reparación:
                         <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}>{$fsc->servicio->descripcion}</textarea>
                      </div>
                   </div>
-                 
+                 {/if}
+                 {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_solucion']"}has-error{/if}">
                         Solución
                         <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}>{$fsc->servicio->solucion}</textarea>
                      </div>
                   </div>
+                 {/if}
            </div>   
            <div class="row bg-info">
                 <div class="col-sm-2">
@@ -130,18 +138,23 @@ $(function()
                         </select>
                      </div>
                 </div>
+               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
                     <div class="col-sm-2">
                       <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
                         Fecha de inicio:
                         <input class="form-control datepicker" type="text" name="fechainicio" value="{$fsc->today()}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
                      </div>
                   </div>
+               {/if}
+                 {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
                   <div class="col-sm-2">
                       <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                         Fecha prevista de finalización:
                         <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->fechaprevista}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
                      </div>
                   </div>
+                 {/if}
+                 {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
                 <div class="col-sm-1">
                   <div class="checkbox">
                      <label>
@@ -150,6 +163,7 @@ $(function()
                      </label>
                   </div>
                </div>
+                 {/if}
                <div class="col-sm-2">
                      <div class="form-group">
                          Prioridad:                       

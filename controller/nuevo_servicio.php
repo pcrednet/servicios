@@ -78,12 +78,21 @@ class nuevo_servicio extends fs_controller
          array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
+            'servicios_mostrar_material' => 0,
             'servicios_material_estado' => 0,
+            'servicios_mostrar_material_estado' => 0,             
             'servicios_accesorios' => 0,
+            'servicios_mostrar_accesorios' => 0,             
             'servicios_descripcion' => 0,
+            'servicios_mostrar_descripcion' => 0,            
             'servicios_solucion' => 0,
+            'servicios_mostrar_solucion' => 0,             
             'servicios_fechafin' => 0,
-            'servicios_fechainicio' => 0
+            'servicios_mostrar_fechafin' => 0,             
+            'servicios_fechainicio' => 0,
+            'servicios_mostrar_fechainicio' => 0,
+            'servicios_mostrar_garantia' => 0,
+            'servicios_garantia' => 0,
          ),
          FALSE
       );
@@ -486,13 +495,35 @@ class nuevo_servicio extends fs_controller
          $servicio->provincia = $_POST['provincia'];
          $servicio->descripcion = $_POST['descripcion'];
          $servicio->prioridad = intval($_POST['prioridad']);
-         $servicio->material = $_POST['material'];
-         $servicio->material_estado = $_POST['material_estado'];
-         $servicio->accesorios = $_POST['accesorios'];
          $servicio->estado = $_POST['estado'];
-         $servicio->fechafin = $_POST['fechafin'];
-         $servicio->fechainicio = $_POST['fechainicio'];
-         
+         if( isset($_POST['material']) )
+         {
+            $servicio->material = $_POST['material'];
+         }
+         if( isset($_POST['material_estado']) )
+         {
+            $servicio->material_estado = $_POST['material_estado'];
+         }
+         if( isset($_POST['accesorios']) )
+         {
+            $servicio->accesorios = $_POST['accesorios'];
+         }
+         if( isset($_POST['descripcion']) )
+         {
+            $servicio->descripcion = $_POST['descripcion'];
+         }
+         if( isset($_POST['solucion']) )
+         {
+            $servicio->solucion = $_POST['solucion'];
+         }
+         if( isset($_POST['fechainicio']) )
+         {
+            $servicio->fechainicio = $_POST['fechainicio'];
+         }
+         if( isset($_POST['fechafin']) )
+         {
+            $servicio->fechafin = $_POST['fechafin'];
+         }         
          if( isset($_POST['garantia']) )
          {
             $servicio->garantia = $_POST['garantia'];
