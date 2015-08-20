@@ -18,9 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*Esto es temporal*/
-define('FS_SERVICIOS', 'servicios');
-define('FS_SERVICIO', 'servicio');
+
 
 require_model('albaran_cliente.php');
 require_model('cliente.php');
@@ -531,33 +529,34 @@ class servicio_cliente extends fs_model {
          return FALSE;
    }
 
-   public function all($offset = 0)
+   public function all($offset=0, $order='fecha DESC')
    {
-      $sedilist = array();
+      $servlist = array();
+      $sql = "SELECT * FROM ".$this->table_name." ORDER BY ".$order;
       
-      $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name . " ORDER BY fecha DESC, codigo DESC", FS_ITEM_LIMIT, $offset);
-      if ($servicios)
+      $servicios = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
+      if($servicios)
       {
-         foreach ($servicios as $s)
-            $sedilist[] = new servicio_cliente($s);
+         foreach($servicios as $s)
+            $servlist[] = new servicio_cliente($s);
       }
       
-      return $sedilist;
+      return $servlist;
    }
 
-   public function all_ptealbaran($offset = 0, $order = 'ASC')
+   public function all_ptealbaran($offset=0, $order='fecha ASC')
    {
-      $sedilist = array();
+      $servlist = array();
+      $sql = "SELECT * FROM ".$this->table_name." WHERE idalbaran IS NULL AND status=0 ORDER BY ".$order;
       
-      $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name .
-              " WHERE idalbaran IS NULL AND status=0 ORDER BY fecha " . $order . ", codigo " . $order, FS_ITEM_LIMIT, $offset);
-      if ($servicios)
+      $servicios = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
+      if($servicios)
       {
-         foreach ($servicios as $s)
-            $sedilist[] = new servicio_cliente($s);
+         foreach($servicios as $s)
+            $servlist[] = new servicio_cliente($s);
       }
       
-      return $sedilist;
+      return $servlist;
    }
 
    public function all_rechazados($offset = 0, $order = 'DESC')

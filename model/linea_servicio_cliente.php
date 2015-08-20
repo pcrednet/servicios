@@ -25,9 +25,7 @@ class linea_servicio_cliente extends fs_model
    public $descripcion;
    public $dtopor;
    public $idlinea;
-   public $idlineapresupuesto;
    public $idservicio;
-   public $idpresupuesto;
    public $irpf;
    public $iva;
    public $svpsindto;
@@ -52,9 +50,7 @@ class linea_servicio_cliente extends fs_model
          $this->descripcion = $l['descripcion'];
          $this->dtopor = floatval($l['dtopor']);
          $this->idlinea = $this->intval($l['idlinea']);
-         $this->idlineapresupuesto = $this->intval($l['idlineapresupuesto']);
          $this->idservicio = $this->intval($l['idservicio']);
-         $this->idpresupuesto = $this->intval($l['idpresupuesto']);
          $this->irpf = floatval($l['irpf']);
          $this->iva = floatval($l['iva']);
          $this->pvpsindto = floatval($l['pvpsindto']);
@@ -227,7 +223,6 @@ class linea_servicio_cliente extends fs_model
             $sql = "UPDATE ".$this->table_name." SET cantidad = ".$this->var2str($this->cantidad).",
                codimpuesto = ".$this->var2str($this->codimpuesto).", descripcion = ".$this->var2str($this->descripcion).",
                dtopor = ".$this->var2str($this->dtopor).", idservicio = ".$this->var2str($this->idservicio).",
-               idlineapresupuesto = ".$this->var2str($this->idlineapresupuesto).", idpresupuesto = ".$this->var2str($this->idpresupuesto).",
                irpf = ".$this->var2str($this->irpf).", iva = ".$this->var2str($this->iva).",
                pvpsindto = ".$this->var2str($this->pvpsindto).", pvptotal = ".$this->var2str($this->pvptotal).",
                pvpunitario = ".$this->var2str($this->pvpunitario).", recargo = ".$this->var2str($this->recargo).",
@@ -238,13 +233,12 @@ class linea_servicio_cliente extends fs_model
          else
          {
             $sql = "INSERT INTO ".$this->table_name." (cantidad,codimpuesto,descripcion,dtopor,idservicio,
-               irpf,iva,pvpsindto,pvptotal,pvpunitario,recargo,referencia,idlineapresupuesto,idpresupuesto)
+               irpf,iva,pvpsindto,pvptotal,pvpunitario,recargo,referencia)
                VALUES (".$this->var2str($this->cantidad).",".$this->var2str($this->codimpuesto).",
                ".$this->var2str($this->descripcion).",".$this->var2str($this->dtopor).",
                ".$this->var2str($this->idservicio).",".$this->var2str($this->irpf).",".$this->var2str($this->iva).",
                ".$this->var2str($this->pvpsindto).",".$this->var2str($this->pvptotal).",".$this->var2str($this->pvpunitario).",
-               ".$this->var2str($this->recargo).",".$this->var2str($this->referencia).",
-               ".$this->var2str($this->idlineapresupuesto).",".$this->var2str($this->idpresupuesto).");";
+               ".$this->var2str($this->recargo).",".$this->var2str($this->referencia).");";
             
             if( $this->db->exec($sql) )
             {
@@ -318,4 +312,88 @@ class linea_servicio_cliente extends fs_model
       
       return $linealist;
    }
+
+    public function search_from_cliente($codcliente, $query='', $offset=0)
+   {
+      $linealist = array();
+      $query = strtolower( $this->no_html($query) );
+      
+      $sql = "SELECT * FROM ".$this->table_name." WHERE idservicio IN
+         (SELECT idservicio FROM servicioscli WHERE codcliente = ".$this->var2str($codcliente).") AND ";
+      if( is_numeric($query) )
+      {
+         $sql .= "(referencia LIKE '%".$query."%' OR descripcion LIKE '%".$query."%')";
+      }
+      else
+      {
+         $buscar = str_replace(' ', '%', $query);
+         $sql .= "(lower(referencia) LIKE '%".$buscar."%' OR lower(descripcion) LIKE '%".$buscar."%')";
+      }
+      $sql .= " ORDER BY idservicio DESC, idlinea ASC";
+      
+      $lineas = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
+      if( $lineas )
+      {
+         foreach($lineas as $l)
+            $linealist[] = new linea_servicio_cliente($l);
+      }
+      return $linealist;
+   }
+   
+   public function search_from_cliente2($codcliente, $ref='', $obs='', $offset=0)
+   {
+      $linealist = array();
+      $ref = strtolower( $this->no_html($ref) );
+      
+      $sql = "SELECT * FROM ".$this->table_name." WHERE idservicio IN
+         (SELECT idservicio FROM servicioscli WHERE codcliente = ".$this->var2str($codcliente)."
+         AND lower(observaciones) LIKE '".strtolower($obs)."%') AND ";
+      if( is_numeric($ref) )
+      {
+         $sql .= "(referencia LIKE '%".$ref."%' OR descripcion LIKE '%".$ref."%')";
+      }
+      else
+      {
+         $buscar = str_replace(' ', '%', $ref);
+         $sql .= "(lower(referencia) LIKE '%".$ref."%' OR lower(descripcion) LIKE '%".$ref."%')";
+      }
+      $sql .= " ORDER BY idservicio DESC, idlinea ASC";
+      
+      $lineas = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
+      if( $lineas )
+      {
+         foreach($lineas as $l)
+            $linealist[] = new linea_servicio_cliente($l);
+      }
+      return $linealist;
+   }
+   
+   public function last_from_cliente($codcliente, $offset=0)
+   {
+      $linealist = array();
+      
+      $sql = "SELECT * FROM ".$this->table_name." WHERE idservicio IN
+         (SELECT idservicio FROM servicioscli WHERE codcliente = ".$this->var2str($codcliente).")
+         ORDER BY idservicio DESC, idlinea ASC";
+      
+      $lineas = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
+      if( $lineas )
+      {
+         foreach($lineas as $l)
+            $linealist[] = new linea_servicio_cliente($l);
+      }
+      return $linealist;
+   }
+   
+   public function count_by_articulo()
+   {
+      $lineas = $this->db->select("SELECT COUNT(DISTINCT referencia) as total FROM ".$this->table_name.";");
+      if($lineas)
+      {
+         return intval($lineas[0]['total']);
+      }
+      else
+         return 0;
+   }
 }
+
