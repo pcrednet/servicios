@@ -290,7 +290,7 @@
          </tr>
       </thead>
       {loop="$fsc->resultados"}
-      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} bg-warning{/if}" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
+      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} style="background-color:#ffffff{/if}" href="{$value->url()}" {if condition="$value->editable"} style="background-color: #{$value->color_estado()}{/if}">
          <td class="text-center">
             {if condition="$value->idalbaran"}
             <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
