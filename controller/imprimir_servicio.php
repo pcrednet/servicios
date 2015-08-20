@@ -143,7 +143,7 @@ class imprimir_servicio extends fs_controller
                if( function_exists('imagecreatefromstring') )
                {
                   $pdf_doc->pdf->ezImage('tmp/'.FS_TMP_NAME.'logo.png', 0, 200, 'none');
-                  $lppag -= 2; /// si metemos el logo, caben menos líneas
+                  //$lppag -= 2; /// si metemos el logo, caben menos líneas
                }
                else
                {
