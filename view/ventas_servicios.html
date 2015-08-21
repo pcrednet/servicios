@@ -132,6 +132,7 @@
       <a href="{$fsc->url()}&mostrar=rechazados" title="Rechazados">
          <span class="glyphicon glyphicon-remove"></span>
          <span class="hidden-xs">&nbsp; Rechazados</span>
+         <span class="hidden-xs badge">{$fsc->total_rechazados()}</span>
       </a>
    </li>
    <li{if="$fsc->mostrar=='buscar'"} class="active"{/if}>

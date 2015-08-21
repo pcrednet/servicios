@@ -398,6 +398,17 @@ protected function process()
          return 0;
    }
    
+   public function total_rechazados()
+   {
+      $data = $this->db->select("SELECT COUNT(idservicio) as total FROM servicioscli WHERE status=2");
+      if($data)
+      {
+         return intval($data[0]['total']);
+      }
+      else
+         return 0;
+   }
+   
    private function buscar()
    {
       $this->resultados = array();
