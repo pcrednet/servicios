@@ -18,6 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*Esto es temporal*/
+define('FS_SERVICIOS', 'servicios');
+define('FS_SERVICIO', 'servicio');
 
 
 require_model('albaran_cliente.php');
