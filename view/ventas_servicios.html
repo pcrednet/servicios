@@ -211,6 +211,16 @@
                </div>
             </div>
          </div>
+         <div class="col-sm-1">
+            <div class="form-group">
+               <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
+            </div>
+         </div>
+         <div class="col-sm-1">
+            <div class="form-group">
+               <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
+            </div>
+         </div>
          <div class="col-sm-2">
              <div class="form-group">
                <select name="estado" class="form-control" onchange="this.form.submit()">
@@ -224,16 +234,6 @@
                      {/if}
                   {/loop}
                </select>
-            </div>
-         </div>
-         <div class="col-sm-1">
-            <div class="form-group">
-               <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
-            </div>
-         </div>
-         <div class="col-sm-1">
-            <div class="form-group">
-               <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
             </div>
          </div>
       </div>
