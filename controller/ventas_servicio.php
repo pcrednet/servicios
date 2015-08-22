@@ -53,9 +53,6 @@ class ventas_servicio extends fs_controller
    public $servicios_setup;
    public $garantia;
 
-  
-  
-
    public function __construct()
    {
       parent::__construct(__CLASS__, ucfirst(FS_SERVICIO), 'ventas', FALSE, FALSE);
@@ -180,27 +177,6 @@ class ventas_servicio extends fs_controller
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
 
-         /// comprobamos el servicio
-         if ($this->servicio->full_test())
-         {
-            if (isset($_REQUEST['status']))
-            {
-               $this->servicio->status = intval($_REQUEST['status']);
-               
-               if($this->servicio->status == 1 AND is_null($this->servicio->idalbaran))
-               {
-                  $this->generar_albaran();
-               }
-               elseif ($this->servicio->save())
-               {
-                  $this->new_message(ucfirst(FS_SERVICIO)." modificado correctamente.");
-               }
-               else
-               {
-                  $this->new_error_msg("¡Imposible modificar el ".FS_SERVICIO."!");
-               }
-            }
-         }
       }
       else
          $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " de cliente no encontrado!");

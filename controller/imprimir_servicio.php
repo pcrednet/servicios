@@ -103,7 +103,7 @@ class imprimir_servicio extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_servicio',
               'type' => 'pdf',
-              'text' => ucfirst(FS_PEDIDO).' simple',
+              'text' => ucfirst(FS_SERVICIO).' simple',
               'params' => ''
           ),
           array(

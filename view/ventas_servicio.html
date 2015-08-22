@@ -1,7 +1,7 @@
 {include="header"}
 
 {if="$fsc->servicio"}
-{if="$fsc->servicio->editable"}
+{if="$fsc->servicio->editable()"}
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
    numlineas = {function="count($fsc->servicio->get_lineas())"};
@@ -58,18 +58,20 @@
    });
 </script>
 <script type="text/javascript">
-$(function(){
-  var hash = window.location.hash;
-  hash && $('ul.nav a[href="' + hash + '"]').tab('show');
-
-  $('.nav-tabs a').click(function (e) {
-    $(this).tab('show');
-    var scrollmem = $('body').scrollTop();
-    window.location.hash = this.hash;
-    $('html,body').scrollTop(scrollmem);
-  });
-});
+   /// ¿Qué hace esta función?
+   $(function() {
+      var hash = window.location.hash;
+      hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+      
+      $('.nav-tabs a').click(function (e) {
+         $(this).tab('show');
+         var scrollmem = $('body').scrollTop();
+         window.location.hash = this.hash;
+         $('html,body').scrollTop(scrollmem);
+      });
+   });
 </script>
+
 <form name="f_servicio" action="{$fsc->servicio->url()}" method="post" class="form">
    <input type="hidden" name="idservicio" value="{$fsc->servicio->idservicio}"/>
    <input type="hidden" name="cliente" value="{$fsc->servicio->codcliente}"/>
@@ -104,43 +106,9 @@ $(function(){
                   <span class="hidden-xs"> &nbsp; Ver {#FS_ALBARAN#}</span>
                </a>
             </div>
-            {else}
-               <div class="btn-group">
-                  {if="$fsc->servicio->status==0"}
-                  <button type="button" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
-                     <span class="glyphicon glyphicon-time"></span>
-                     <span class="hidden-xs"> &nbsp; Pendiente</span>
-                     <span class="caret"></span>
-                  </button>
-                  {elseif="$fsc->servicio->status==1"}
-                  <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown">
-                     <span class="glyphicon glyphicon-ok"></span>
-                     <span class="hidden-xs"> &nbsp; Aprobado</span>
-                     <span class="caret"></span>
-                  </button>
-                  {elseif="$fsc->servicio->status==2"}
-                  <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown">
-                     <span class="glyphicon glyphicon-remove"></span>
-                     <span class="hidden-xs"> &nbsp; Rechazado</span>
-                     <span class="caret"></span>
-                  </button>
-                  {/if}
-                  <ul class="dropdown-menu" role="menu">
-                     {if="$fsc->servicio->status!=0"}
-                     <li><a href="{$fsc->url()}&status=0"><span class="glyphicon glyphicon-time"></span> &nbsp; Pendiente</a></li>
-                     {/if}
-                     {if="$fsc->servicio->status!=1"}
-                     <li><a href="{$fsc->url()}&status=1"><span class="glyphicon glyphicon-ok"></span> &nbsp; Aprobado</a></li>
-                     {/if}
-                     {if="$fsc->servicio->status!=2"}
-                     <li><a href="{$fsc->url()}&status=2"><span class="glyphicon glyphicon-remove"></span> &nbsp; Rechazado</a></li>
-                     {/if}
-                  </ul>
-               </div>
             {/if}
          </div>
          <div class="col-md-4 col-sm-4 col-xs-4 text-right">
-           <div class="form-group">  
             <div class="btn-group">
                {if="$fsc->allow_delete"}
                <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
@@ -148,12 +116,10 @@ $(function(){
                   <span class="hidden-xs"> &nbsp; Eliminar</span>
                </a>
                {/if}
-               
                <button class="btn btn-sm btn-primary" type="submit">
                   <span class="glyphicon glyphicon-floppy-disk"></span>
                   <span class="hidden-xs"> &nbsp; Guardar</span>
                </button>
-               </div>
             </div>
          </div>
       </div>
@@ -175,7 +141,7 @@ $(function(){
          </div>
       </div>
       <div class="row">
-         {if="$fsc->servicio->editable"}
+         {if="$fsc->servicio->editable()"}
          <div class="col-md-4 col-sm-12">
             <div class="form-group">
                Cliente actual:
@@ -199,7 +165,7 @@ $(function(){
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
                Fecha:
-               {if="$fsc->servicio->editable"}
+               {if="$fsc->servicio->editable()"}
                <input class="form-control datepicker" type="text" name="fecha" value="{$fsc->servicio->fecha}" autocomplete="off"/>
                {else}
                <div class="form-control">{$fsc->servicio->fecha}</div>
@@ -209,7 +175,7 @@ $(function(){
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
                Hora:
-               {if="$fsc->servicio->editable"}
+               {if="$fsc->servicio->editable()"}
                <input class="form-control" type="text" name="hora" value="{$fsc->servicio->hora}" autocomplete="off"/>
                {else}
                <div class="form-control">{$fsc->servicio->hora}</div>
@@ -233,7 +199,7 @@ $(function(){
                <span class="hidden-xs">&nbsp; Líneas</span>
             </a>
          </li>
-         {if="$fsc->servicio->editable"}
+         {if="$fsc->servicio->editable()"}
          <li role="presentation">
             <a href="#direccion_p" aria-controls="direccion_p" role="tab" data-toggle="tab">
                <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
@@ -264,104 +230,104 @@ $(function(){
       </ul>
       <div class="tab-content">
          <div role="tabpanel" class="tab-pane active" id="servicio">
-          <div class="container-fluid" style="margin-top: 10px;">   
-          <div class="row">
-               {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+            <div class="container-fluid" style="margin-top: 10px;">   
+               <div class="row">
+                  {if="$fsc->servicios_setup['servicios_mostrar_material']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material']"}has-error{/if}">
                         {$fsc->st['st_material']}
-                        <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->material}</textarea>
+                        <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}{if="!$fsc->servicio->editable()"} readonly{/if}>{$fsc->servicio->material}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material_estado']"}has-error{/if}">
                         {$fsc->st['st_material_estado']}
-                        <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->material_estado}</textarea>
+                        <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}{if="!$fsc->servicio->editable()"} readonly{/if}>{$fsc->servicio->material_estado}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
                   <div class="col-sm-4">
-                    <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
                         {$fsc->st['st_accesorios']}
-                        <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->accesorios}</textarea>
+                        <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required{/if}{if="!$fsc->servicio->editable()"} readonly{/if}>{$fsc->servicio->accesorios}</textarea>
                      </div>
                   </div>
-                 {/if}
-          </div>            
-          <div class="row">
-                 {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
+                  {/if}
+               </div>            
+               <div class="row">
+                  {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_descripcion']"}has-error{/if}">
                         {$fsc->st['st_descripcion']}
-                        <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->descripcion}</textarea>
+                        <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}{if="!$fsc->servicio->editable()"} readonly{/if}>{$fsc->servicio->descripcion}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_solucion']"}has-error{/if}">
                         {$fsc->st['st_solucion']}
-                        <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}{if="!$fsc->servicio->editable"} readonly{/if}>{$fsc->servicio->solucion}</textarea>
+                        <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}{if="!$fsc->servicio->editable()"} readonly{/if}>{$fsc->servicio->solucion}</textarea>
                      </div>
                   </div>
-                 {/if}
-           </div>   
-           <div class="row bg-info">
-                <div class="col-sm-2">
-                     <div class="form-group"{if="!$fsc->servicio->editable"} readonly{/if}>
+                  {/if}
+               </div>   
+               <div class="row bg-info">
+                  <div class="col-sm-2">
+                     <div class="form-group"{if="!$fsc->servicio->editable()"} readonly{/if}>
                         <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
-                        <select name="estado" class="form-control"{if="!$fsc->servicio->editable"} disabled{/if}>
+                        <select name="estado" class="form-control"{if="!$fsc->servicio->editable()"} disabled{/if}>
                            {loop="$fsc->estado->all()"}
-                           <option value="{$value->id}"{if="$value->id==$fsc->servicio->estado"} selected="selected"{/if}>{$value->descripcion}</option>
+                           <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
                            {/loop}
                         </select>
                      </div>
-                </div>
-                 {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-               <div class="col-sm-2">
-                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
-                        Fecha de inicio:
-                        <input class="form-control datepicker" type="text" name="fechainicio" value="{$fsc->today()}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}{if="!$fsc->servicio->editable"} disabled{/if}/>
-                     </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
                   <div class="col-sm-2">
-                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
-                        Fecha de finalización:
-                        <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->servicio->fechafin}" autocomplete="off"{if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}{if="!$fsc->servicio->editable"} disabled{/if}/>
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
+                        Fecha de inicio:
+                        <input class="form-control datepicker" type="text" name="fechainicio" value="{$fsc->today()}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}{if="!$fsc->servicio->editable()"} disabled{/if}/>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-                <div class="col-sm-1">
-                  <div class="checkbox">
-                     <label>
-                           <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}{if="!$fsc->servicio->editable"} disabled{/if}/>
-                        Es garantía
-                     </label>
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  <div class="col-sm-2">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
+                        Fecha de finalización:
+                        <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->servicio->fechafin}" autocomplete="off"{if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}{if="!$fsc->servicio->editable()"} disabled{/if}/>
+                     </div>
                   </div>
-               </div>
-                 {/if}
-               <div class="col-sm-2">
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+                  <div class="col-sm-1">
+                     <div class="checkbox">
+                        <label>
+                           <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}{if="!$fsc->servicio->editable()"} disabled{/if}/>
+                           Es garantía
+                        </label>
+                     </div>
+                  </div>
+                  {/if}
+                  <div class="col-sm-2">
                      <div class="form-group">
                          Prioridad:                       
-                        <select name="prioridad" class="form-control"{if="!$fsc->servicio->editable"} disabled{/if}>
+                        <select name="prioridad" class="form-control"{if="!$fsc->servicio->editable()"} disabled{/if}>
                            {loop="$fsc->servicio->listar_prioridad()"}
                            <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == $fsc->servicio->prioridad"} selected="selected"{/if}>{$value['nombre_prioridad']}</option>
                            {/loop}
                         </select>
                      </div>
-               </div>   
-            </div>     
-          </div>
+                  </div>   
+               </div>     
+            </div>
          </div>
          <div role="tabpanel" class="tab-pane" id="lineas_p">
             <div class="table-responsive">
-               {if="$fsc->servicio->editable"}
+               {if="$fsc->servicio->editable()"}
                <table class="table table-condensed">
                   <thead>
                      <tr>
@@ -511,7 +477,7 @@ $(function(){
                {/if}
             </div>
          </div>
-         {if="$fsc->servicio->editable"}
+         {if="$fsc->servicio->editable()"}
          <div role="tabpanel" class="tab-pane" id="direccion_p">
             <div class="container-fluid" style="margin-top: 10px;">
                <div class="row">

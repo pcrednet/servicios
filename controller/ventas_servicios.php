@@ -46,15 +46,14 @@ class ventas_servicios extends fs_controller
    public $total_resultados;
    public $total_resultados_txt;
    
-
    public function __construct()
    {
       parent::__construct(__CLASS__, FS_SERVICIOS. ' de cliente', 'ventas');
    }
-
-protected function process()
+   
+   protected function private_core()
    {
-       //cargamos configuración de servicios
+      //cargamos configuración de servicios
        $fsvar = new fs_var();
        $this->servicios_setup = $fsvar->array_get(
          array(

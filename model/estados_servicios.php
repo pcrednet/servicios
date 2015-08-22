@@ -26,10 +26,36 @@
  */
 class estados_servicios extends fs_model
 {
+   /**
+    * Clave primaria.
+    * @var integer
+    */
    public $id;
+   
+   /**
+    * Descripción del estado.
+    * @var type 
+    */
    public $descripcion;
+   
+   /**
+    * Color asociado al estado, en formato hexadecimal,
+    * de 000000 a FFFFFF
+    * @var type 
+    */
    public $color;
+   
+   /**
+    * FALSE => los servicios asociados están terminados o inactivos.
+    * @var type 
+    */
    public $activo;
+   
+   /**
+    * TRUE => se genera un albarán a partir del servicio.
+    * @var type 
+    */
+   public $albaran;
    
    public function __construct($e = FALSE)
    {
@@ -39,22 +65,24 @@ class estados_servicios extends fs_model
          $this->id = $this->intval($e['id']);
          $this->descripcion = $e['descripcion'];
          $this->color = $e['color'];
-         $this->activo= $this->str2bool($e['activo']);
+         $this->activo = $this->str2bool($e['activo']);
+         $this->albaran = $this->str2bool($e['albaran']);
       }
       else
       {
          $this->id = NULL;
          $this->descripcion = '';
          $this->color = '000000';
-         $this->activo= TRUE;
+         $this->activo = TRUE;
+         $this->albaran = FALSE;
       }
    }
    
    protected function install()
    {
-      return "INSERT INTO estados_servicios (id,descripcion,activo,color) VALUES".
-              " ('1','Nuevo',TRUE,'D9EDF7')".
-              ",('100','Terminado',FALSE,'DFF0D8');";
+      return "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES".
+              " ('1','Nuevo',TRUE,FALSE,'D9EDF7')".
+              ",('100','Terminado',FALSE,TRUE,'DFF0D8');";
    }
    
    public function get($id)
@@ -98,15 +126,17 @@ class estados_servicios extends fs_model
       {
          $sql = "UPDATE estados_servicios SET descripcion = ".$this->var2str($this->descripcion).
                  ", activo = ".$this->var2str($this->activo).
+                 ", albaran = ".$this->var2str($this->albaran).
                  ", color = ".$this->var2str($this->color).
                  "  WHERE id = ".$this->var2str($this->id).";";
       }
       else
       {
-         $sql = "INSERT INTO estados_servicios (id,descripcion,activo,color) VALUES ("
+         $sql = "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES ("
                  .$this->var2str($this->id).","
                  .$this->var2str($this->descripcion).","
                  .$this->var2str($this->activo).","
+                 .$this->var2str($this->albaran).","
                  .$this->var2str($this->color).");";
       }
       

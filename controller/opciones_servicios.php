@@ -2,8 +2,8 @@
 
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2015    Carlos Garcia Gomez         neorazorx@gmail.com
- *Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2015   Carlos Garcia Gomez        neorazorx@gmail.com
+ * Copyright (C) 2015   Luis Miguel Pérez Romero   luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,19 +45,11 @@ class opciones_servicios extends fs_controller
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       
       $this->share_extensions();
+      
       $this->estado = new estados_servicios();
       
-      /// leemos la API key de google maps de la base de datos o del formulario
-      $fsvar = new fs_var();
-      if( isset($_POST['maps_api_key']) )
-      {
-         $this->maps_api_key = $_POST['maps_api_key'];
-         $fsvar->simple_save('maps_api_key', $this->maps_api_key);
-      }
-      else
-         $this->maps_api_key = $fsvar->simple_get('maps_api_key');
-      
       /// cargamos la configuración
+      $fsvar = new fs_var();
       $this->servicios_setup = $fsvar->array_get(
          array(
             'servicios_diasfin' => 10,
@@ -82,14 +74,21 @@ class opciones_servicios extends fs_controller
                " de un plazo máximo de 2 meses para recogerlo, de no ser así y no haber aviso por parte del".
                " cliente se empezará a cobrar 1 euro al día por gastos de almacenaje.\nLos accesorios y".
                " productos externos al equipo no especificados en este documento no podrán ser reclamados en".
-               " caso de disconformidad con el técnico."
+               " caso de disconformidad con el técnico.",
+            'st_servicio' => "Servicio",
+            'st_servicios' => "Servicios",
+            'st_material' => "Material",
+            'st_material_estado' => "Estado del material entregado",
+            'st_accesorios' => "Accesorios que entrega",
+            'st_descripcion' => "Descripción de la averia",
+            'st_solucion' => "Solución"
          ),
          FALSE
       );
       
       if( isset($_POST['servicios_setup']) )
       {
-         $this->servicios_setup['servicios_diasfin'] =($_POST['diasfin']);
+         $this->servicios_setup['servicios_diasfin'] = intval($_POST['diasfin']);
          $this->servicios_setup['servicios_material'] = ( isset($_POST['servicios_material']) ? 1 : 0 );
          $this->servicios_setup['servicios_material_estado'] = ( isset($_POST['servicios_material_estado']) ? 1 : 0 );
          $this->servicios_setup['servicios_accesorios'] = ( isset($_POST['servicios_accesorios']) ? 1 : 0 );
@@ -107,45 +106,20 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['servicios_mostrar_fechainicio'] = ( isset($_POST['servicios_mostrar_fechainicio']) ? 1 : 0 );
          $this->servicios_setup['servicios_mostrar_garantia'] = ( isset($_POST['servicios_mostrar_garantia']) ? 1 : 0 );
          $this->servicios_setup['servicios_condiciones'] = $fsvar->no_html($_POST['condiciones']);
+         $this->servicios_setup['st_servicio'] = $_POST['st_servicio'];
+         $this->servicios_setup['st_servicios'] = $_POST['st_servicios'];
+         $this->servicios_setup['st_material'] = $_POST['st_material'];
+         $this->servicios_setup['st_material_estado'] = $_POST['st_material_estado'];
+         $this->servicios_setup['st_accesorios'] = $_POST['st_accesorios'];
+         $this->servicios_setup['st_descripcion'] = $_POST['st_descripcion'];
+         $this->servicios_setup['st_solucion'] = $_POST['st_solucion'];
+         
          if( $fsvar->array_save($this->servicios_setup) )
          {
             $this->new_message('Datos guardados correctamente.');
          }
          else
             $this->new_error_msg('Error al guardar los datos.');
-         
-      }  
-        /// cargamos la traduccion
-        $this->st = $fsvar->array_get(
-         array(
-            'st_servicio' => "Servicio",
-            'st_servicios' => "Servicios",
-            'st_material' => "Material",
-            'st_material_estado' => "Estado del material entregado",
-            'st_accesorios' => "Accesorios que entrega",
-            'st_descripcion' => "Descripción de la averia",
-            'st_solucion' => "Solución"
-         ),
-         FALSE
-      );
-      
-      if( isset($_POST['st']) )
-      {
-         $this->st['st_servicio'] =($_POST['st_servicio']);
-         $this->st['st_servicios'] =($_POST['st_servicios']);
-         $this->st['st_material'] =($_POST['st_material']);
-         $this->st['st_material_estado'] =($_POST['st_material_estado']);
-         $this->st['st_accesorios'] =($_POST['st_accesorios']);
-         $this->st['st_descripcion'] =($_POST['st_descripcion']);
-         $this->st['st_solucion'] =($_POST['st_solucion']);
-           
-         if( $fsvar->array_save($this->st) )
-         {
-            $this->new_message('Datos guardados correctamente.');
-         }
-         else
-            $this->new_error_msg('Error al guardar los datos.');
-         
       }
       else if( isset($_GET['delete_estado']) )
       {
@@ -173,6 +147,7 @@ class opciones_servicios extends fs_controller
          $estado->descripcion = $_POST['descripcion'];
          $estado->color = $_POST['color'];
          $estado->activo = isset($_POST['activo']);
+         $estado->albaran = isset($_POST['albaran']);
          
          if( $estado->save() )
          {
@@ -190,7 +165,8 @@ class opciones_servicios extends fs_controller
       $fsext->from = __CLASS__;
       $fsext->to = 'ventas_servicios';
       $fsext->type = 'button';
-      $fsext->text = '<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span><span class="hidden-xs">&nbsp; Opciones</span>';
+      $fsext->text = '<span class="glyphicon glyphicon-wrench" aria-hidden="true">'
+              . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
       $fsext->save();
    }
 }

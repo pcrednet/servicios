@@ -24,6 +24,11 @@
       <tipo>boolean</tipo>
       <defecto>true</defecto>
    </columna>
+   <columna>
+      <nombre>albaran</nombre>
+      <tipo>boolean</tipo>
+      <defecto>false</defecto>
+   </columna>
    <restriccion>
       <nombre>estados_servicio_pkey</nombre>
       <consulta>PRIMARY KEY (id)</consulta>

@@ -14,16 +14,13 @@
       usar_serie();
       recalcular();
    });
-
-$(function()
-{
-  $('#f_new_servicio').submit(function(){
-    $("input[type='submit']", this)
-      .val("Espere...")
-      .attr('disabled', 'disabled');
-    return true;
-  });
-});
+   
+   $(document).ready(function() {
+      $('#f_new_servicio').submit(function() {
+         $("input[type='submit']", this).val("Espere...").attr('disabled', 'disabled');
+         return true;
+      });
+   });
 </script>
 
 <form id="f_new_servicio" class="form" name="f_new_servicio" action="{$fsc->url()}" method="post">
@@ -52,7 +49,6 @@ $(function()
          </div>
       </div>
    </div>
-   
    <div role="tabpanel">
       <ul class="nav nav-tabs" role="tablist">
           <li role="presentation" class="active">
@@ -81,26 +77,26 @@ $(function()
          </li>
       </ul>
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="servicio">
-          <div class="container-fluid" style="margin-top: 10px;">   
-          <div class="row">
-              {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+         <div role="tabpanel" class="tab-pane active" id="servicio">
+            <div class="container-fluid">
+               <div class="row">
+                  {if="$fsc->servicios_setup['servicios_mostrar_material']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material']"}has-error{/if}">
                         {$fsc->st['st_material']}
                         <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}>{$fsc->servicio->material}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
                   <div class="col-sm-4">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_material_estado']"}has-error{/if}">
                        {$fsc->st['st_material_estado']}
                         <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}>{$fsc->servicio->material_estado}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
                   <div class="col-sm-4">
                     <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
                         {$fsc->st['st_accesorios']}
@@ -108,74 +104,74 @@ $(function()
                      </div>
                   </div>
                   {/if}
-          </div>            
-          <div class="row">
-                 {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
+               </div>            
+               <div class="row">
+                  {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_descripcion']"}has-error{/if}">
                         {$fsc->st['st_descripcion']}
                         <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}>{$fsc->servicio->descripcion}</textarea>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
                   <div class="col-sm-6">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_solucion']"}has-error{/if}">
                         {$fsc->st['st_solucion']}
                         <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}>{$fsc->servicio->solucion}</textarea>
                      </div>
                   </div>
-                 {/if}
-           </div>   
-           <div class="row bg-info">
-                <div class="col-sm-2">
+                  {/if}
+               </div>   
+               <div class="row bg-info" style="padding-top: 10px;">
+                  <div class="col-sm-2">
                      <div class="form-group">
                         <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
                         <select name="estado" class="form-control">
                            {loop="$fsc->estado->all()"}
-                           <option value="{$value->id}"{if="$value->id==$fsc->servicio->estado"} selected="selected"{/if}>{$value->descripcion}</option>
+                           <option value="{$value->id}">{$value->descripcion}</option>
                            {/loop}
                         </select>
                      </div>
-                </div>
-               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-                    <div class="col-sm-2">
-                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
+                  </div>
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+                  <div class="col-sm-2">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
                         Fecha de inicio:
                         <input class="form-control datepicker" type="text" name="fechainicio" value="{$fsc->today()}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
                      </div>
                   </div>
-               {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
                   <div class="col-sm-2">
-                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
+                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                         Fecha prevista de finalización:
                         <input class="form-control datepicker" type="text" name="fechafin" value="{$fsc->fechaprevista}" autocomplete="off" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
                      </div>
                   </div>
-                 {/if}
-                 {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-                <div class="col-sm-1">
-                  <div class="checkbox">
-                     <label>
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+                  <div class="col-sm-1">
+                     <div class="checkbox">
+                        <label>
                            <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}/>
-                        Es garantía
-                     </label>
+                           Es garantía
+                        </label>
+                     </div>
                   </div>
-               </div>
-                 {/if}
-               <div class="col-sm-2">
+                  {/if}
+                  <div class="col-sm-2">
                      <div class="form-group">
-                         Prioridad:                       
+                        Prioridad:
                         <select name="prioridad" class="form-control">
                            {loop="$fsc->servicio->listar_prioridad()"}
                            <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == 3"} selected="selected"{/if}>{$value['nombre_prioridad']}</option>
                            {/loop}
                         </select>
                      </div>
-               </div> 
-            </div>     
-          </div>
+                  </div> 
+               </div>     
+            </div>
          </div>
          <div role="tabpanel" class="tab-pane" id="lineas">
             <div class="table-responsive">
@@ -306,19 +302,19 @@ $(function()
                      </div>
                   </div>
                   <div class="col-sm-2">
-                        <div class="form-group">
-                                <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
-                                <select name="forma_pago" class="form-control">
-                                {loop="$fsc->forma_pago->all()"}
-                                   {if="$fsc->cliente_s->codpago==$value->codpago"}
-                                   <option value="{$value->codpago}" selected="selected">{$value->descripcion}</option>
-                                   {else}
-                                   <option value="{$value->codpago}">{$value->descripcion}</option>
-                                   {/if}
-                                {/loop}
-                                </select>
-                             </div>
-                   </div>
+                     <div class="form-group">
+                        <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
+                        <select name="forma_pago" class="form-control">
+                           {loop="$fsc->forma_pago->all()"}
+                              {if="$fsc->cliente_s->codpago==$value->codpago"}
+                              <option value="{$value->codpago}" selected="selected">{$value->descripcion}</option>
+                              {else}
+                              <option value="{$value->codpago}">{$value->descripcion}</option>
+                              {/if}
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
                   <div class="col-sm-2">
                      <div class="form-group">
                         <a href="{$fsc->almacen->url()}">Almacén</a>:
@@ -370,13 +366,15 @@ $(function()
          <div class="col-sm-6">
             <button class="btn btn-sm btn-default" type="button" onclick="window.location.href='{$fsc->url()}';">
                <span class="glyphicon glyphicon-refresh"></span> &nbsp; Reiniciar
-            </button>   
+            </button>
          </div>
          <div class="col-sm-6 text-right">
             <div class="form-group">
-                    <input type="hidden" name="guardar" value="TRUE"/>
-                    <input class='btn btn-primary pull-right' type="submit" value="Nuevo" id='btnsubmit' />   
-             </div>
+               <input type="hidden" name="guardar" value="TRUE"/>
+               <button id='btnsubmit' class='btn btn-primary' type='submit'>
+                  <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+               </button>
+            </div>
          </div>
       </div>
       <div class="row">
@@ -571,10 +569,10 @@ $(function()
    <div class="row">
       <div class="col-lg-12">
          <h1>Paso 1:</h1>
-         <p>Selecciona el cliente al que quieres realizar la venta.</p>
+         <p>Selecciona el cliente del {#FS_SERVICIO#}.</p>
          <a href="#" class="btn btn-block btn-default" data-toggle="modal" data-target="#modal_cliente">Selecciona el cliente</a>
          <h2>Paso 2:</h2>
-         <p>Introduce línea a línea todos los artículos de la venta.</p>
+         <p>Introduce los datos requeridos.</p>
          <h2>Paso 3:</h2>
          <p>Pulsa el botón guardar.</p>
       </div>

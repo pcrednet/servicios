@@ -65,7 +65,6 @@ class nuevo_servicio extends fs_controller
    public $prioridad;
    public $servicio;
    
-   
    public function __construct()
    {
       parent::__construct(__CLASS__, 'nuevo servicio', 'ventas', FALSE, FALSE);
@@ -374,6 +373,7 @@ class nuevo_servicio extends fs_controller
       
       return $tarlist;
    }
+   
 	/**
     * Devuelve los tipos de documentos a guardar,
     * así para añadir tipos no hay que tocar la vista.
@@ -383,25 +383,7 @@ class nuevo_servicio extends fs_controller
    {
       $tipos = array();
       
-      if( $this->user->have_access_to('ventas_presupuesto') AND class_exists('presupuesto_cliente') )
-      {
-         $tipos[] = array('tipo' => 'presupuesto', 'nombre' => ucfirst(FS_PRESUPUESTO).' para cliente');
-      }
-      
-      if( $this->user->have_access_to('ventas_servicio') AND class_exists('servicio_cliente') )
-      {
-         $tipos[] = array('tipo' => 'servicio', 'nombre' => ucfirst(FS_SERVICIO).' de cliente');
-      }
-      
-      if( $this->user->have_access_to('ventas_albaran') )
-      {
-         $tipos[] = array('tipo' => 'albaran', 'nombre' => ucfirst(FS_ALBARAN).' de cliente');
-      }
-      
-      if( $this->user->have_access_to('ventas_factura') )
-      {
-         $tipos[] = array('tipo' => 'factura', 'nombre' => 'Factura de cliente');
-      }
+      $tipos[] = array('tipo' => 'servicio', 'nombre' => ucfirst(FS_SERVICIO).' de cliente');
       
       return $tipos;
    }
@@ -497,7 +479,6 @@ class nuevo_servicio extends fs_controller
             $servicio->numero2 = $_POST['numero2'];
          }
          
-         
          $servicio->irpf = $serie->irpf;
          $servicio->porcomision = $this->agente->porcomision;
          
@@ -509,9 +490,9 @@ class nuevo_servicio extends fs_controller
          $servicio->codpostal = $_POST['codpostal'];
          $servicio->direccion = $_POST['direccion'];
          $servicio->provincia = $_POST['provincia'];
-         $servicio->descripcion = $_POST['descripcion'];
          $servicio->prioridad = intval($_POST['prioridad']);
-         $servicio->estado = $_POST['estado'];
+         $servicio->idestado = $_POST['estado'];
+         
          if( isset($_POST['material']) )
          {
             $servicio->material = $_POST['material'];

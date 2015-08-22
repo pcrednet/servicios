@@ -94,7 +94,6 @@
             </a>
             {/if}
          </div>
-         
          <div class="btn-group">
             <a class="btn btn-sm btn-success" href="index.php?page=nuevo_servicio">
                <span class="glyphicon glyphicon-plus"></span>
@@ -121,20 +120,6 @@
         {$fsc->st['st_servicios']}
       </a>
    </li>
-   <li{if="$fsc->mostrar=='pendientes'"} class="active"{/if}>
-      <a href="{$fsc->url()}&mostrar=pendientes" title="Pendientes">
-         <span class="glyphicon glyphicon-time"></span>
-         <span class="hidden-xs">&nbsp;{$fsc->st['st_servicios']} sin albaranar</span>
-         <span class="hidden-xs badge">{$fsc->total_pendientes()}</span>
-      </a>
-   </li>
-   <li{if="$fsc->mostrar=='rechazados'"} class="active"{/if}>
-      <a href="{$fsc->url()}&mostrar=rechazados" title="Rechazados">
-         <span class="glyphicon glyphicon-remove"></span>
-         <span class="hidden-xs">&nbsp; Rechazados</span>
-         <span class="hidden-xs badge">{$fsc->total_rechazados()}</span>
-      </a>
-   </li>
    <li{if="$fsc->mostrar=='buscar'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=buscar" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
@@ -144,6 +129,7 @@
       </a>
    </li>
 </ul>
+
 {if="$fsc->mostrar=='buscar'"}
 <br/>
 <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
@@ -164,6 +150,21 @@
                      </button>
                   </span>
                </div>
+            </div>
+         </div>
+         <div class="col-sm-2">
+             <div class="form-group">
+               <select name="estado" class="form-control" onchange="this.form.submit()">
+                  <option value="">Cualquier estado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->estados->all()"}
+                     {if="$value->id==$fsc->estado"}
+                     <option value="{$value->id}" selected="selected">{$value->descripcion}</option>
+                     {else}
+                     <option value="{$value->id}">{$value->descripcion}</option>
+                     {/if}
+                  {/loop}
+               </select>
             </div>
          </div>
          <div class="col-sm-2">
@@ -222,27 +223,13 @@
                <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
             </div>
          </div>
-         <div class="col-sm-2">
-             <div class="form-group">
-               <select name="estado" class="form-control" onchange="this.form.submit()">
-                  <option value="">Cualquier estado</option>
-                  <option value="">------</option>
-                  {loop="$fsc->estados->all()"}
-                     {if="$value->id==$fsc->estado"}
-                     <option value="{$value->id}" selected="selected">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->id}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
-               </select>
-            </div>
-         </div>
       </div>
    </div>
 </form>
 {/if}
+
 <div class="table-responsive">
-   <table class="table table-hover">
+   <table class="table">
       <thead>
          <tr>
             <th></th>
@@ -291,42 +278,31 @@
          </tr>
       </thead>
       {loop="$fsc->resultados"}
-      <tr class="clickableRow{if="$value->status==2"} bg-danger{elseif="$value->total<=0"} style="background-color:#ffffff{/if}" href="{$value->url()}" {if condition="$value->editable"} style="background-color: #{$value->color_estado()}{/if}">
+      <tr class="clickableRow" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
          <td class="text-center">
             {if condition="$value->idalbaran"}
             <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
             {/if}
-            {if condition="$value->status==2"}
-            <span class="glyphicon glyphicon-remove" title="El {#FS_SERVICIO#} ha sido rechazado"></span>
-            {/if}
          </td>
          <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
-         <td>
-             {$value->estrellas_prioridad()}
-         </td>
+         <td>{$value->estrellas_prioridad()}</td>
          <td>
             {$value->nombrecliente}
             <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
          </td>
-         <td>
-             {$value->nombre_estado()}
-         </td>
+         <td>{$value->nombre_estado()}</td>
          <td>{$value->material}</td>
          <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
          <td class="text-right">
             {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
          </td>
-         <td class="text-right">
-            {$value->fechainicio}
-         </td>
-         <td class="text-right">
-            {$value->fechafin}
-         </td>
+         <td class="text-right">{$value->fechainicio}</td>
+         <td class="text-right">{$value->fechafin}</td>
       </tr>
       {else}
       <tr class="bg-warning">
          <td></td>
-         <td colspan="6">Ningún {#FS_SERVICIO#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+         <td colspan="9">Ningún {#FS_SERVICIO#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
       </tr>
       {/loop}
    </table>
@@ -340,7 +316,6 @@
       </a>
    </li>
    {/if}
-   
    {if="$fsc->siguiente_url()!=''"}
    <li class="next">
       <a href="{$fsc->siguiente_url()}">
@@ -349,7 +324,6 @@
    </li>
    {/if}
 </ul>
-
 
 <div class="modal fade" id="modal_orden" tabindex="-1" role="dialog">
    <div class="modal-dialog" role="document">
@@ -383,7 +357,6 @@
       </div>
    </div>
 </div>
-
 
 <form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action ="{$fsc->url()}" method="post">
    <input type="hidden" name="offset" value="0"/>
