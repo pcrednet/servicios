@@ -34,6 +34,10 @@
 </script>
 {/if}
 <script type="text/javascript">
+   function show_tab_grupos()
+   {
+      $('#tabs_servicio a:first').tab('show');
+   }
    $(document).ready(function () {
       $('#b_imprimir').click(function (event) {
          event.preventDefault();
@@ -55,20 +59,6 @@
       {if="$fsc->servicio->totalirpf==0"}
       $('.irpf').hide();
       {/if}
-   });
-</script>
-<script type="text/javascript">
-   /// ¿Qué hace esta función?
-   $(function() {
-      var hash = window.location.hash;
-      hash && $('ul.nav a[href="' + hash + '"]').tab('show');
-      
-      $('.nav-tabs a').click(function (e) {
-         $(this).tab('show');
-         var scrollmem = $('body').scrollTop();
-         window.location.hash = this.hash;
-         $('html,body').scrollTop(scrollmem);
-      });
    });
 </script>
 
@@ -116,7 +106,7 @@
                   <span class="hidden-xs"> &nbsp; Eliminar</span>
                </a>
                {/if}
-               <button class="btn btn-sm btn-primary" type="submit">
+               <button class="btn btn-sm btn-primary" type="submit" onclick="show_tab_grupos()">
                   <span class="glyphicon glyphicon-floppy-disk"></span>
                   <span class="hidden-xs"> &nbsp; Guardar</span>
                </button>
@@ -156,10 +146,20 @@
             </div>
          </div>
          {/if}
-         <div class="col-md-4 col-sm-6">
+         <div class="col-md-2 col-sm-3">
             <div class="form-group">
                <span class='text-capitalize'>{#FS_NUMERO2#}:</span>
                <input class="form-control" type="text" name="numero2" value="{$fsc->servicio->numero2}"/>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-3">
+            <div class="form-group">
+               <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
+               <select name="estado" class="form-control">
+                  {loop="$fsc->estado->all()"}
+                  <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
+                  {/loop}
+               </select>
             </div>
          </div>
          <div class="col-md-2 col-sm-3">
@@ -186,9 +186,9 @@
    </div>
 
    <div role="tabpanel">
-      <ul class="nav nav-tabs" role="tablist">
+      <ul id="tabs_servicio" class="nav nav-tabs" role="tablist">
          <li role="presentation" class="active">
-            <a href="#servicio" aria-controls="servicios" role="tab" data-toggle="tab">
+            <a href="#servicio" aria-controls="servicio" role="tab" data-toggle="tab">
                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                <span class="hidden-xs">&nbsp; {$fsc->st['st_servicios']}</span>
             </a>
@@ -276,16 +276,7 @@
                   {/if}
                </div>   
                <div class="row bg-info">
-                  <div class="col-sm-2">
-                     <div class="form-group"{if="!$fsc->servicio->editable()"} readonly{/if}>
-                        <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
-                        <select name="estado" class="form-control"{if="!$fsc->servicio->editable()"} disabled{/if}>
-                           {loop="$fsc->estado->all()"}
-                           <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
-                           {/loop}
-                        </select>
-                     </div>
-                  </div>
+                  
                   {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
                   <div class="col-sm-2">
                      <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">

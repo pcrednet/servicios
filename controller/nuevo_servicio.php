@@ -1,9 +1,9 @@
 <?php
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2014-2015  Carlos Garcia Gomez  neorazorx@gmail.com
- * Copyright (C) 2014-2015  Francesc Pineda Segarra  shawe.ewahs@gmail.com
- * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2014-2015    Carlos Garcia Gomez        neorazorx@gmail.com
+ * Copyright (C) 2014-2015    Francesc Pineda Segarra    shawe.ewahs@gmail.com
+ * Copyright (C) 2015         Luis Miguel Pérez Romero   luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,46 +72,45 @@ class nuevo_servicio extends fs_controller
    
    protected function process()
    {
-      //cargamos configuración de servicios
-       $fsvar = new fs_var();
-       $this->servicios_setup = $fsvar->array_get(
-         array(
-            'servicios_diasfin' => 10,
-            'servicios_material' => 0,
-            'servicios_mostrar_material' => 0,
-            'servicios_material_estado' => 0,
-            'servicios_mostrar_material_estado' => 0,             
-            'servicios_accesorios' => 0,
-            'servicios_mostrar_accesorios' => 0,             
-            'servicios_descripcion' => 0,
-            'servicios_mostrar_descripcion' => 0,            
-            'servicios_solucion' => 0,
-            'servicios_mostrar_solucion' => 0,             
-            'servicios_fechafin' => 0,
-            'servicios_mostrar_fechafin' => 0,             
-            'servicios_fechainicio' => 0,
-            'servicios_mostrar_fechainicio' => 0,
-            'servicios_mostrar_garantia' => 0,
-            'servicios_garantia' => 0,
-         ),
-         FALSE
+      /// cargamos configuración de servicios
+      $fsvar = new fs_var();
+      $this->servicios_setup = $fsvar->array_get(
+              array(
+                  'servicios_diasfin' => 10,
+                  'servicios_material' => 0,
+                  'servicios_mostrar_material' => 0,
+                  'servicios_material_estado' => 0,
+                  'servicios_mostrar_material_estado' => 0,             
+                  'servicios_accesorios' => 0,
+                  'servicios_mostrar_accesorios' => 0,             
+                  'servicios_descripcion' => 0,
+                  'servicios_mostrar_descripcion' => 0,            
+                  'servicios_solucion' => 0,
+                  'servicios_mostrar_solucion' => 0,             
+                  'servicios_fechafin' => 0,
+                  'servicios_mostrar_fechafin' => 0,             
+                  'servicios_fechainicio' => 0,
+                  'servicios_mostrar_fechainicio' => 0,
+                  'servicios_mostrar_garantia' => 0,
+                  'servicios_garantia' => 0,
+               ),
+               FALSE
       );
-       
-       /*Cargamos traduccion*/
-       $fsvar = new fs_var();
-       $this->st = $fsvar->array_get(
-         array(
-            'st_servicio' => "Servicio",
-            'st_servicios' => "Servicios",
-            'st_material' => "Material",
-            'st_material_estado' => "Estado del material entregado",
-            'st_accesorios' => "Accesorios que entrega",
-            'st_descripcion' => "Descripción de la averia",
-            'st_solucion' => "Solución"
-         ),
-         FALSE
+      
+      /// cargamos traducciones
+      $this->st = $fsvar->array_get(
+              array(
+                  'st_servicio' => "Servicio",
+                  'st_servicios' => "Servicios",
+                  'st_material' => "Material",
+                  'st_material_estado' => "Estado del material entregado",
+                  'st_accesorios' => "Accesorios que entrega",
+                  'st_descripcion' => "Descripción de la averia",
+                  'st_solucion' => "Solución"
+               ),
+               FALSE
       );
-       
+      
       $this->servicio = new servicio_cliente(); 
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
@@ -128,7 +127,6 @@ class nuevo_servicio extends fs_controller
       $this->grupo = new grupo_clientes();
       $this->estado = new estados_servicios();
       $this->fechaprevista = date('d-m-Y', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
-
       
       if( isset($_REQUEST['buscar_cliente']) )
       {
@@ -205,22 +203,22 @@ class nuevo_servicio extends fs_controller
          $this->divisa = new divisa();
          $this->pais = new pais();
          
-         if( isset($_POST['guardar']) )
+         if( isset($_POST['numlineas']) )
          {
-          $this->nuevo_servicio_cliente();
-         
-                if(!$this->direccion)
-                {
-                $this->direccion = new direccion_cliente();
-                $this->direccion->codcliente = $this->cliente_s->codcliente;
-                $this->direccion->codpais = $_POST['codpais'];
-                $this->direccion->provincia = $_POST['provincia'];
-                $this->direccion->ciudad = $_POST['ciudad'];
-                $this->direccion->codpostal = $_POST['codpostal'];
-                $this->direccion->direccion = $_POST['direccion'];
-                $this->direccion->descripcion = 'Principal';
-                $this->direccion->save();
-                }
+            $this->nuevo_servicio_cliente();
+            
+            if(!$this->direccion)
+            {
+               $this->direccion = new direccion_cliente();
+               $this->direccion->codcliente = $this->cliente_s->codcliente;
+               $this->direccion->codpais = $_POST['codpais'];
+               $this->direccion->provincia = $_POST['provincia'];
+               $this->direccion->ciudad = $_POST['ciudad'];
+               $this->direccion->codpostal = $_POST['codpostal'];
+               $this->direccion->direccion = $_POST['direccion'];
+               $this->direccion->descripcion = 'Principal';
+               $this->direccion->save();
+            }
          }     
       }
    }
@@ -601,11 +599,7 @@ class nuevo_servicio extends fs_controller
                {
                   $this->new_message("<a href='".$servicio->url()."'>".ucfirst(FS_SERVICIO)."</a> guardado correctamente.");
                   $this->new_change(ucfirst(FS_SERVICIO)." a Cliente ".$servicio->codigo, $servicio->url(), TRUE);
-                  
-                  if($_POST['redir'] == 'TRUE')
-                  {
-                     header('Location: '.$servicio->url());
-                  }
+                  header('Location: '.$servicio->url());
                }
                else
                   $this->new_error_msg("¡Imposible actualizar el <a href='".$servicio->url()."'>".FS_SERVICIO."</a>!");

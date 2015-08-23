@@ -60,6 +60,9 @@ class ventas_servicio extends fs_controller
 
    protected function process()
    {
+      /// ¿El usuario tiene permiso para eliminar en esta página?
+      $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
+      
       $this->ppage = $this->page->get('ventas_servicios');
       $this->agente = FALSE;
       $this->estado = new estados_servicios();
@@ -75,12 +78,10 @@ class ventas_servicio extends fs_controller
       $this->nuevo_servicio_url = FALSE;
       $this->pais = new pais();
       $this->serie = new serie();
-      /// ¿El usuario tiene permiso para eliminar en esta página?
-      $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       
-       //cargamos configuración de servicios
-       $fsvar = new fs_var();
-       $this->servicios_setup = $fsvar->array_get(
+      //cargamos configuración de servicios
+      $fsvar = new fs_var();
+      $this->servicios_setup = $fsvar->array_get(
          array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
@@ -102,10 +103,9 @@ class ventas_servicio extends fs_controller
          ),
          FALSE
       );
-       
-       /*Cargamos traduccion*/
-       $fsvar = new fs_var();
-       $this->st = $fsvar->array_get(
+      
+      /*Cargamos traduccion*/
+      $this->st = $fsvar->array_get(
          array(
             'st_servicio' => "Servicio",
             'st_servicios' => "Servicios",
@@ -122,25 +122,23 @@ class ventas_servicio extends fs_controller
        * Comprobamos si el usuario tiene acceso a nueva_venta,
        * necesario para poder añadir líneas.
        */
-       
-       if( isset($_GET['delete_detalle']) )
+      if( isset($_GET['delete_detalle']) )
+      {
+         $det0 = new detalle_servicio();
+         $detalle = $det0->get($_GET['delete_detalle']);
+         if($detalle)
          {
-            $det0 = new detalle_servicio();
-            $detalle = $det0->get($_GET['delete_detalle']);
-            if($detalle)
+            if( $detalle->delete() )
             {
-               if( $detalle->delete() )
-               {
-                  $this->new_message('Detalle eliminado correctamente.');
-               }
-               else
-                  $this->new_error_msg('Error al eliminar el detalle.');
+               $this->new_message('Detalle eliminado correctamente.');
             }
             else
-               $this->new_error_msg('Detalle no encontrado.');
+               $this->new_error_msg('Error al eliminar el detalle.');
          }
-       
-       
+         else
+            $this->new_error_msg('Detalle no encontrado.');
+      }
+      
       if( $this->user->have_access_to('nueva_venta', FALSE) )
       {
          $nuevopedp = $this->page->get('nueva_venta');
@@ -168,7 +166,7 @@ class ventas_servicio extends fs_controller
          }
 
          /// cargamos el agente
-         if (!is_null($this->servicio->codagente))
+         if( !is_null($this->servicio->codagente) )
          {
             $agente = new agente();
             $this->agente = $agente->get($this->servicio->codagente);
@@ -176,7 +174,6 @@ class ventas_servicio extends fs_controller
 
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
-
       }
       else
          $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " de cliente no encontrado!");
@@ -198,57 +195,56 @@ class ventas_servicio extends fs_controller
 
    private function modificar()
    {
-      if($this->servicio->estado != $_POST['estado'])
-            {
-               ///si tiene el mismo estado no tiene que hacer nada sino tiene que añadir un detalle
-               $this->estado = $_POST['estado'];
-               $this->agrega_detalle_estado($_POST['estado']);
-            }
-            
       $this->servicio->observaciones = $_POST['observaciones'];
       $this->servicio->numero2 = $_POST['numero2'];
       $this->servicio->estado = $_POST['estado'];
+      
       if( isset($_POST['material']) )
-         {
-           $this->servicio->material = $_POST['material'];
-         }
-         if( isset($_POST['material_estado']) )
-         {
-            $this->servicio->material_estado = $_POST['material_estado'];
-         }
-         if( isset($_POST['accesorios']) )
-         {
-            $this->servicio->accesorios = $_POST['accesorios'];
-         }
-         if( isset($_POST['descripcion']) )
-         {
-            $this->servicio->descripcion = $_POST['descripcion'];
-         }
-         if( isset($_POST['solucion']) )
-         {
-            $this->servicio->solucion = $_POST['solucion'];
-         }
-         if( isset($_POST['fechainicio']) )
-         {
-            $this->servicio->fechainicio = $_POST['fechainicio'];
-         }
-         if( isset($_POST['fechafin']) )
-         {
-            $this->servicio->fechafin = $_POST['fechafin'];
-         }         
-         if( isset($_POST['garantia']) )
-         {
-            $this->servicio->garantia = $_POST['garantia'];
-         }
-         else
-            $this->servicio->garantia = FALSE;
+      {
+         $this->servicio->material = $_POST['material'];
+      }
+      
+      if( isset($_POST['material_estado']) )
+      {
+         $this->servicio->material_estado = $_POST['material_estado'];
+      }
+      
+      if( isset($_POST['accesorios']) )
+      {
+         $this->servicio->accesorios = $_POST['accesorios'];
+      }
+      
+      if( isset($_POST['descripcion']) )
+      {
+         $this->servicio->descripcion = $_POST['descripcion'];
+      }
+      
+      if( isset($_POST['solucion']) )
+      {
+         $this->servicio->solucion = $_POST['solucion'];
+      }
+      
+      if( isset($_POST['fechainicio']) )
+      {
+         $this->servicio->fechainicio = $_POST['fechainicio'];
+      }
+      
+      if( isset($_POST['fechafin']) )
+      {
+         $this->servicio->fechafin = $_POST['fechafin'];
+      }
+      
+      if( isset($_POST['garantia']) )
+      {
+         $this->servicio->garantia = $_POST['garantia'];
+      }
+      else
+         $this->servicio->garantia = FALSE;
       
       $this->servicio->prioridad = $_POST['prioridad'];
-
-
-      if (is_null($this->servicio->idalbaran))
+      
+      if( $this->servicio->editable() )
       {
-         $this->servicio->editable = TRUE;
          /// obtenemos los datos del ejercicio para acotar la fecha
          $eje0 = $this->ejercicio->get($this->servicio->codejercicio);
          if ($eje0)
@@ -475,14 +471,32 @@ class ventas_servicio extends fs_controller
       else
          $this->new_error_msg("¡Imposible modificar el " . FS_SERVICIO . "!");
       
-      
+      if($this->servicio->idestado != $_POST['estado'])
+      {
+         /// si tiene el mismo estado no tiene que hacer nada sino tiene que añadir un detalle
+         $this->servicio->idestado = $_POST['estado'];
+         $this->agrega_detalle_estado($_POST['estado']);
+         
+         foreach($this->estado->all() as $est)
+         {
+            if($est->id == $this->servicio->idestado)
+            {
+               if($est->albaran)
+               {
+                  $this->generar_albaran();
+               }
+               break;
+            }
+         }
+         
+         $this->servicio->save();
+      }
    }
 
    private function generar_albaran()
    {
       $albaran = new albaran_cliente();
       $albaran->apartado = $this->servicio->apartado;
-      $albaran->automatica = TRUE;
       $albaran->cifnif = $this->servicio->cifnif;
       $albaran->ciudad = $this->servicio->ciudad;
       $albaran->codagente = $this->servicio->codagente;
@@ -496,7 +510,6 @@ class ventas_servicio extends fs_controller
       $albaran->codpostal = $this->servicio->codpostal;
       $albaran->codserie = $this->servicio->codserie;
       $albaran->direccion = $this->servicio->direccion;
-      $albaran->editable = TRUE;
       $albaran->neto = $this->servicio->neto;
       $albaran->nombrecliente = $this->servicio->nombrecliente;
       $albaran->observaciones = $this->servicio->observaciones;
@@ -506,10 +519,8 @@ class ventas_servicio extends fs_controller
       $albaran->numero2 = $this->servicio->numero2;
       $albaran->irpf = $this->servicio->irpf;
       $albaran->porcomision = $this->servicio->porcomision;
-      $albaran->recfinanciero = $this->servicio->recfinanciero;
       $albaran->totalirpf = $this->servicio->totalirpf;
       $albaran->totalrecargo = $this->servicio->totalrecargo;
-      $albaran->idservicio = $this->servicio->idservicio;
 
       /**
        * Obtenemos el ejercicio para la fecha de hoy (puede que
@@ -572,29 +583,13 @@ class ventas_servicio extends fs_controller
             }
          }
 
-         if ($continuar)
+         if($continuar)
          {
             $this->servicio->idalbaran = $albaran->idalbaran;
-            $this->servicio->editable = FALSE;
-          
-            if ($this->servicio->save())
-            {
-               $this->new_message("<a href='" . $albaran->url() . "'>" . ucfirst(FS_ALBARAN) . '</a> generado correctamente.');
-            }
-            else
-            {
-               $this->new_error_msg("¡Imposible vincular el ".FS_SERVICIO." con el nuevo " . FS_ALBARAN . "!");
-               if ($albaran->delete())
-               {
-                  $this->new_error_msg("El " . FS_ALBARAN . " se ha borrado.");
-               }
-               else
-                  $this->new_error_msg("¡Imposible borrar el " . FS_ALBARAN . "!");
-            }
          }
          else
          {
-            if ($albaran->delete())
+            if( $albaran->delete() )
             {
                $this->new_error_msg("El " . FS_ALBARAN . " se ha borrado.");
             }
