@@ -169,7 +169,7 @@ class ventas_servicios extends fs_controller
          $articulo = new articulo();
          $this->articulo = $articulo->get($_GET['ref']);
          
-         $linea = new linea_servicios_cliente();
+         $linea = new linea_servicio_cliente();
          $this->resultados = $linea->all_from_articulo($_GET['ref'], $this->offset);
       }
       else
