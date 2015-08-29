@@ -439,11 +439,6 @@
                   {loop="$fsc->servicio->get_lineas()"}
                   <tr>
                      <td>
-                        {if="$value->idlineapresupuesto"}
-                        <a target="_blank" href="index.php?page=ventas_presupuesto&id={$value->idpresupuesto}" title="ver {#FS_PRESUPUESTO#}">
-                           <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
-                        </a> &nbsp;
-                        {/if}
                         <a target="_blank" href="{$value->articulo_url()}">{$value->referencia}</a> {$value->descripcion}
                      </td>
                      <td class="text-right">{$value->cantidad}</td>
