@@ -42,6 +42,30 @@
       document.f_custom_search.codcliente.value='';
       document.f_custom_search.ac_cliente.focus();
    }
+   function totalTextFormatter(data) {
+    return 'Total';
+    }
+
+    function totalFormatter(data) {
+        return data.length;
+    }
+
+    function sumFormatter(data) {
+        field = this.field;
+        return data.reduce(function(sum, row) { 
+            return sum + (+row[field]);
+        }, 0).toFixed(2)+ ' €';
+    }
+    function runningFormatter(value, row, index) {
+                index++; {
+        return index;
+        }
+    }
+    function priceFormatter(value) {
+        // 16777215 == ffffff in decimal
+        return value.substring() + '€';
+    }
+    
    $(document).ready(function() {
       $('#b_buscar_lineas').click(function(event) {
          event.preventDefault();
@@ -229,11 +253,23 @@
 {/if}
 
 <div class="table-responsive">
-   <table class="table">
+  <table class="table hover" 
+                   id="table" data-toggle="table" name="historial" 
+                   data-show-columns="true" 
+                   data-search="true" 
+                   data-show-refresh="true" 
+                   data-show-toggle="true" 
+                   data-show-export="true" 
+                   data-pagination="true"
+                   data-show-header="true"
+                   data-sortable="true" 
+                   data-show-footer="true" 
+                   >
       <thead>
+           
          <tr>
-            <th></th>
-            <th class="text-left">
+            <th data-footer-formatter="totalTextFormatter" data-formatter="runningFormatter">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th data-footer-formatter="totalFormatter" class="text-left">
                Código + {#FS_NUMERO2#}
                {if="$fsc->order=='codigo DESC'"}
                <a href="#" data-toggle="modal" data-target="#modal_orden">
@@ -257,11 +293,11 @@
                </a>
                {/if}
             </th>
-            <th class="text-left">Cliente</th>
-            <th class="text-left">Estado</th>
-            <th class="text-left">{$fsc->st['st_material']}</th>
-            <th class="text-right">Total</th>
-            <th class="text-right">
+            <th data-sortable="true" class="text-left">Cliente</th>
+            <th data-sortable="true" class="text-left">Estado</th>
+            <th data-sortable="true" class="text-left">{$fsc->st['st_material']}</th>
+            <th data-sortable="true" data-footer-formatter="sumFormatter" data-formatter="priceFormatter" class="text-right">Total</th>
+            <th data-sortable="true" class="text-right">
                Fecha
                {if="$fsc->order=='fecha DESC'"}
                <a href="#" data-toggle="modal" data-target="#modal_orden">
@@ -273,8 +309,8 @@
                </a>
                {/if}
             </th>
-            <th class="text-right">Fecha inicio</th>
-            <th class="text-right">Fecha Prev. Fin</th>
+            <th data-sortable="true" class="text-right">Fecha inicio</th>
+            <th data-sortable="true" class="text-right">Fecha Prev. Fin</th>
          </tr>
       </thead>
       {loop="$fsc->resultados"}
@@ -292,7 +328,7 @@
          </td>
          <td>{$value->nombre_estado()}</td>
          <td>{$value->material}</td>
-         <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
+         <td class="text-right">{$value->total}</td>
          <td class="text-right">
             {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
          </td>
