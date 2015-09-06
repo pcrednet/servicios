@@ -86,7 +86,7 @@ class imprimir_servicio extends fs_controller
          
          if( isset($_POST['email']) )
          {
-            $this->enviar_email('pedio');
+            $this->enviar_email('servicio');
          }
          else
             $this->generar_pdf_servicio();
@@ -414,7 +414,7 @@ class imprimir_servicio extends fs_controller
          }
       }
       
-      if($archivo)
+     if($archivo)
       {
          if( !file_exists('tmp/'.FS_TMP_NAME.'enviar') )
             mkdir('tmp/'.FS_TMP_NAME.'enviar');
@@ -422,7 +422,7 @@ class imprimir_servicio extends fs_controller
          $pdf_doc->save('tmp/'.FS_TMP_NAME.'enviar/'.$archivo);
       }
       else
-         $pdf_doc->show();
+         $pdf_doc->show(FS_SERVICIO.'_'.$this->servicio->codigo.'.pdf');
    }
    
    private function enviar_email($doc)
@@ -478,7 +478,10 @@ class imprimir_servicio extends fs_controller
             $mail->AddAttachment('tmp/'.FS_TMP_NAME.'enviar/'.$filename);
             $mail->AddAddress($_POST['email'], $this->cliente->razonsocial);
             $mail->IsHTML(TRUE);
-            
+            if(isset($_POST['concopia']))
+            {
+                $mail->AddCC($_POST['email_copia'], $this->cliente->razonsocial);
+            }
             if( $mail->Send() )
             {
                $this->new_message('Mensaje enviado correctamente.');
