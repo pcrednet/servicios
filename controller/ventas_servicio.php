@@ -34,6 +34,7 @@ require_model('regularizacion_iva.php');
 require_model('serie.php');
 require_model('estados_servicios.php');
 require_model('detalle_servicio.php');
+require_model('fabricante.php');
 
 class ventas_servicio extends fs_controller
 {
@@ -52,6 +53,7 @@ class ventas_servicio extends fs_controller
    public $estado;
    public $servicios_setup;
    public $garantia;
+   public $fabricante;
 
    public function __construct()
    {
@@ -78,6 +80,7 @@ class ventas_servicio extends fs_controller
       $this->nuevo_servicio_url = FALSE;
       $this->pais = new pais();
       $this->serie = new serie();
+      $this->fabricante = new fabricante();
       
       //cargamos configuración de servicios
       $fsvar = new fs_var();

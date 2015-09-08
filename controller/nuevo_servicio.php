@@ -34,6 +34,7 @@ require_model('presupuesto_cliente.php');
 require_model('serie.php');
 require_model('tarifa.php');
 require_model('estados_servicios.php');
+require_model('fabricante.php');
 
 class nuevo_servicio extends fs_controller
 {
@@ -64,6 +65,7 @@ class nuevo_servicio extends fs_controller
    public $garantia;
    public $prioridad;
    public $servicio;
+   public $fabricante;
    
    public function __construct()
    {
@@ -74,6 +76,7 @@ class nuevo_servicio extends fs_controller
    {
       /// cargamos configuración de servicios
       $fsvar = new fs_var();
+      $this->fabricante = new fabricante();
       $this->servicios_setup = $fsvar->array_get(
               array(
                   'servicios_diasfin' => 10,
@@ -273,6 +276,10 @@ class nuevo_servicio extends fs_controller
          {
             $art0->codfamilia = $_REQUEST['codfamilia'];
          }
+         if($_REQUEST['codfabricante'] != '')
+         {
+            $art0->codfabricante = $_REQUEST['codfabricante'];
+         }
          
          if( $art0->save() )
          {
@@ -295,9 +302,14 @@ class nuevo_servicio extends fs_controller
       {
          $codfamilia = $_REQUEST['codfamilia'];
       }
+      $codfabricante = '';
+      if( isset($_REQUEST['codfabricante']) )
+      {
+         $codfabricante = $_REQUEST['codfabricante'];
+      }
       
       $con_stock = isset($_REQUEST['con_stock']);
-      $this->results = $articulo->search($this->query, 0, $codfamilia, $con_stock);
+      $this->results = $articulo->search($this->query, 0, $codfamilia, $con_stock, $codfabricante);
       
       /// añadimos la busqueda, el descuento y la cantidad
       foreach($this->results as $i => $value)
