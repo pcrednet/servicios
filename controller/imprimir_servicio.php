@@ -44,9 +44,39 @@ class imprimir_servicio extends fs_controller
    
    protected function process()
    {
+     //cargamos configuración de servicios
+      $fsvar = new fs_var();
+      $this->servicios_setup = $fsvar->array_get(
+         array(
+            'servicios_diasfin' => 10,
+            'servicios_material' => 0,
+            'servicios_mostrar_material' => 0,
+            'servicios_material_estado' => 0,
+            'servicios_mostrar_material_estado' => 0,             
+            'servicios_accesorios' => 0,
+            'servicios_mostrar_accesorios' => 0,             
+            'servicios_descripcion' => 0,
+            'servicios_mostrar_descripcion' => 0,            
+            'servicios_solucion' => 0,
+            'servicios_mostrar_solucion' => 0,             
+            'servicios_fechafin' => 0,
+            'servicios_mostrar_fechafin' => 0,             
+            'servicios_fechainicio' => 0,
+            'servicios_mostrar_fechainicio' => 0,
+            'servicios_mostrar_garantia' => 0,
+            'servicios_garantia' => 0,
+            'servicios_condiciones' => "Condiciones del deposito:\nLos presupuestos realizados tienen una".
+               " validez de 15 días.\nUna vez avisado al cliente para que recoja el producto este dispondrá".
+               " de un plazo máximo de 2 meses para recogerlo, de no ser así y no haber aviso por parte del".
+               " cliente se empezará a cobrar 1 euro al día por gastos de almacenaje.\nLos accesorios y".
+               " productos externos al equipo no especificados en este documento no podrán ser reclamados en".
+               " caso de disconformidad con el técnico.", 
+         ),
+         FALSE
+      );
+      
       /*Cargamos traduccion*/
-       $fsvar = new fs_var();
-       $this->st = $fsvar->array_get(
+      $this->st = $fsvar->array_get(
          array(
             'st_servicio' => "Servicio",
             'st_servicios' => "Servicios",
@@ -57,8 +87,7 @@ class imprimir_servicio extends fs_controller
             'st_solucion' => "Solución"
          ),
          FALSE
-      );  
-       
+      );
        
       $this->cliente = FALSE;
       $this->impuesto = new impuesto();
@@ -220,7 +249,8 @@ class imprimir_servicio extends fs_controller
             $pdf_doc->pdf->ezText("\n", 10);
             
             
-            /*Esta es la tabla de los datos del servicio y trabajos a realizar*/            
+            /*Esta es la tabla de los datos del servicio y trabajos a realizar*/    
+            $pdf_doc->pdf->ezText("\n<b>".$this->st['st_servicio']."</b>", 14);
             $pdf_doc->new_table();
             $pdf_doc->add_table_row(
                array(
@@ -244,6 +274,14 @@ class imprimir_servicio extends fs_controller
                    'dato1' => $this->fix_html($this->servicio->descripcion),
                    'campo2' => "<b>".$this->st['st_solucion'].": </b>",
                    'dato2' => $this->servicio->solucion
+               )
+            );
+             $pdf_doc->add_table_row(
+               array(
+                   'campo1' => "<b>Fecha prevista de inicio:</b>",
+                   'dato1' => $this->fix_html($this->servicio->fechainicio),
+                   'campo2' => "<b>Fecha prevista de finalización:</b>",
+                   'dato2' => $this->fix_html($this->servicio->fechafin)
                )
             );
             $pdf_doc->save_table(
@@ -287,7 +325,7 @@ class imprimir_servicio extends fs_controller
              * Descripción    PVP   DTO   Cantidad    Importe
              */
             $pdf_doc->new_table();
-
+            $pdf_doc->pdf->ezText("\n<b>Detalle</b>\n", 14);
             
             if($this->impresion['print_dto'])
             {
@@ -352,6 +390,7 @@ class imprimir_servicio extends fs_controller
                {
                   $pdf_doc->pdf->ezText("\n".$this->servicio->observaciones, 9);
                }
+                  $pdf_doc->pdf->ezText("\n".$this->servicios_setup['servicios_condiciones'], 9);
             }
             
             $pdf_doc->set_y(80);
