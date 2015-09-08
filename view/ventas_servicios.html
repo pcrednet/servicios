@@ -291,46 +291,13 @@
            
          <tr>
             <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-            <th class="text-left">
-               Código + {#FS_NUMERO2#}
-               {if="$fsc->order=='codigo DESC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-               </a>
-               {elseif="$fsc->order=='codigo ASC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-               </a>
-               {/if}
-            </th>
-            <th class="text-left">
-               Prioridad
-               {if="$fsc->order=='prioridad DESC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-               </a>
-               {elseif="$fsc->order=='prioridad ASC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-               </a>
-               {/if}
-            </th>
+            <th class="text-left">Código + {#FS_NUMERO2#}</th>
+            <th class="text-left">Prioridad</th>
             <th class="text-left">Cliente</th>
             <th class="text-left">Estado</th>
             <th class="text-left">{$fsc->st['st_material']}</th>
             <th class="text-right">Total</th>
-            <th class="text-right">
-               Fecha
-               {if="$fsc->order=='fecha DESC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-               </a>
-               {elseif="$fsc->order=='fecha ASC'"}
-               <a href="#" data-toggle="modal" data-target="#modal_orden">
-                  <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-               </a>
-               {/if}
-            </th>
+            <th class="text-right">Fecha</th>
             <th data-sortable="true" class="text-right">Fecha inicio</th>
             <th data-sortable="true" class="text-right">Fecha Prev. Fin</th>
          </tr>
