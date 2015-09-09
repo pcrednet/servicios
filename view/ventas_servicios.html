@@ -79,8 +79,8 @@
       </div>
    </div>
    <div class="row">
-      <div class="col-md-8 col-sm-7 col-xs-8">
-         <div class="btn-group hidden-xs">
+      <div class="col-sm-8 col-xs-6">
+        <div class="btn-group hidden-xs">
             <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
                <span class="glyphicon glyphicon-refresh"></span>
             </a>
@@ -99,7 +99,7 @@
                <span class="glyphicon glyphicon-plus"></span>
                <span class="hidden-xs"> &nbsp; Nuevo</span>
             </a>
-                        {loop="$fsc->extensions"}
+               {loop="$fsc->extensions"}
                {if="$value->type=='button'"}
                <a href="index.php?page={$value->from}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
                {/if}
@@ -162,14 +162,6 @@
       </div>
    </div>
 </div>
-
-
-
-
-
-
-
-
 <ul class="nav nav-tabs" role="tablist">
    <li{if="$fsc->mostrar=='todo'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=todo">

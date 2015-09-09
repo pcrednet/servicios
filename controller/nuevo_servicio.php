@@ -72,7 +72,7 @@ class nuevo_servicio extends fs_controller
       parent::__construct(__CLASS__, 'nuevo servicio', 'ventas', FALSE, FALSE);
    }
    
-   protected function process()
+   protected function private_core()
    {
       /// cargamos configuración de servicios
       $fsvar = new fs_var();
@@ -114,6 +114,32 @@ class nuevo_servicio extends fs_controller
                FALSE
       );
       
+      // cargamos la configuración
+      $fsvar = new fs_var();
+      $this->nuevocli_setup = $fsvar->array_get(
+         array(
+            'nuevocli_cifnif_req' => 0,
+            'nuevocli_direccion' => 0,
+            'nuevocli_direccion_req' => 0,
+            'nuevocli_codpostal' => 0,
+            'nuevocli_codpostal_req' => 0,
+            'nuevocli_pais' => 0,
+            'nuevocli_pais_req' => 0,
+            'nuevocli_provincia' => 0,
+            'nuevocli_provincia_req' => 0,
+            'nuevocli_ciudad' => 0,
+            'nuevocli_ciudad_req' => 0,
+            'nuevocli_telefono1' => 0,
+            'nuevocli_telefono1_req' => 0,
+            'nuevocli_telefono2' => 0,
+            'nuevocli_telefono2_req' => 0,
+            'nuevocli_grupo' => 0,
+            'nuevocli_grupo_req' => 0,
+            'nuevocli_grupo_pred' => 0,
+         ),
+         FALSE
+      );
+      
       $this->servicio = new servicio_cliente(); 
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
@@ -129,6 +155,7 @@ class nuevo_servicio extends fs_controller
       $this->accesorios = NULL;
       $this->grupo = new grupo_clientes();
       $this->estado = new estados_servicios();
+      $this->pais = new pais();
       $this->fechaprevista = date('d-m-Y', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
       
       if( isset($_REQUEST['buscar_cliente']) )
@@ -155,14 +182,17 @@ class nuevo_servicio extends fs_controller
       {
          $this->cliente_s = $this->cliente->get($_POST['cliente']);
          
+         /**
+          * Nuevo cliente
+          */
          if( isset($_POST['nuevo_cliente']) )
          {
             if($_POST['nuevo_cliente'] != '')
             {
                $this->cliente_s = FALSE;
-               if($_POST['nuevo_dni'] != '')
+               if($_POST['nuevo_cifnif'] != '')
                {
-                  $this->cliente_s = $this->cliente->get_by_cifnif($_POST['nuevo_dni']);
+                  $this->cliente_s = $this->cliente->get_by_cifnif($_POST['nuevo_cifnif']);
                   if($this->cliente_s)
                   {
                      $this->new_advice('Ya existe un cliente con ese '.FS_CIFNIF.'. Se ha seleccionado.');
@@ -174,8 +204,68 @@ class nuevo_servicio extends fs_controller
                   $this->cliente_s = new cliente();
                   $this->cliente_s->codcliente = $this->cliente_s->get_new_codigo();
                   $this->cliente_s->nombre = $this->cliente_s->razonsocial = $_POST['nuevo_cliente'];
-                  $this->cliente_s->cifnif = $_POST['nuevo_dni'];
-                  $this->cliente_s->save();
+                  $this->cliente_s->cifnif = $_POST['nuevo_cifnif'];
+                  $this->cliente_s->codserie = $this->empresa->codserie;
+                  
+                  if( isset($_POST['nuevo_grupo']) )
+                  {
+                     if($_POST['nuevo_grupo'] != '')
+                     {
+                        $this->cliente_s->codgrupo = $_POST['nuevo_grupo'];
+                     }
+                  }
+                  
+                  if( isset($_POST['nuevo_telefono1']) )
+                  {
+                     $this->cliente_s->telefono1 = $_POST['nuevo_telefono1'];
+                  }
+                  
+                  if( isset($_POST['nuevo_telefono2']) )
+                  {
+                     $this->cliente_s->telefono2 = $_POST['nuevo_telefono2'];
+                  }
+                  
+                  if( $this->cliente_s->save() )
+                  {
+                     $dircliente = new direccion_cliente();
+                     $dircliente->codcliente = $this->cliente_s->codcliente;
+                     $dircliente->codpais = $this->empresa->codpais;
+                     $dircliente->provincia = $this->empresa->provincia;
+                     $dircliente->ciudad = $this->empresa->ciudad;
+                     $dircliente->descripcion = 'Principal';
+                     
+                     if( isset($_POST['nuevo_pais']) )
+                     {
+                        $dircliente->codpais = $_POST['nuevo_pais'];
+                     }
+                     
+                     if( isset($_POST['nuevo_provincia']) )
+                     {
+                        $dircliente->provincia = $_POST['nuevo_provincia'];
+                     }
+                     
+                     if( isset($_POST['nuevo_ciudad']) )
+                     {
+                        $dircliente->ciudad = $_POST['nuevo_ciudad'];
+                     }
+                     
+                     if( isset($_POST['nuevo_codpostal']) )
+                     {
+                        $dircliente->codpostal = $_POST['nuevo_codpostal'];
+                     }
+                     
+                     if( isset($_POST['nuevo_direccion']) )
+                     {
+                        $dircliente->direccion = $_POST['nuevo_direccion'];
+                     }
+                     
+                     if( $dircliente->save() )
+                     {
+                        $this->new_message('Cliente agregado correctamente.');
+                     }
+                  }
+                  else
+                     $this->new_error_msg("¡Imposible guardar la dirección del cliente!");  
                }
             }
          }
@@ -204,7 +294,7 @@ class nuevo_servicio extends fs_controller
          $this->serie = new serie();
          $this->forma_pago = new forma_pago();
          $this->divisa = new divisa();
-         $this->pais = new pais();
+
          
          if( isset($_POST['numlineas']) )
          {
