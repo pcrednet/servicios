@@ -451,7 +451,7 @@ class ventas_servicios extends fs_controller
       
       if($this->estado != '')
       {
-         $sql .= $where."estado = ".$this->estado;
+         $sql .= $where."idestado = ".$this->estado;
          $where = ' AND ';
       }
       
