@@ -1,6 +1,7 @@
 {include="header"}
 
 {if="$fsc->cliente_s"}
+<script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
    fs_nf0 = {#FS_NF0#};
@@ -259,9 +260,9 @@
                      <div class="form-group">
                         <span class="text-capitalize">{#FS_PROVINCIA#}</span>:
                         {if="$fsc->direccion"}
-                        <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->direccion->provincia}"/>
+                        <input id="ac_provincia" class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->direccion->provincia}"/>
                         {else}
-                        <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->empresa->provincia}"/>
+                        <input id="ac_provincia" class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->empresa->provincia}"/>
                         {/if}
                      </div>
                   </div>

@@ -166,14 +166,16 @@
    <li{if="$fsc->mostrar=='todo'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=todo">
         <span class="glyphicon glyphicon-wrench">  
-        <span class="hidden-xs">{$fsc->st['st_servicios']}</span>
+        <span class="hidden-xs">{$fsc->st['st_servicios']}</span>&nbsp;
       </a>
    </li>
    <li{if="$fsc->mostrar=='buscar'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=buscar" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
          {if="$fsc->num_resultados!==''"}
-         <span class="hidden-xs badge">{$fsc->num_resultados}</span>
+         <span class="hidden-xs badge">{$fsc->num_resultados} resultados</span>
+         {else}
+         <span class="hidden-xs">Buscar</span>
          {/if}
       </a>
    </li>

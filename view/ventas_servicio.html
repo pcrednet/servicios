@@ -2,6 +2,7 @@
 
 {if="$fsc->servicio"}
 {if="$fsc->servicio->editable()"}
+<script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
    numlineas = {function="count($fsc->servicio->get_lineas())"};
@@ -489,7 +490,7 @@
                   <div class="col-sm-3">
                      <div class="form-group">
                         <span class="text-capitalize">{#FS_PROVINCIA#}</span>:
-                        <input class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->servicio->provincia}"/>
+                        <input id="ac_provincia" class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->servicio->provincia}"/>
                      </div>
                   </div>
                   <div class="col-sm-3">
