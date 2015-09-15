@@ -42,7 +42,7 @@ class imprimir_servicio extends fs_controller
       parent::__construct(__CLASS__, 'imprimir', 'ventas', FALSE, FALSE);
    }
    
-   protected function process()
+   protected function private_core()
    {
      //cargamos configuración de servicios
       $fsvar = new fs_var();

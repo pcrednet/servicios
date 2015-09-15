@@ -494,23 +494,7 @@ class nuevo_servicio extends fs_controller
       $continuar = TRUE;
       
       $cliente = $this->cliente->get($_POST['cliente']);
-      if( $cliente )
-         $this->save_codcliente( $cliente->codcliente );
-      else
-      {
-         $this->new_error_msg('Cliente no encontrado.');
-         $continuar = FALSE;
-      }
-      
       $almacen = $this->almacen->get($_POST['almacen']);
-      if( $almacen )
-         $this->save_codalmacen( $almacen->codalmacen );
-      else
-      {
-         $this->new_error_msg('Almacén no encontrado.');
-         $continuar = FALSE;
-      }
-      
       $eje0 = new ejercicio();
       $ejercicio = $eje0->get_by_fecha($_POST['fecha']);
       if( $ejercicio )
