@@ -391,9 +391,15 @@
                      <td class="text-right">
                         <div class="btn-group">
                            {if="$fsc->allow_delete"}
-                           <a class="btn btn-sm btn-danger" href="#" onclick="eliminar_estado('{$value->id}')" title="Eliminar">
-                              <span class="glyphicon glyphicon-trash"></span>
+                           {if="$fsc->estado->tiene_servicios($value->id)"}
+                           <a class="btn btn-sm btn-warning" href="index.php?page=ventas_servicios&estado={$value->id}" title="No lo puedes eliminar porque tiene servicios asociados">
+                           <span class="glyphicon glyphicon-lock"></span>
                            </a>
+                           {else}
+                           <a class="btn btn-sm btn-danger" href="#" onclick="eliminar_estado('{$value->id}')" title="Eliminar">
+                           <span class="glyphicon glyphicon-trash"></span>
+                           </a>
+                           {/if}
                            {/if}
                            <button type="submit" class="btn btn-sm btn-primary" onclick="this.disabled = true;this.form.submit();" title="Guardar">
                               <span class="glyphicon glyphicon-floppy-disk"></span>

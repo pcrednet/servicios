@@ -45,6 +45,7 @@ class ventas_servicios extends fs_controller
    public $estados;
    public $total_resultados;
    public $total_resultados_txt;
+   public $editable;
    
    public function __construct()
    {
@@ -184,6 +185,7 @@ class ventas_servicios extends fs_controller
          $this->num_resultados = '';
          $this->total_resultados = '';
          $this->total_resultados_txt = '';
+         $this->editable ='';
          
          if( isset($_POST['delete']) )
          {
@@ -191,7 +193,7 @@ class ventas_servicios extends fs_controller
          }
          else
          {
-            if( isset($_REQUEST['codagente']) OR isset($_REQUEST['codcliente']) OR isset($_REQUEST['estado']) )
+            if( isset($_REQUEST['codagente']) OR isset($_REQUEST['codcliente']) OR isset($_REQUEST['estado']) OR isset($_REQUEST['editable']) )
             {
                $this->mostrar = 'buscar';
             }
@@ -213,6 +215,11 @@ class ventas_servicios extends fs_controller
             if( isset($_REQUEST['estado']) )
             {
                $this->estado = $_REQUEST['estado'];
+            }
+            
+            if( isset($_REQUEST['editable']) )
+            {
+               $this->editable = $_REQUEST['editable'];
             }
             
             if( isset($_REQUEST['codserie']) )
@@ -476,6 +483,12 @@ class ventas_servicios extends fs_controller
       if($this->hasta != '')
       {
          $sql .= $where."fecha <= ".$this->agente->var2str($this->hasta);
+         $where = ' AND ';
+      }
+      
+      if($this->editable != '')
+      {
+         $sql .= $where."idalbaran IS NULL";
          $where = ' AND ';
       }
       

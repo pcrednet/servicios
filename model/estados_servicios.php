@@ -161,4 +161,18 @@ class estados_servicios extends fs_model
       
       return $elist;
    }
+   
+    public function tiene_servicios($id)
+   {
+      $tiene = FALSE;
+      
+     
+         $data = $this->db->select("SELECT * FROM servicioscli WHERE estado = ".$id."");
+         if($data)
+         {
+            $tiene = TRUE;
+         }
+      
+      return $tiene;
+   }
 }

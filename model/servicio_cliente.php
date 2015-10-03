@@ -231,7 +231,7 @@ class servicio_cliente extends fs_model
     * Todavía sin uso.
     * @var type 
     */
-   private $editable;
+   public $editable;
    
    private static $estados;
 

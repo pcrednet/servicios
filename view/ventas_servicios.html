@@ -203,10 +203,10 @@
                </div>
             </div>
          </div>
-         <div class="col-sm-2">
+         <div class="col-sm-1">
              <div class="form-group">
                <select name="estado" class="form-control" onchange="this.form.submit()">
-                  <option value="">Cualquier estado</option>
+                  <option value="">Estado</option>
                   <option value="">------</option>
                   {loop="$fsc->estados->all()"}
                      {if="$value->id==$fsc->estado"}
@@ -218,10 +218,10 @@
                </select>
             </div>
          </div>
-         <div class="col-sm-2">
+         <div class="col-sm-1">
             <div class="form-group">
                <select class="form-control" name="codserie" onchange="this.form.submit()">
-                  <option value="">Cualquier serie</option>
+                  <option value="">Serie</option>
                   <option value="">-----</option>
                   {loop="$fsc->serie->all()"}
                      {if="$value->codserie==$fsc->codserie"}
@@ -236,7 +236,7 @@
          <div class="col-sm-2">
             <div class="form-group">
                <select name="codagente" class="form-control" onchange="this.form.submit()">
-                  <option value="">Cualquier empleado</option>
+                  <option value="">Empleado</option>
                   <option value="">------</option>
                   {loop="$fsc->agente->all()"}
                      {if="$value->codagente==$fsc->codagente"}
@@ -264,6 +264,14 @@
                </div>
             </div>
          </div>
+         <div class="col-sm-2">
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
+                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
+                  </label>
+               </div>
+            </div>
          <div class="col-sm-1">
             <div class="form-group">
                <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
