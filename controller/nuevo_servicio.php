@@ -156,7 +156,7 @@ class nuevo_servicio extends fs_controller
       $this->grupo = new grupo_clientes();
       $this->estado = new estados_servicios();
       $this->pais = new pais();
-      $this->fechaprevista = date('d-m-Y', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
+      $this->fechaprevista = date('Y-m-d', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
       
       if( isset($_REQUEST['buscar_cliente']) )
       {
@@ -497,13 +497,6 @@ class nuevo_servicio extends fs_controller
       $almacen = $this->almacen->get($_POST['almacen']);
       $eje0 = new ejercicio();
       $ejercicio = $eje0->get_by_fecha($_POST['fecha']);
-      if( $ejercicio )
-         $this->save_codejercicio( $ejercicio->codejercicio );
-      else
-      {
-         $this->new_error_msg('Ejercicio no encontrado.');
-         $continuar = FALSE;
-      }
       
       $serie = $this->serie->get($_POST['serie']);
       if( !$serie )
@@ -522,13 +515,6 @@ class nuevo_servicio extends fs_controller
       }
       
       $divisa = $this->divisa->get($_POST['divisa']);
-      if( $divisa )
-         $this->save_coddivisa( $divisa->coddivisa );
-      else
-      {
-         $this->new_error_msg('Divisa no encontrada.');
-         $continuar = FALSE;
-      }
       
       $servicio = new servicio_cliente();
       

@@ -285,13 +285,19 @@ class servicio_cliente extends fs_model
          $this->accesorios = $s['accesorios'];
          $this->idestado = $s['idestado'];
          
-         $this->fechafin = NULL;
-         if( !is_null($s['fechafin']) )
+         if( isset($s['fechafin']) )
          {
-            $this->fechafin = Date('d-m-Y', strtotime($s['fechafin']));
+            $this->fechafin = $s['fechafin'];
+            $this->fechafin1 = Date('Y-m-d H:i', strtotime($s['fechafin']));
          }
          
-         $this->fechainicio = Date('d-m-Y', strtotime($s['fechainicio']));
+         if( isset($s['fechainicio']) )
+         {
+            $this->fechainicio = $s['fechainicio'];
+            $this->fechainicio1 = Date('Y-m-d H:i', strtotime($s['fechainicio']));
+         }
+         
+         
          $this->garantia = $s['garantia'];
          $this->prioridad = $s['prioridad'];
          
@@ -817,4 +823,14 @@ class servicio_cliente extends fs_model
       
       return $num;
    }
+   
+   /**
+    * @desc - formatea una fecha a microtime para añadir al evento tipo 1401517498985
+    * @access punliv
+    * @return strtotime
+    */
+    public function formatDate($date)
+    {
+        return strtotime(substr($date, 6, 4)."-".substr($date, 3, 2)."-".substr($date, 0, 2)." " .substr($date, 10, 6)) * 1000;
+    }
 }

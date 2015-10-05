@@ -107,12 +107,12 @@
    </columna>
    <columna>
       <nombre>fechafin</nombre>
-      <tipo>date</tipo>
+      <tipo>text</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>fechainicio</nombre>
-      <tipo>date</tipo>
+      <tipo>text</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>

@@ -167,7 +167,7 @@ class estados_servicios extends fs_model
       $tiene = FALSE;
       
      
-         $data = $this->db->select("SELECT * FROM servicioscli WHERE estado = ".$id."");
+         $data = $this->db->select("SELECT * FROM servicioscli WHERE idestado = ".$id."");
          if($data)
          {
             $tiene = TRUE;
