@@ -29,7 +29,7 @@ require_model('albaran_cliente.php');
 require_model('cliente.php');
 require_model('linea_servicio_cliente.php');
 require_model('secuencia.php');
-require_model('estados_servicios.php');
+require_model('estado_servicios.ph');
 
 /**
  * Pedido de cliente
@@ -349,7 +349,7 @@ class servicio_cliente extends fs_model
       
       if( !isset(self::$estados) )
       {
-         $estado = new estados_servicios();
+         $estado = new estado_servicio();
          self::$estados = $estado->all();
       }
    }

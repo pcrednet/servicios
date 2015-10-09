@@ -33,7 +33,7 @@ require_model('servicio_cliente.php');
 require_model('presupuesto_cliente.php');
 require_model('serie.php');
 require_model('tarifa.php');
-require_model('estados_servicios.php');
+require_model('estado_servicio.php');
 require_model('fabricante.php');
 
 class nuevo_servicio extends fs_controller
@@ -115,7 +115,6 @@ class nuevo_servicio extends fs_controller
       );
       
       // cargamos la configuración
-      $fsvar = new fs_var();
       $this->nuevocli_setup = $fsvar->array_get(
          array(
             'nuevocli_cifnif_req' => 0,
@@ -154,7 +153,7 @@ class nuevo_servicio extends fs_controller
       $this->material_estado = NULL;
       $this->accesorios = NULL;
       $this->grupo = new grupo_clientes();
-      $this->estado = new estados_servicios();
+      $this->estado = new estado_servicio();
       $this->pais = new pais();
       $this->fechaprevista = date('d-m-Y', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
       

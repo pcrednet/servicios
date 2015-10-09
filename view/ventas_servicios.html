@@ -97,9 +97,9 @@
          <div class="btn-group">
             <a class="btn btn-sm btn-success" href="index.php?page=nuevo_servicio">
                <span class="glyphicon glyphicon-plus"></span>
-               <span class="hidden-xs"> &nbsp; Nuevo</span>
+               <span class="hidden-xs">&nbsp; Nuevo</span>
             </a>
-               {loop="$fsc->extensions"}
+            {loop="$fsc->extensions"}
                {if="$value->type=='button'"}
                <a href="index.php?page={$value->from}{$value->params}" class="btn btn-sm btn-default">{$value->text}</a>
                {/if}
@@ -162,20 +162,21 @@
       </div>
    </div>
 </div>
+
 <ul class="nav nav-tabs" role="tablist">
    <li{if="$fsc->mostrar=='todo'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=todo">
-        <span class="glyphicon glyphicon-wrench">  
-        <span class="hidden-xs">{$fsc->st['st_servicios']}</span>&nbsp;
+         <span class="glyphicon glyphicon-wrench"></span>
+         <span class="hidden-xs">&nbsp; {$fsc->st['st_servicios']}</span>
       </a>
    </li>
    <li{if="$fsc->mostrar=='buscar'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=buscar" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
          {if="$fsc->num_resultados!==''"}
-         <span class="hidden-xs badge">{$fsc->num_resultados} resultados</span>
+         <span class="hidden-xs badge">&nbsp; {$fsc->num_resultados} resultados</span>
          {else}
-         <span class="hidden-xs">Buscar</span>
+         <span class="hidden-xs">&nbsp; Buscar</span>
          {/if}
       </a>
    </li>
@@ -282,9 +283,8 @@
 <div class="table-responsive">
   <table class="table table-hover">
       <thead>
-           
          <tr>
-            <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th></th>
             <th class="text-left">Código + {#FS_NUMERO2#}</th>
             <th class="text-left">Prioridad</th>
             <th class="text-left">Cliente</th>
@@ -352,8 +352,13 @@
    {/if}
 </ul>
 
+{loop="$fsc->extensions"}
+   {if="$value->type=='minicron'"}
+   <iframe src="index.php?page={$value->from}{$value->params}" style="display: none;"></iframe>
+   {/if}
+{/loop}
 
-<form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action ="{$fsc->url()}" method="post">
+<form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action="{$fsc->url()}" method="post">
    <input type="hidden" name="offset" value="0"/>
    <div class="modal" id="modal_buscar_lineas">
       <div class="modal-dialog" style="width: 99%; max-width: 950px;">

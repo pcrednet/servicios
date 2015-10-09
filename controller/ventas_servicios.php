@@ -23,7 +23,7 @@ require_model('agente.php');
 require_model('articulo.php');
 require_model('cliente.php');
 require_model('servicio_cliente.php');
-require_model('estados_servicios.php');
+require_model('estado_servicio.php');
 
 class ventas_servicios extends fs_controller
 {
@@ -48,7 +48,7 @@ class ventas_servicios extends fs_controller
    
    public function __construct()
    {
-      parent::__construct(__CLASS__, FS_SERVICIOS. ' de cliente', 'ventas');
+      parent::__construct(__CLASS__, FS_SERVICIOS. ' a clientes', 'ventas');
    }
    
    protected function private_core()
@@ -96,7 +96,7 @@ class ventas_servicios extends fs_controller
       $servicio = new servicio_cliente();
       $this->agente = new agente();
       $this->serie = new serie();
-      $this->estados = new estados_servicios();
+      $this->estados = new estado_servicio();
       
       $this->mostrar = 'todo';
       if( isset($_GET['mostrar']) )
