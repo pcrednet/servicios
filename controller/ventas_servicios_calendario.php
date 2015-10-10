@@ -15,7 +15,7 @@ require_model('agente.php');
 require_model('articulo.php');
 require_model('cliente.php');
 require_model('servicio_cliente.php');
-require_model('estados_servicios.php');
+require_model('estado_servicios.php');
 
 class ventas_servicios_calendario extends fs_controller {
 
@@ -33,7 +33,7 @@ class ventas_servicios_calendario extends fs_controller {
         $servicio = new servicio_cliente();
         $this->agente = new agente();
         $this->serie = new serie();
-        $this->estados = new estados_servicios();
+        $this->estados = new estado_servicio();
         
         if( isset($_REQUEST['buscar_cliente']) )
       {
