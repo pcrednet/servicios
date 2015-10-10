@@ -413,7 +413,7 @@
                            <select class="form-control" id="iva_{$counter}" name="iva_{$counter}" onchange="ajustar_iva('{$counter}')">
                            {loop="$fsc->impuesto->all()"}
                               {if="$value1->codimpuesto==$value2->codimpuesto"}
-                              <option value="{$value2->iva}" selected="selected">{$value2->descripcion}</option>
+                              <option value="{$value2->iva}" selected="">{$value2->descripcion}</option>
                               {else}
                               <option value="{$value2->iva}">{$value2->descripcion}</option>
                               {/if}
@@ -877,6 +877,7 @@
       </div>
    </div>
 </form>
+
 <div class="modal fade" id="modal_nuevo_detalle">
    <div class="modal-dialog">
       <div class="modal-content">

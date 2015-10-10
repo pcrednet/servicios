@@ -32,7 +32,7 @@ require_model('pais.php');
 require_model('servicio_cliente.php');
 require_model('regularizacion_iva.php');
 require_model('serie.php');
-require_model('estados_servicios.php');
+require_model('estado_servicio.php');
 require_model('detalle_servicio.php');
 require_model('fabricante.php');
 
@@ -67,7 +67,7 @@ class ventas_servicio extends fs_controller
       
       $this->ppage = $this->page->get('ventas_servicios');
       $this->agente = FALSE;
-      $this->estado = new estados_servicios();
+      $this->estado = new estado_servicio();
       $servicio = new servicio_cliente();
       $this->servicio = FALSE;
       $this->cliente = new cliente();
@@ -629,7 +629,7 @@ class ventas_servicio extends fs_controller
 
    private function agrega_detalle_estado($id)
    {
-      $this->estado = new estados_servicios();
+      $this->estado = new estado_servicio();
       $estado = $this->estado->get($id);
       if($estado)
       {

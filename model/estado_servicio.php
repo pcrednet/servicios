@@ -20,11 +20,11 @@
  */
 
 /**
- * Description of estados_servicios
+ * Description of estado_servicio
  *
  * @author carlos
  */
-class estados_servicios extends fs_model
+class estado_servicio extends fs_model
 {
    /**
     * Clave primaria.
@@ -90,7 +90,7 @@ class estados_servicios extends fs_model
       $data = $this->db->select("SELECT * FROM estados_servicios WHERE id = ".$this->var2str($id).";");
       if($data)
       {
-         return new estados_servicios($data[0]);
+         return new estado_servicio($data[0]);
       }
       else
          return FALSE;
@@ -156,7 +156,7 @@ class estados_servicios extends fs_model
       if($data)
       {
          foreach($data as $d)
-            $elist[] = new estados_servicios($d);
+            $elist[] = new estado_servicio($d);
       }
       
       return $elist;

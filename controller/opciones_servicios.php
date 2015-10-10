@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('estados_servicios.php');
+require_model('estado_servicio.php');
 
 /**
  * Description of opciones_servicios
@@ -46,7 +46,7 @@ class opciones_servicios extends fs_controller
       
       $this->share_extensions();
       
-      $this->estado = new estados_servicios();
+      $this->estado = new estado_servicio();
       
       /// cargamos la configuración
       $fsvar = new fs_var();
@@ -141,7 +141,7 @@ class opciones_servicios extends fs_controller
          $estado = $this->estado->get($_POST['id_estado']);
          if(!$estado)
          {
-            $estado = new estados_servicios();
+            $estado = new estado_servicio();
             $estado->id = intval($_POST['id_estado']);
          }
          $estado->descripcion = $_POST['descripcion'];
@@ -165,7 +165,7 @@ class opciones_servicios extends fs_controller
       $fsext->from = __CLASS__;
       $fsext->to = 'ventas_servicios';
       $fsext->type = 'button';
-      $fsext->text = '<span class="glyphicon glyphicon-wrench" aria-hidden="true">'
+      $fsext->text = '<span class="glyphicon glyphicon-cog" aria-hidden="true">'
               . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
       $fsext->save();
    }
