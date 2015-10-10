@@ -871,19 +871,19 @@ class servicio_cliente extends fs_model
       
       if($codcliente !='')
       {
-          $sql .= $where."codcliente= = ".$codcliente."";
+          $sql .= $where."codcliente= ".$this->var2str($codcliente)."";
           $where = ' AND ';
       }
       
       if($codagente !='')
       {
-          $sql .= $where."codagente= $codagente";
+          $sql .= $where."codagente= ".$this->var2str($codagente)."";
           $where = ' AND ';
       }
       
       if($estado !='')
       {
-          $sql .= $where."estado= $estado";
+          $sql .= $where."idestado= ".$this->var2str($estado)."";
           $where = ' AND ';
       }
       
