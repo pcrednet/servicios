@@ -8,7 +8,7 @@
 <script type="text/javascript" src="plugins/servicios/view/js/Moment.js"></script>
 <script type="text/javascript" src="plugins/servicios/view/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="plugins/servicios/view/js/bootstrap-datetimepicker.es.js"></script>
-<link rel="stylesheet" href="/servicios/view/css/bootstrap-datetimepicker.min.css" />
+<link rel="stylesheet" href="plugins/servicios/view/css/bootstrap-datetimepicker.css" />
 <script type="text/javascript">
    fs_nf0 = {#FS_NF0#};
    all_impuestos = {function="json_encode($fsc->impuesto->all())"};
@@ -134,7 +134,7 @@
                </div>
                <div class="row">
                {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-                <div class='col-sm-2'>
+                <div class='col-sm-3'>
                     <div class="form-group">
                         Fecha y hora de inicio
                         <div class='input-group date' id='fechainicio' {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}>
@@ -168,7 +168,7 @@
         });
     </script>
                   {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-                  <div class='col-sm-2' style="height:130px;">
+                  <div class='col-sm-3' style="height:130px;">
                     <div class="form-group">
                         Fecha y hora prevista de finalización
                         <div class='input-group date' id='fechafin' {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}>

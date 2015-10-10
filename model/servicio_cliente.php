@@ -826,11 +826,84 @@ class servicio_cliente extends fs_model
    
    /**
     * @desc - formatea una fecha a microtime para añadir al evento tipo 1401517498985
-    * @access punliv
+    * @access public
     * @return strtotime
     */
     public function formatDate($date)
     {
         return strtotime(substr($date, 6, 4)."-".substr($date, 3, 2)."-".substr($date, 0, 2)." " .substr($date, 10, 6)) * 1000;
     }
+    
+    /**
+    * @desc - Establece la clase event en función de la prioiridad asignada
+    * @access public
+    * @return class
+    */
+     public function class_prioridad($prioridad)
+   {
+      $class='';
+      if($prioridad == '1')
+      {
+          $class = 'event-important';
+      }
+      else if($prioridad == '2')
+      {
+          $class = 'event-warning';
+      }
+      else if($prioridad == '3')
+      {
+          $class = 'event-info';
+      }
+      else if($prioridad == '4')
+      {
+          $class = 'event-sucess';
+      }
+      
+      return $class;
+   }
+   
+    
+    public function calendar_servicios($codcliente = '', $codagente = '', $estado = '')
+    { 
+      $servlist = array();
+      $sql = " FROM servicioscli ";
+      $where = 'WHERE ';
+      
+      if($codcliente !='')
+      {
+          $sql .= $where."codcliente= = ".$codcliente."";
+          $where = ' AND ';
+      }
+      
+      if($codagente !='')
+      {
+          $sql .= $where."codagente= $codagente";
+          $where = ' AND ';
+      }
+      
+      if($estado !='')
+      {
+          $sql .= $where."estado= $estado";
+          $where = ' AND ';
+      }
+      
+      $sql .=";";
+      $servicios = $this->db->select("SELECT *".$sql);
+      if($servicios)
+      {
+         foreach($servicios as $s) 
+            $servlist[] = array(
+                    'id' => $s['idservicio'],
+                    'title' => $s['codigo']." | ".$s['fechainicio']." -> ".$s['fechafin']." | ".$s['nombrecliente'],
+                    'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
+                    'class' => $this->class_prioridad ($s['prioridad']),
+                    'start' => $this->formatDate($s['fechainicio']),
+                    'end' => $this->formatDate($s['fechafin']),
+            );
+        
+      
+      echo json_encode(array('success' => 1, 'result' => $servlist));
+     
+    }
+  }       
 }

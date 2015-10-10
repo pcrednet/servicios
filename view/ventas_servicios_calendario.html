@@ -1,0 +1,153 @@
+{include="header"}
+<link rel="stylesheet" href="plugins/servicios/view/css/calendar.css" />
+<script type="text/javascript" src="plugins/servicios/view/js/underscore-min.js"></script>
+<script type="text/javascript" src="plugins/servicios/view/js/calendar.js"></script>
+<script type="text/javascript" src="plugins/servicios/view/js/es-ES.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#ac_cliente").autocomplete({
+         serviceUrl: '{$fsc->url()}',
+         paramName: 'buscar_cliente',
+         onSelect: function (suggestion) {
+            if(suggestion)
+            {
+               if(document.f_custom_search.codcliente.value != suggestion.data && suggestion.data != '')
+               {
+                  document.f_custom_search.codcliente.value = suggestion.data;
+                  document.f_custom_search.submit();
+               }
+            }
+         }
+      });
+   });
+</script>
+
+<div class="container">
+     <div class="row">
+      <div class="col-xs-6">
+         <a href="{$fsc->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+            <span class="glyphicon glyphicon-refresh"></span>
+         </a>
+         <a href="index.php?page=ventas_servicios" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-arrow-left"></span> &nbsp; Atrás
+         </a>
+      </div>
+      <div class="col-xs-6 text-right">
+         <h2 style="margin-top: 0px;">Opciones</h2>
+      </div>
+   </div>
+   <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+   {if="$fsc->cliente"}
+   <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
+   {else}
+   <input type="hidden" name="codcliente"/>
+   {/if}
+   <div class="container-fluid">
+      <div class="row">
+          <div class="col-sm-2">
+             <div class="form-group">
+               <select name="estado" class="form-control" onchange="this.form.submit()">
+                  <option value="">Estado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->estados->all()"}
+                     {if="$value->id==$fsc->estado"}
+                     <option value="{$value->id}" selected="selected">{$value->descripcion}</option>
+                     {else}
+                     <option value="{$value->id}">{$value->descripcion}</option>
+                     {/if}
+                  {/loop}
+               </select>
+            </div>
+         </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+               <select name="codagente" class="form-control" onchange="this.form.submit()">
+                  <option value="">Empleado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->agente->all()"}
+                     {if="$value->codagente==$fsc->codagente"}
+                     <option value="{$value->codagente}" selected="selected">{$value->get_fullname()}</option>
+                     {else}
+                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                     {/if}
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-sm-3">
+            <div class="form-group">
+               <div class="input-group">
+                  {if="$fsc->cliente"}
+                  <input class="form-control" type="text" name="ac_cliente" value="{$fsc->cliente->nombre}" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
+                  {else}
+                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
+                  {/if}
+                  <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" onclick="clean_cliente()">
+                        <span class="glyphicon glyphicon-remove"></span>
+                     </button>
+                  </span>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   </form>
+    <div class="row">
+        <div class="page-header">
+
+		<div class="pull-right form-inline">
+			<div class="btn-group">
+				<button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
+				<button class="btn btn-default" data-calendar-nav="today">Hoy</button>
+				<button class="btn btn-primary" data-calendar-nav="next">Siguiente >></button>
+			</div>
+			<div class="btn-group">
+				<button class="btn btn-warning" data-calendar-view="year">Año</button>
+				<button class="btn btn-warning active" data-calendar-view="month">Mes</button>
+				<button class="btn btn-warning" data-calendar-view="week">Semana</button>
+				<button class="btn btn-warning" data-calendar-view="day">Día</button>
+			</div>
+		</div>
+		<h3></h3>
+		
+	</div>
+        
+	<div class="row">
+		<div class="col-md-9">
+			<div id="calendar"></div>
+		</div>
+                <div class="col-md-3">
+			<label class="checkbox">
+                            <input type="checkbox" value="#events-modal" id="events-in-modal"> Abrir eventos en una ventana
+			</label>
+
+			<h4>Eventos</h4>
+			
+			<ul id="eventlist" class="nav nav-list"></ul>
+		</div>
+	</div>
+
+        </div>
+        <div class="clearfix"></div>
+	<br><br>
+    <div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title">Evento</h3>
+				</div>
+				<div class="modal-body" style="height: 400px">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="plugins/servicios/view/js/app.js"></script>
+{include="footer"}

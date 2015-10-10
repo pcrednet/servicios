@@ -36,7 +36,7 @@ class opciones_servicios extends fs_controller
    
    public function __construct()
    {
-      parent::__construct(__CLASS__, 'Opciones', 'SAT', FALSE, FALSE);
+      parent::__construct(__CLASS__, 'Opciones', 'Servicios', FALSE, FALSE);
    }
    
    protected function private_core()
