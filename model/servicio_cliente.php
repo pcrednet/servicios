@@ -29,7 +29,7 @@ require_model('albaran_cliente.php');
 require_model('cliente.php');
 require_model('linea_servicio_cliente.php');
 require_model('secuencia.php');
-require_model('estado_servicios.ph');
+require_model('estado_servicio.php');
 
 /**
  * Pedido de cliente
