@@ -93,21 +93,21 @@ class ventas_servicios_calendario extends fs_controller {
       $sql = " FROM servicioscli ";
       $where = 'WHERE ';
       
-      if($codcliente !='')
+      if($this->codcliente !='')
       {
-          $sql .= $where."codcliente= ".$this->var2str($this->codcliente)."";
+          $sql .= $where."codcliente= ".$this->empresa->var2str($this->codcliente)."";
           $where = ' AND ';
       }
       
-      if($codagente !='')
+      if($this->codagente !='')
       {
-          $sql .= $where."codagente= ".$this->var2str($this->codagente)."";
+          $sql .= $where."codagente= ".$this->empresa->var2str($this->codagente)."";
           $where = ' AND ';
       }
       
-      if($estado !='')
+      if($this->estado !='')
       {
-          $sql .= $where."idestado= ".$this->var2str($this->estado)."";
+          $sql .= $where."idestado= ".$this->empresa->var2str($this->estado)."";
           $where = ' AND ';
       }
       
@@ -120,14 +120,17 @@ class ventas_servicios_calendario extends fs_controller {
                     'id' => $s['idservicio'],
                     'title' => $s['codigo']." | ".$s['fechainicio']." -> ".$s['fechafin']." | ".$s['nombrecliente'],
                     'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
-                    'class' => $this->class_prioridad ($s['prioridad']),
-                    'start' => $this->formatDate($s['fechainicio']),
-                    'end' => $this->formatDate($s['fechafin']),
+                    'class' => $this->servicio->class_prioridad ($s['prioridad']),
+                    'start' => $this->servicio->formatDate($s['fechainicio']),
+                    'end' => $this->servicio->formatDate($s['fechafin']),
             );
         
       
-        echo json_encode(array('success' => 1, 'result' => $servlist));
+        echo json_encode($servlist);
      
+    }
+    else {
+        echo json_encode([]);
     }
   }       
 
