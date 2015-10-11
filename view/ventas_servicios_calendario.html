@@ -27,7 +27,7 @@
       document.f_custom_search.codcliente.value='';
       document.f_custom_search.ac_cliente.focus();
       document.f_custom_search.submit();
-   }  
+   }
 </script>
 
 <div class="container-fluid">
@@ -41,7 +41,7 @@
          </a>
       </div>
       <div class="col-xs-6 text-right">
-         <h2 style="margin-top: 0px;">Opciones</h2>
+         <h2 style="margin-top: 0px;">Calendario</h2>
       </div>
    </div>
    <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
@@ -55,29 +55,21 @@
           <div class="col-sm-4">
              <div class="form-group">
                <select name="estado" class="form-control" onchange="this.form.submit()">
-                  <option value="">Estado</option>
+                  <option value="">Cualquier estado</option>
                   <option value="">------</option>
                   {loop="$fsc->estados->all()"}
-                     {if="$value->id==$fsc->estado"}
-                     <option value="{$value->id}" selected="selected">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->id}">{$value->descripcion}</option>
-                     {/if}
+                     <option value="{$value->id}"{if="$value->id==$fsc->estado"} selected="selected"{/if}>{$value->descripcion}</option>
                   {/loop}
                </select>
             </div>
          </div>
-          <div class="col-sm-4">
+         <div class="col-sm-4">
             <div class="form-group">
                <select name="codagente" class="form-control" onchange="this.form.submit()">
-                  <option value="">Empleado</option>
+                  <option value="">Cualquier empleado</option>
                   <option value="">------</option>
                   {loop="$fsc->agente->all()"}
-                     {if="$value->codagente==$fsc->codagente"}
-                     <option value="{$value->codagente}" selected="selected">{$value->get_fullname()}</option>
-                     {else}
-                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                     {/if}
+                     <option value="{$value->codagente}"{if="$value->codagente==$fsc->codagente"} selected="selected"{/if}>{$value->get_fullname()}</option>
                   {/loop}
                </select>
             </div>
@@ -97,155 +89,167 @@
                   </span>
                </div>
             </div>
-         </div>    
+         </div>
       </div>
    </div>
    </form>
-  <div class="container-fluid">
-    <div class="row">
-        <div class="page-header">
+   <div class="container-fluid" style="margin-left: 40px;">
+      <div class="row">
 
-		<div class="pull-right form-inline">
-			<div class="btn-group">
-				<button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
-				<button class="btn btn-default" data-calendar-nav="today">Hoy</button>
-				<button class="btn btn-primary" data-calendar-nav="next">Siguiente >></button>
-			</div>
-			<div class="btn-group">
-				<button class="btn btn-warning" data-calendar-view="year">Año</button>
-				<button class="btn btn-warning active" data-calendar-view="month">Mes</button>
-				<button class="btn btn-warning" data-calendar-view="week">Semana</button>
-				<button class="btn btn-warning" data-calendar-view="day">Día</button>
-			</div>
-		</div>
-		<h3></h3>
-		
-	</div>
-        
-	<div class="row">
-		<div class="col-md-10">
-			<div id="calendar"></div>
-		</div>
-                <div class="col-md-2">
-			<label class="checkbox">
-                            <input type="checkbox" value="#events-modal" id="events-in-modal"> Abrir eventos en una ventana
-			</label>
+         <div class="page-header">
+            <div class="row">
+               <div class="col-sm-4 col-xs-6">
+                  <div class="btn-group pull-left">
+   				      <button class="btn btn-sm btn-primary" data-calendar-nav="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                     </button>
+   				      <button class="btn btn-sm btn-default" data-calendar-nav="today">Hoy</button>
+   				      <button class="btn btn-sm btn-primary" data-calendar-nav="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                     </button>
+                  </div>
+               </div>
+               <div class="col-sm-4 hidden-xs">
+                  <div class="btn-group">
+                     <center><strong><div class="title">Calendario</div></strong></center>
+                  </div>
+               </div>
+               <div class="col-sm-4 col-xs-6">
+                  <div class="btn-group pull-right">
+                     <button class="btn btn-sm btn-warning" data-calendar-view="year">Año</button>
+                     <button class="btn btn-sm btn-warning active" data-calendar-view="month">Mes</button>
+                     <button class="btn btn-sm btn-warning" data-calendar-view="week">Semana</button>
+                     <button class="btn btn-sm btn-warning" data-calendar-view="day">Día</button>
+                  </div>
+               </div>
+            </div>
+         </div>
 
-			<h4>Eventos</h4>
-			
-			<ul id="eventlist" class="nav nav-list"></ul>
-		</div>
-	</div>
+         <div class="col-md-10 col-sm-12 col-xs-12">
+            <div id="calendar"></div>
+         </div>
+         <div class="col-md-2 col-sm-12 col-xs-12">
+            <div class="visible-sm-block visible-xs-block"></br></div>
+            <div class="form-group">
+               <label class="control-label">
+                  <input type="checkbox" value="#events-modal" id="events-in-modal"> Abrir eventos en una ventana
+               </label>
 
-        </div>
-        <div class="clearfix"></div>
-	<br><br>
-    <div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title">Evento</h3>
-				</div>
-				<div class="modal-body" style="height: 400px">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-    </div>
-</div>  
+               <h4>Eventos</h4>
+               <ul id="eventlist" class="nav nav-list"></ul>
+            </div>
+         </div>
+
+      </div>
+
+   </div>
+</div>
+
+<div class="modal fade" id="events-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title">Evento</h3>
+         </div>
+         <div class="modal-body" style="height: 400px">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+         </div>
+      </div>
+   </div>
+</div>
+
 <script type="text/javascript">
-(function($) {
-	"use strict";
-	var options = {            
-            events_source: {$fsc->get_datos()},
-            view: 'week',
-            tmpl_path: 'plugins/servicios/view/tmpls/',
-            tmpl_cache: false,
-            language: 'es-ES',
-            time_start: '09:00',
-            time_end: '21:00',
-            time_split: '30',
-		onAfterEventsLoad: function(events) {
-			if(!events) {
-				return;
-			}
-			var list = $('#eventlist');
-			list.html('');
+   (function($) {
+   	"use strict";
+   	var options = {
+               events_source: {$fsc->get_datos()},
+               view: 'week',
+               tmpl_path: 'plugins/servicios/view/tmpls/',
+               tmpl_cache: false,
+               language: 'es-ES',
+               time_start: '09:00',
+               time_end: '21:00',
+               time_split: '30',
+   		onAfterEventsLoad: function(events) {
+   			if(!events) {
+   				return;
+   			}
+   			var list = $('#eventlist');
+   			list.html('');
 
-			$.each(events, function(key, val) {
-				$(document.createElement('li'))
-					.html('<a href="' + val.url + '">' + val.title + '</a>')
-					.appendTo(list);
-			});
-		},
-		onAfterViewLoad: function(view) {
-			$('.page-header h3').text(this.getTitle());
-			$('.btn-group button').removeClass('active');
-			$('button[data-calendar-view="' + view + '"]').addClass('active');
-		},
-		classes: {
-			months: {
-				general: 'label'
-			}
-		}
-	};
+   			$.each(events, function(key, val) {
+   				$(document.createElement('li'))
+   					.html('<a href="' + val.url + '" target="_blank">' + val.title + '</a>')
+   					.appendTo(list);
+   			});
+   		},
+   		onAfterViewLoad: function(view) {
+   			$('.page-header .title').text(this.getTitle());
+   			$('.btn-group button').removeClass('active');
+   			$('button[data-calendar-view="' + view + '"]').addClass('active');
+   		},
+   		classes: {
+   			months: {
+   				general: 'label'
+   			}
+   		}
+   	};
 
-	var calendar = $('#calendar').calendar(options);
+   	var calendar = $('#calendar').calendar(options);
 
-	$('.btn-group button[data-calendar-nav]').each(function() {
-		var $this = $(this);
-		$this.click(function() {
-			calendar.navigate($this.data('calendar-nav'));
-		});
-	});
+   	$('.btn-group button[data-calendar-nav]').each(function() {
+   		var $this = $(this);
+   		$this.click(function() {
+   			calendar.navigate($this.data('calendar-nav'));
+   		});
+   	});
 
-	$('.btn-group button[data-calendar-view]').each(function() {
-		var $this = $(this);
-		$this.click(function() {
-			calendar.view($this.data('calendar-view'));
-		});
-	});
+   	$('.btn-group button[data-calendar-view]').each(function() {
+   		var $this = $(this);
+   		$this.click(function() {
+   			calendar.view($this.data('calendar-view'));
+   		});
+   	});
 
-	$('#first_day').change(function(){
-		var value = $(this).val();
-		value = value.length ? parseInt(value) : null;
-		calendar.setOptions({first_day: value});
-		calendar.view();
-	});
+   	$('#first_day').change(function(){
+   		var value = $(this).val();
+   		value = value.length ? parseInt(value) : null;
+   		calendar.setOptions({first_day: value});
+   		calendar.view();
+   	});
 
-	$('#language').change(function(){
-		calendar.setLanguage($(this).val());
-		calendar.view();
-	});
+   	$('#language').change(function(){
+   		calendar.setLanguage($(this).val());
+   		calendar.view();
+   	});
 
-	$('#events-in-modal').change(function(){
-		var val = $(this).is(':checked') ? $(this).val() : null;
-		calendar.setOptions({modal: val});
-	});
-	$('#format-12-hours').change(function(){
-		var val = $(this).is(':checked') ? true : false;
-		calendar.setOptions({format12: val});
-		calendar.view();
-	});
-	$('#show_wbn').change(function(){
-		var val = $(this).is(':checked') ? true : false;
-		calendar.setOptions({display_week_numbers: val});
-		calendar.view();
-	});
-	$('#show_wb').change(function(){
-		var val = $(this).is(':checked') ? true : false;
-		calendar.setOptions({weekbox: val});
-		calendar.view();
-	});
-	$('#events-modal .modal-header, #events-modal .modal-footer').click(function(e){
-		//e.preventDefault();
-		//e.stopPropagation();
-	});
-}(jQuery));
+   	$('#events-in-modal').change(function(){
+   		var val = $(this).is(':checked') ? $(this).val() : null;
+   		calendar.setOptions({modal: val});
+   	});
+   	$('#format-12-hours').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({format12: val});
+   		calendar.view();
+   	});
+   	$('#show_wbn').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({display_week_numbers: val});
+   		calendar.view();
+   	});
+   	$('#show_wb').change(function(){
+   		var val = $(this).is(':checked') ? true : false;
+   		calendar.setOptions({weekbox: val});
+   		calendar.view();
+   	});
+   	$('#events-modal .modal-header, #events-modal .modal-footer').click(function(e){
+   		//e.preventDefault();
+   		//e.stopPropagation();
+   	});
+   }(jQuery));
 </script>
-<!--<script type="text/javascript" src="plugins/servicios/view/js/app.js"></script>-->
+
 {include="footer"}
