@@ -38,6 +38,19 @@ class ventas_servicios_calendario extends fs_controller {
         $this->serie = new serie();
         $this->estados = new estado_servicio();
 
+        //cargamos las opciones del calendario
+        $fsvar = new fs_var();
+        $this->servicios_setup = $fsvar->array_get(
+         array(
+            'cal_inicio' => "09:00",
+            'cal_fin' => "20:00",
+            'cal_intervalo' => "30"
+         ),
+         FALSE
+      );
+        
+        
+        
         if (isset($_REQUEST['buscar_cliente'])) {
             $this->buscar_cliente();
         }
@@ -111,18 +124,18 @@ class ventas_servicios_calendario extends fs_controller {
           $where = ' AND ';
       }
       
-      $sql .=";";
+      $sql .= $where."fechainicio IS NOT NULL;";
       $servicios = $this->db->select("SELECT *".$sql);
       if($servicios)
       {
-         foreach($servicios as $s) 
+         foreach($servicios as $s)  
             $servlist[] = array(
                     'id' => $s['idservicio'],
-                    'title' => $s['codigo']." | ".$s['fechainicio']." -> ".$s['fechafin']." | ".$s['nombrecliente'],
+                    'title' => $s['codigo'].'<br/>'.$s['nombrecliente'],
                     'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
-                    'class' => $this->servicio->class_prioridad ($s['prioridad']),
-                    'start' => $this->servicio->formatDate($s['fechainicio']),
-                    'end' => $this->servicio->formatDate($s['fechafin']),
+                    'class' => $this->class_prioridad ($s['prioridad']),
+                    'start' => $this->formatDate($s['fechainicio']),
+                    'end' => $this->fechafin($s['fechainicio'], $s['fechafin']), 
             );
         
       
@@ -132,6 +145,58 @@ class ventas_servicios_calendario extends fs_controller {
     else {
         echo json_encode([]);
     }
-  }       
+  } 
+  private function fechafin($inicio, $fin){
+      $fechafin = '';
+        if($fin)
+            {
+              $fechafin = $this->formatDate($fin);
+            }
+            else
+            { 
+              $fechafin = $this->formatDate($inicio) + (60000 * $this->servicios_setup['cal_intervalo']);
+            }    
+      return $fechafin;
+  }
+  
+  /**
+    * @desc - formatea una fecha a microtime para añadir al evento tipo 1401517498985
+    * @access public
+    * @return strtotime
+    */
+    public function formatDate($date)
+    {
+        $time= '';
+        $time = strtotime(substr($date, 6, 4)."-".substr($date, 3, 2)."-".substr($date, 0, 2)." " .substr($date, 10, 6)) * 1000;
+        return "$time";
+    }
+    
+    /**
+    * @desc - Establece la clase event en función de la prioiridad asignada
+    * @access public
+    * @return class
+    */
+     public function class_prioridad($prioridad)
+   {
+      $class='';
+      if($prioridad == '1')
+      {
+          $class = 'event-important';
+      }
+      else if($prioridad == '2')
+      {
+          $class = 'event-warning';
+      }
+      else if($prioridad == '3')
+      {
+          $class = 'event-info';
+      }
+      else if($prioridad == '4')
+      {
+          $class = 'event-sucess';
+      }
+      
+      return $class;
+   }
 
 }

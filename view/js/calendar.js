@@ -522,7 +522,7 @@ if(!String.prototype.formatNum) {
                 event.lines = lines_left;
             }
 
-            data.push(event);
+            data.by_hour.push(event);
         });
 
         //var d = new Date('2013-03-11 09:00:00');

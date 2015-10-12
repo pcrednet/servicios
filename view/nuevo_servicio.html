@@ -148,24 +148,27 @@
                 {/if}  
                <script type="text/javascript">
         $(function () {
-            $('#fechainicio').datetimepicker({
-                language: 'es',
-                minDate: new Date(),
-                format: 'DD-M-YYYY H:mm',
-                extraFormats: [ 'DD-M-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                defaultDate: Date()
-                 
-            });
-            $('#fechafin').datetimepicker({
-                language: 'es',
-                minDate: new Date(),
-                format: 'DD-M-YYYY HH:mm',
-                extraFormats: [ 'DD-M-YYYY HH:m', 'DD-M-YYYY HH:mm' ],
-                defaultDate: '{$fsc->fechaprevista} 10:00',
-                
-            });
-            
-        });
+                    
+                    $('#fechainicio').datetimepicker({
+                        language: 'es',
+                        format: 'DD-MM-YYYY H:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+                        orientation: "center",
+                        startDate: new Date(),
+                       
+                        sideBySide: true
+                    });
+                    $('#fechafin').datetimepicker({
+                        language: 'es',
+                        format: 'DD-MM-YYYY HH:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:m', 'DD-M-YYYY HH:mm' ], 
+                        orientation: "center",
+                        startDate: new Date(),
+                       
+                        sideBySide: true
+                    });
+
+                });
     </script>
                   {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
                   <div class='col-sm-3' style="height:130px;">

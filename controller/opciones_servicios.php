@@ -81,7 +81,10 @@ class opciones_servicios extends fs_controller
             'st_material_estado' => "Estado del material entregado",
             'st_accesorios' => "Accesorios que entrega",
             'st_descripcion' => "Descripción de la averia",
-            'st_solucion' => "Solución"
+            'st_solucion' => "Solución",
+            'cal_inicio' => "09:00",
+            'cal_fin' => "20:00",
+            'cal_intervalo' => "30"
          ),
          FALSE
       );
@@ -113,6 +116,9 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['st_accesorios'] = $_POST['st_accesorios'];
          $this->servicios_setup['st_descripcion'] = $_POST['st_descripcion'];
          $this->servicios_setup['st_solucion'] = $_POST['st_solucion'];
+         $this->servicios_setup['cal_inicio'] = $_POST['cal_inicio'];
+         $this->servicios_setup['cal_fin'] = $_POST['cal_fin'];
+         $this->servicios_setup['cal_intervalo'] = $_POST['cal_intervalo'];
          
          if( $fsvar->array_save($this->servicios_setup) )
          {

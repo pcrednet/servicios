@@ -294,17 +294,24 @@
                <div class="row bg-info">
                <script type="text/javascript">
                 $(function () {
+                    
                     $('#fechainicio').datetimepicker({
                         language: 'es',
-                        format: 'DD-M-YYYY H:mm',
-                        extraFormats: [ 'DD-M-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                        orientation: "left",
+                        format: 'DD-MM-YYYY H:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+                        orientation: "center",
+                        startDate: new Date(),
+                       
+                        sideBySide: true
                     });
                     $('#fechafin').datetimepicker({
                         language: 'es',
-                        format: 'DD-M-YYYY HH:mm',
-                        extraFormats: [ 'DD-M-YYYY HH:m', 'DD-M-YYYY HH:mm' ], 
-                       orientation: "left",
+                        format: 'DD-MM-YYYY HH:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:m', 'DD-M-YYYY HH:mm' ], 
+                        orientation: "center",
+                        startDate: new Date(),
+                       
+                        sideBySide: true
                     });
 
                 });
@@ -314,7 +321,7 @@
                     <div class="form-group">
                         Fecha y hora de inicio
                         <div class='input-group date' id='fechainicio' {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}>
-                            <input type='text' name="fechainicio" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if} readonly/>
+                            <input type='text'  name="fechainicio" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if} readonly/>
                            <span class="input-group-addon">
                                  <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -327,7 +334,7 @@
                     <div class="form-group">
                         Fecha y hora prevista de finalización
                         <div class='input-group date' id='fechafin' {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}>
-                            <input type='text' name="fechafin" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if} readonly/>
+                            <input type="text" pattern="\d{1,2}/\d{1,2}/\d{4}" name="fechafin" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if} readonly/>
                             <span class="input-group-addon">
                                  <span class="glyphicon glyphicon-calendar"></span>
                             </span>

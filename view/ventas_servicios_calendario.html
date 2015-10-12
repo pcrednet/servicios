@@ -93,7 +93,7 @@
       </div>
    </div>
    </form>
-   <div class="container-fluid" style="margin-left: 40px;">
+    <div class="container-fluid" style="margin-left: 50px;">
       <div class="row">
 
          <div class="page-header">
@@ -170,9 +170,9 @@
                tmpl_path: 'plugins/servicios/view/tmpls/',
                tmpl_cache: false,
                language: 'es-ES',
-               time_start: '09:00',
-               time_end: '21:00',
-               time_split: '30',
+               time_start: '{$fsc->servicios_setup['cal_inicio']}',
+               time_end: '{$fsc->servicios_setup['cal_fin']}',
+               time_split: '{$fsc->servicios_setup['cal_intervalo']}',
    		onAfterEventsLoad: function(events) {
    			if(!events) {
    				return;
