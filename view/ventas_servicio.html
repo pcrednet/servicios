@@ -301,7 +301,6 @@
                         extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
                         orientation: "center",
                         startDate: new Date(),
-                       
                         sideBySide: true
                     });
                     $('#fechafin').datetimepicker({
@@ -310,10 +309,14 @@
                         extraFormats: [ 'DD-MM-YYYY HH:m', 'DD-M-YYYY HH:mm' ], 
                         orientation: "center",
                         startDate: new Date(),
-                       
                         sideBySide: true
                     });
-
+                    $("#fechainicio").on("dp.change", function (e) {
+                        $('#fechafin').data("DateTimePicker").setMinDate(e.date);
+                    });
+                    $("#fechafin").on("dp.change", function (e) {
+                        $('#fechainicio').data("DateTimePicker").setMaxDate(e.date);
+                    });
                 });
                 </script>
                   {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
