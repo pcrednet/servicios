@@ -112,7 +112,7 @@
    </columna>
    <columna>
       <nombre>fechainicio</nombre>
-      <tipo>text</tipo>
+      <tipo>timestamp</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>
