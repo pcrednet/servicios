@@ -107,12 +107,22 @@
    </columna>
    <columna>
       <nombre>fechafin</nombre>
-      <tipo>text</tipo>
+      <tipo>date</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
+      <nombre>horafin</nombre>
+       <tipo>time without time zone</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>fechainicio</nombre>
-      <tipo>text</tipo>
+      <tipo>date</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
+      <nombre>horainicio</nombre>
+       <tipo>time without time zone</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>

@@ -135,9 +135,7 @@ class nuevo_servicio extends fs_controller
             'nuevocli_telefono1_req' => 0,
             'nuevocli_telefono2' => 0,
             'nuevocli_telefono2_req' => 0,
-            'nuevocli_grupo' => 0,
-            'nuevocli_grupo_req' => 0,
-            'nuevocli_grupo_pred' => 0,
+            'nuevocli_codgrupo' => '',
          ),
          FALSE
       );

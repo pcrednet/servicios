@@ -225,6 +225,18 @@ class servicio_cliente extends fs_model
    
    public $fechainicio;
    
+   /**
+    *Hora de inicio del servicio
+    * @var type time
+    */
+   public $horainicio;
+   
+   /**
+    *Hora de fin del servicio
+    * @var type time
+    */
+   public $horafin;
+   
    public $garantia;
    
    /**
@@ -287,14 +299,12 @@ class servicio_cliente extends fs_model
          
          if( isset($s['fechafin']) )
          {
-            $this->fechafin = $s['fechafin'];
-            $this->fechafin1 = Date('Y-m-d H:i', strtotime($s['fechafin']));
+             $this->fechafin = date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']));
          }
          
          if( isset($s['fechainicio']) )
          {
-            $this->fechainicio = $s['fechainicio'];
-            $this->fechainicio1 = Date('Y-m-d H:i', strtotime($s['fechainicio']));
+            $this->fechainicio = date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio']));
          }
          
          
@@ -349,6 +359,8 @@ class servicio_cliente extends fs_model
          $this->fechafin = NULL;
          $this->fechainicio = Date('d-m-Y');
          $this->garantia = FALSE;
+         $this->horafin = NULL;
+         $this->horainicio = NULL;
          
          $this->editable = TRUE;
       }
@@ -553,11 +565,13 @@ class servicio_cliente extends fs_model
                     .", direccion = " . $this->var2str($this->direccion)
                     .", fecha = " . $this->var2str($this->fecha)
                     .", hora = " . $this->var2str($this->hora)
-                    .", fechafin = " . $this->var2str($this->fechafin)
+                    .", fechafin = " . $this->var2str(substr($this->fechafin, 0, 10))
+                    .", horafin = " . $this->var2str(substr($this->fechafin, 10, 6))
+                    .", horainicio = " . $this->var2str(substr($this->fechainicio, 10, 6))
                     .", idalbaran = " . $this->var2str($this->idalbaran)
                     .", irpf = " . $this->var2str($this->irpf)
                     .", neto = " . $this->var2str($this->neto)
-                    .", fechainicio = " . $this->var2str($this->fechainicio)
+                    .", fechainicio = " . $this->var2str(substr($this->fechainicio, 0, 10))
                     .", nombrecliente = " . $this->var2str($this->nombrecliente)
                     .", numero = " . $this->var2str($this->numero)
                     .", numero2 = " . $this->var2str($this->numero2)
@@ -592,7 +606,7 @@ class servicio_cliente extends fs_model
                direccion,fecha,hora,idalbaran,irpf,neto,nombrecliente,numero,observaciones,
                porcomision,fechafin,fechainicio,garantia,provincia,recfinanciero,tasaconv,
                total,totaleuros,totalirpf,totaliva,totalrecargo,descripcion,solucion,material,
-               material_estado,accesorios,prioridad,numero2,idestado,editable) VALUES (" . $this->var2str($this->apartado)
+               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin) VALUES (" . $this->var2str($this->apartado)
                     . "," . $this->var2str($this->cifnif)
                     . "," . $this->var2str($this->ciudad)
                     . "," . $this->var2str($this->codagente)
@@ -616,8 +630,8 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->numero)
                     . "," . $this->var2str($this->observaciones)
                     . "," . $this->var2str($this->porcomision)
-                    . "," . $this->var2str($this->fechafin)
-                    . "," . $this->var2str($this->fechainicio)
+                    . "," . $this->var2str(substr($this->fechafin, 0, 10))
+                    . "," . $this->var2str(substr($this->fechainicio, 0, 10))
                     . "," . $this->var2str($this->garantia)
                     . "," . $this->var2str($this->provincia)
                     . "," . $this->var2str($this->recfinanciero)
@@ -635,7 +649,9 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->prioridad)
                     . "," . $this->var2str($this->numero2)
                     . "," . $this->var2str($this->idestado)
-                    . "," . $this->var2str($this->editable) . ");";
+                    . "," . $this->var2str($this->editable)
+                    . "," . $this->var2str(substr($this->fechainicio, 10, 6))
+                    . "," . $this->var2str(substr($this->fechafin, 10, 6)). ");";
             
             if( $this->db->exec($sql) )
             {

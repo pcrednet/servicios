@@ -134,8 +134,8 @@ class ventas_servicios_calendario extends fs_controller {
                     'title' => $s['codigo'].'<br/>'.$s['nombrecliente'],
                     'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
                     'class' => $this->class_prioridad ($s['prioridad']),
-                    'start' => $this->formatDate($s['fechainicio']),
-                    'end' => $this->fechafin($s['fechainicio'], $s['fechafin']), 
+                    'start' => $this->formatDate(date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio']))),
+                    'end' => $this->fechafin(date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio'])), date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']))), 
             );
         
       
