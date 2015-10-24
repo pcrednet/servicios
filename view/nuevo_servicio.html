@@ -152,27 +152,26 @@
                     
                     $('#fechainicio').datetimepicker({
                         language: 'es',
-                        format: 'DD-MM-YYYY H:mm',
-                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                        orientation: "center",
-                        defaultDate: new Date(),
-                        sideBySide: true
+                        format: 'DD-MM-YYYY H:mm',                      
+                        defaultDate: new Date(),   
                     });
                     $('#fechafin').datetimepicker({
                         language: 'es',
                         format: 'DD-MM-YYYY HH:mm',
-                        extraFormats: [ 'DD-MM-YYYY HH:m', 'DD-M-YYYY HH:mm' ], 
-                        orientation: "center",
                         defaultDate: '{$fsc->fechaprevista} {$fsc->servicios_setup['cal_inicio']}',
-                        sideBySide: true,
                         useCurrent: false
                     });
-                    
                     $("#fechainicio").on("dp.change", function (e) {
                         $('#fechafin').data("DateTimePicker").setMinDate(e.date);
                     });
                     $("#fechafin").on("dp.change", function (e) {
                         $('#fechainicio').data("DateTimePicker").setMaxDate(e.date);
+                    });
+                    $('#fechainicio input').click(function(event){
+                        $('#fechainicio ').data("DateTimePicker").show();
+                    });
+                    $('#fechafin input').click(function(event){
+                        $('#fechafin ').data("DateTimePicker").show();
                     });
                 });
     </script>
