@@ -29,7 +29,7 @@
       document.f_custom_search.submit();
    }
 </script>
-
+{if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
 <div class="container-fluid">
      <div class="row">
       <div class="col-xs-6">
@@ -251,5 +251,16 @@
    	});
    }(jQuery));
 </script>
+{else}
+<div class="container" style="margin-top: 10px; margin-bottom: 100px;">
+   <div class="row">
+      <div class="col-lg-12">
+         <h1>El calendario no está activo</h1>
+         <p>El calendario no está activo porque no tienes Fecha inicio activado en opciones.</p>
+         <a href="index.php?page=opciones_servicios" class="btn btn-block btn-default">Opciones Servicios</a>
+      </div>
+   </div>
+</div>
+{/if}
 
 {include="footer"}

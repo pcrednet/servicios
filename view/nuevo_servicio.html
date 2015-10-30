@@ -153,19 +153,14 @@
                     $('#fechainicio').datetimepicker({
                         language: 'es',
                         format: 'DD-MM-YYYY H:mm',                      
-                        defaultDate: new Date(),   
+                        defaultDate: new Date(), 
+                        minDate: moment(),
                     });
                     $('#fechafin').datetimepicker({
                         language: 'es',
                         format: 'DD-MM-YYYY HH:mm',
                         defaultDate: '{$fsc->fechaprevista} {$fsc->servicios_setup['cal_inicio']}',
-                        useCurrent: false
-                    });
-                    $("#fechainicio").on("dp.change", function (e) {
-                        $('#fechafin').data("DateTimePicker").setMinDate(e.date);
-                    });
-                    $("#fechafin").on("dp.change", function (e) {
-                        $('#fechainicio').data("DateTimePicker").setMaxDate(e.date);
+                        minDate: moment().
                     });
                     $('#fechainicio input').click(function(event){
                         $('#fechainicio ').data("DateTimePicker").show();

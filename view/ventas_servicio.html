@@ -301,17 +301,13 @@
                         format: 'DD-MM-YYYY HH:mm',
                         extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
                         startDate: new Date(),
+                        minDate: moment(),
                     });
                     $('#fechafin').datetimepicker({
                         language: 'es',
                         format: 'DD-MM-YYYY HH:mm',
                         startDate: new Date(), 
-                    });
-                    $("#fechainicio").on("dp.change", function (e) {
-                        $('#fechafin').data("DateTimePicker").setMinDate(e.date);
-                    });
-                    $("#fechafin").on("dp.change", function (e) {
-                        $('#fechainicio').data("DateTimePicker").setMaxDate(e.date);
+                        minDate: moment(),
                     });
                     $('#fechainicio input').click(function(event){
                         $('#fechainicio ').data("DateTimePicker").show();

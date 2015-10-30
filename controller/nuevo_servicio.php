@@ -140,8 +140,6 @@ class nuevo_servicio extends fs_controller
          FALSE
       );
       
-      
-      
       $this->servicio = new servicio_cliente(); 
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
@@ -585,6 +583,8 @@ class nuevo_servicio extends fs_controller
          {
             $servicio->solucion = $_POST['solucion'];
          }
+         
+         $servicio->fechainicio = Date('d-m-Y H:i');
          if( isset($_POST['fechainicio']) )
          {
             $servicio->fechainicio = $_POST['fechainicio'];
@@ -592,7 +592,11 @@ class nuevo_servicio extends fs_controller
          if( isset($_POST['fechafin']) )
          {
             $servicio->fechafin = $_POST['fechafin'];
-         }         
+         }
+         else
+         {
+            $servicio->fechafin = date('Y-m-d H:i', strtotime($servicio->fechainicio. '+ '.$this->servicios_setup['cal_intervalo'].'minutes'));   
+         }
          if( isset($_POST['garantia']) )
          {
             $servicio->garantia = $_POST['garantia'];

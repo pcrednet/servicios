@@ -42,6 +42,7 @@ class ventas_servicios_calendario extends fs_controller {
         $fsvar = new fs_var();
         $this->servicios_setup = $fsvar->array_get(
          array(
+            'servicios_mostrar_fechainicio' => 0,
             'cal_inicio' => "09:00",
             'cal_fin' => "20:00",
             'cal_intervalo' => "30"
@@ -135,7 +136,7 @@ class ventas_servicios_calendario extends fs_controller {
                     'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
                     'class' => $this->class_prioridad ($s['prioridad']),
                     'start' => $this->formatDate(date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio']))),
-                    'end' => $this->fechafin(date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio'])), date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']))), 
+                    'end' => $this->formatDate(date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']))), 
             );
         
       
@@ -146,18 +147,6 @@ class ventas_servicios_calendario extends fs_controller {
         echo json_encode([]);
     }
   } 
-  private function fechafin($inicio, $fin){
-      $fechafin = '';
-        if($fin)
-            {
-              $fechafin = $this->formatDate($fin);
-            }
-            else
-            { 
-              $fechafin = $this->formatDate($inicio) + (60000 * $this->servicios_setup['cal_intervalo']);
-            }    
-      return $fechafin;
-  }
   
   /**
     * @desc - formatea una fecha a microtime para añadir al evento tipo 1401517498985
