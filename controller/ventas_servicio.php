@@ -103,6 +103,9 @@ class ventas_servicio extends fs_controller
             'servicios_mostrar_fechainicio' => 0,
             'servicios_mostrar_garantia' => 0,
             'servicios_garantia' => 0,
+            'cal_inicio' => "09:00",
+            'cal_fin' => "20:00",
+            'cal_intervalo' => "30"
          ),
          FALSE
       );
