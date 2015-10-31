@@ -152,15 +152,17 @@
                     
                     $('#fechainicio').datetimepicker({
                         language: 'es',
-                        format: 'DD-MM-YYYY H:mm',                      
-                        defaultDate: new Date(), 
+                        format: 'DD-MM-YYYY HH:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+                        startDate: new Date(),
+                        defaultDate: new Date(),
                         minDate: moment(),
                     });
                     $('#fechafin').datetimepicker({
                         language: 'es',
                         format: 'DD-MM-YYYY HH:mm',
-                        defaultDate: '{$fsc->fechaprevista} {$fsc->servicios_setup['cal_inicio']}',
-                        minDate: moment().
+                        startDate: new Date(), 
+                        minDate: moment(),
                     });
                     $('#fechainicio input').click(function(event){
                         $('#fechainicio ').data("DateTimePicker").show();
@@ -169,7 +171,7 @@
                         $('#fechafin ').data("DateTimePicker").show();
                     });
                 });
-    </script>
+                </script>
                   {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
                   <div class='col-sm-3'>
                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
