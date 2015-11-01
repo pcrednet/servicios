@@ -162,16 +162,18 @@ class estado_servicio extends fs_model
       return $elist;
    }
    
-    public function tiene_servicios($id)
+   public function tiene_servicios($id)
    {
       $tiene = FALSE;
       
-     
+      if( $this->db->table_exists('servicioscli') )
+      {
          $data = $this->db->select("SELECT * FROM servicioscli WHERE idestado = ".$id."");
          if($data)
          {
             $tiene = TRUE;
          }
+      }
       
       return $tiene;
    }

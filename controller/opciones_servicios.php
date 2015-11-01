@@ -44,6 +44,7 @@ class opciones_servicios extends fs_controller
       /// ¿El usuario tiene permiso para eliminar en esta página?
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       
+      $this->check_menu();
       $this->share_extensions();
       
       $this->estado = new estado_servicio();
@@ -174,5 +175,39 @@ class opciones_servicios extends fs_controller
       $fsext->text = '<span class="glyphicon glyphicon-cog" aria-hidden="true">'
               . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
       $fsext->save();
+   }
+   
+   private function check_menu()
+   {
+      if( !$this->page->get('ventas_servicios') )
+      {
+         if( file_exists(__DIR__) )
+         {
+            /// activamos las páginas del plugin
+            foreach( scandir(__DIR__) as $f)
+            {
+               if( is_string($f) AND strlen($f) > 0 AND !is_dir($f) AND $f != __CLASS__.'.php' )
+               {
+                  $page_name = substr($f, 0, -4);
+                  
+                  require_once __DIR__.'/'.$f;
+                  $new_fsc = new $page_name();
+                  
+                  if( !$new_fsc->page->save() )
+                  {
+                     $this->new_error_msg("Imposible guardar la página ".$page_name);
+                  }
+                  
+                  unset($new_fsc);
+               }
+            }
+         }
+         else
+         {
+            $this->new_error_msg('No se encuentra el directorio '.__DIR__);
+         }
+         
+         $this->load_menu(TRUE);
+      }
    }
 }
