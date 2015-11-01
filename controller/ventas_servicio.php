@@ -230,20 +230,20 @@ class ventas_servicio extends fs_controller
          $this->servicio->solucion = $_POST['solucion'];
       }
       
-      $servicio->fechainicio = Date('d-m-Y H:i');
+      $this->servicio->fechainicio = Date('d-m-Y H:i');
       if( isset($_POST['fechainicio']) )
       {
          $this->servicio->fechainicio = $_POST['fechainicio'];
       }
       
       if( isset($_POST['fechafin']) )
-         {
-            $servicio->fechafin = $_POST['fechafin'];
-         }
-         else
-         {
-            $servicio->fechafin = date('Y-m-d H:i', strtotime($servicio->fechainicio. '+ '.$this->servicios_setup['cal_intervalo'].'minutes'));   
-         }
+      {
+         $this->servicio->fechafin = $_POST['fechafin'];
+      }
+      else
+      {
+         $this->servicio->fechafin = date('Y-m-d H:i', strtotime($this->servicio->fechainicio. '+ '.$this->servicios_setup['cal_intervalo'].'minutes'));   
+      }
       
       if( isset($_POST['garantia']) )
       {

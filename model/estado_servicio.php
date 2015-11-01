@@ -81,7 +81,8 @@ class estado_servicio extends fs_model
    protected function install()
    {
       return "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES".
-              " ('1','En proceso',TRUE,FALSE,'D9EDF7')".
+              " ('1','Pendiente',TRUE,FALSE,'FFFBD9')".
+              " ('2','En proceso',TRUE,FALSE,'D9EDF7')".
               ",('100','Terminado',FALSE,TRUE,'DFF0D8');";
    }
    
@@ -98,13 +99,24 @@ class estado_servicio extends fs_model
    
    public function get_nuevo_id()
    {
-      $data = $this->db->select("SELECT MAX(id) as id FROM estados_servicios;");
+      $num = 1;
+      $data = $this->db->select("SELECT id FROM estados_servicios;");
       if($data)
       {
-         return 1 + intval($data[0]['id']);
+         foreach($data as $d)
+         {
+            if($d['id'] == $num)
+            {
+               $num++;
+            }
+            else
+            {
+               break;
+            }
+         }
       }
-      else
-         return 1;
+      
+      return $num;
    }
    
    public function exists()

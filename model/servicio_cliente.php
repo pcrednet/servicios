@@ -347,8 +347,6 @@ class servicio_cliente extends fs_model
          $this->fechafin = NULL;
          $this->fechainicio = Date('d-m-Y');
          $this->garantia = FALSE;
-         $this->horafin = NULL;
-         $this->horainicio = NULL;
          $this->editable = TRUE;
       }
       
@@ -373,7 +371,17 @@ class servicio_cliente extends fs_model
       else
          return Date('H:i', strtotime($this->hora));
    }
-
+   
+   public function horainicio()
+   {
+      return Date('H:i:s', strtotime($this->fechainicio));
+   }
+   
+   public function horafin()
+   {
+      return Date('H:i:s', strtotime($this->fechafin));
+   }
+   
    public function observaciones_resume()
    {
       if($this->observaciones == '')

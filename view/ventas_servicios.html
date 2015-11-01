@@ -175,7 +175,8 @@
       <a href="{$fsc->url()}&mostrar=buscar" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
          {if="$fsc->num_resultados!==''"}
-         <span class="hidden-xs badge">&nbsp; {$fsc->num_resultados} resultados</span>
+         <span class="hidden-xs badge">{$fsc->num_resultados}</span>
+         <span class="hidden-xs">resultados</span>
          {else}
          <span class="hidden-xs">&nbsp; Buscar</span>
          {/if}
@@ -298,11 +299,17 @@
             <th class="text-left">Prioridad</th>
             <th class="text-left">Cliente</th>
             <th class="text-left">Estado</th>
+            {if="$fsc->servicios_setup['servicios_mostrar_material']"}
             <th class="text-left">{$fsc->st['st_material']}</th>
+            {/if}
             <th class="text-right">Total</th>
             <th class="text-right">Fecha</th>
+            {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
             <th data-sortable="true" class="text-right">Fecha inicio</th>
+            {/if}
+            {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
             <th data-sortable="true" class="text-right">Fecha Prev. Fin</th>
+            {/if}
          </tr>
       </thead>
       {loop="$fsc->resultados"}
@@ -319,13 +326,19 @@
             <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
          </td>
          <td>{$value->nombre_estado()}</td>
+         {if="$fsc->servicios_setup['servicios_mostrar_material']"}
          <td>{$value->material}</td>
+         {/if}
          <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
          <td class="text-right">
             {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
          </td>
+         {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
          <td class="text-right">{$value->fechainicio}</td>
+         {/if}
+         {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
          <td class="text-right">{$value->fechafin}</td>
+         {/if}
       </tr>
       {else}
       <tr class="bg-warning">
