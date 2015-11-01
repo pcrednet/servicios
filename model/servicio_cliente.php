@@ -225,18 +225,6 @@ class servicio_cliente extends fs_model
    
    public $fechainicio;
    
-   /**
-    *Hora de inicio del servicio
-    * @var type time
-    */
-   public $horainicio;
-   
-   /**
-    *Hora de fin del servicio
-    * @var type time
-    */
-   public $horafin;
-   
    public $garantia;
    
    /**
@@ -297,20 +285,20 @@ class servicio_cliente extends fs_model
          $this->accesorios = $s['accesorios'];
          $this->idestado = $s['idestado'];
          
+         $this->fechafin = NULL;
          if( isset($s['fechafin']) )
          {
-             $this->fechafin = date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']));
+            $this->fechafin = date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']));
          }
          
+         $this->fechainicio = NULL;
          if( isset($s['fechainicio']) )
          {
             $this->fechainicio = date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio']));
          }
          
-         
          $this->garantia = $s['garantia'];
          $this->prioridad = $s['prioridad'];
-         
          $this->editable = $this->str2bool($s['editable']);
       }
       else
@@ -361,7 +349,6 @@ class servicio_cliente extends fs_model
          $this->garantia = FALSE;
          $this->horafin = NULL;
          $this->horainicio = NULL;
-         
          $this->editable = TRUE;
       }
       
@@ -546,6 +533,30 @@ class servicio_cliente extends fs_model
    {
       if( $this->test() )
       {
+         $fechafin = NULL;
+         if($this->fechafin)
+         {
+            $fechafin = substr($this->fechafin, 0, 10);
+         }
+         
+         $horafin = NULL;
+         if($this->fechafin)
+         {
+            $horafin = substr($this->fechafin, 10, 6);
+         }
+         
+         $fechaini = NULL;
+         if($this->fechainicio)
+         {
+            $fechaini = substr($this->fechainicio, 0, 10);
+         }
+         
+         $horaini = NULL;
+         if($this->fechainicio)
+         {
+            $horaini = substr($this->fechainicio, 10, 6);
+         }
+         
          if( $this->exists() )
          {
             $sql = "UPDATE " . $this->table_name . " SET apartado = " . $this->var2str($this->apartado)
@@ -565,13 +576,13 @@ class servicio_cliente extends fs_model
                     .", direccion = " . $this->var2str($this->direccion)
                     .", fecha = " . $this->var2str($this->fecha)
                     .", hora = " . $this->var2str($this->hora)
-                    .", fechafin = " . $this->var2str(substr($this->fechafin, 0, 10))
-                    .", horafin = " . $this->var2str(substr($this->fechafin, 10, 6))
-                    .", horainicio = " . $this->var2str(substr($this->fechainicio, 10, 6))
+                    .", fechafin = " . $this->var2str($fechafin)
+                    .", horafin = " . $this->var2str($horafin)
+                    .", horainicio = " . $this->var2str($horaini)
                     .", idalbaran = " . $this->var2str($this->idalbaran)
                     .", irpf = " . $this->var2str($this->irpf)
                     .", neto = " . $this->var2str($this->neto)
-                    .", fechainicio = " . $this->var2str(substr($this->fechainicio, 0, 10))
+                    .", fechainicio = " . $this->var2str($fechaini)
                     .", nombrecliente = " . $this->var2str($this->nombrecliente)
                     .", numero = " . $this->var2str($this->numero)
                     .", numero2 = " . $this->var2str($this->numero2)
@@ -630,8 +641,8 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->numero)
                     . "," . $this->var2str($this->observaciones)
                     . "," . $this->var2str($this->porcomision)
-                    . "," . $this->var2str(substr($this->fechafin, 0, 10))
-                    . "," . $this->var2str(substr($this->fechainicio, 0, 10))
+                    . "," . $this->var2str($fechafin)
+                    . "," . $this->var2str($fechaini)
                     . "," . $this->var2str($this->garantia)
                     . "," . $this->var2str($this->provincia)
                     . "," . $this->var2str($this->recfinanciero)
@@ -650,8 +661,8 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->numero2)
                     . "," . $this->var2str($this->idestado)
                     . "," . $this->var2str($this->editable)
-                    . "," . $this->var2str(substr($this->fechainicio, 10, 6))
-                    . "," . $this->var2str(substr($this->fechafin, 10, 6)). ");";
+                    . "," . $this->var2str($horaini)
+                    . "," . $this->var2str($horafin). ");";
             
             if( $this->db->exec($sql) )
             {
