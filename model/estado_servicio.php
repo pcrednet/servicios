@@ -81,9 +81,9 @@ class estado_servicio extends fs_model
    protected function install()
    {
       return "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES".
-              " ('1','Pendiente',TRUE,FALSE,'FFFBD9')".
-              " ('2','En proceso',TRUE,FALSE,'D9EDF7')".
-              ",('100','Terminado',FALSE,TRUE,'DFF0D8');";
+              " ('1','Pendiente',TRUE,FALSE,'FFFBD9'),".
+              " ('2','En proceso',TRUE,FALSE,'D9EDF7'),".
+              " ('100','Terminado',FALSE,TRUE,'DFF0D8');";
    }
    
    public function get($id)
