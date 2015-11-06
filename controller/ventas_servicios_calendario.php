@@ -168,13 +168,9 @@ class ventas_servicios_calendario extends fs_controller
             
             $servlist[] = $aux;
          }
-         
-         echo json_encode($servlist);
       }
-      else
-      {
-         echo json_encode([]);
-      }
+      
+      echo json_encode($servlist);
    }
    
    /**
