@@ -363,7 +363,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_cliente',
               'type' => 'button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS,
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(FS_SERVICIO),
               'params' => ''
           ),
           array(
@@ -371,7 +371,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'admin_agente',
               'type' => 'button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS . ' de cliente',
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(FS_SERVICIO) . ' de cliente',
               'params' => ''
           ),
           array(
@@ -379,7 +379,7 @@ class ventas_servicios extends fs_controller
               'page_from' => __CLASS__,
               'page_to' => 'ventas_articulo',
               'type' => 'tab_button',
-              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.FS_SERVICIOS . ' de cliente',
+              'text' => '<span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp; '.ucfirst(FS_SERVICIO) . ' de cliente',
               'params' => ''
           ),
       );
