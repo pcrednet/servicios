@@ -1,2 +1,5 @@
-Plugin Servicios.
-Añade soporte para reparación incluida facturación.
+# servicios.
+Este plugin añade a FacturaScripts soporte para reparación, incluida facturación.
+Sustituye al plugin SAT.
+
+https://www.facturascripts.com

@@ -131,19 +131,32 @@
       </div>
       <div class="row">
          <div class="col-md-12">
-            <h3 class="text-capitalize" style="margin-bottom: 0px;">
-               <a href="{$fsc->ppage->url()}">{#FS_SERVICIOS#}</a> /
-               <a href="{$fsc->servicio->cliente_url()}">{$fsc->servicio->nombrecliente}</a> /
-               {$fsc->servicio->codigo}
-            </h3>
-            {if="$fsc->agente"}
-            <p>
+            <br/>
+            <ol class="breadcrumb" style="margin-bottom: 5px;">
+               <li><a href="{$fsc->ppage->url()}">Ventas</a></li>
+               <li><a href="{$fsc->ppage->url()}">{#FS_SERVICIOS#}</a></li>
+               <li>
+                  <a href="{$fsc->servicio->cliente_url()}">{$fsc->servicio->nombrecliente}</a>
+               </li>
+               {if="$fsc->cliente_s"}
+                  {if="$fsc->cliente_s->nombre!=$fsc->servicio->nombrecliente"}
+                  <li>
+                     <a href="#" onclick="alert('Cliente conocido como: {$fsc->cliente_s->nombre}')">
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                     </a>
+                  </li>
+                  {/if}
+               {/if}
+               <li class="active"><b>{$fsc->servicio->codigo}</b></li>
+            </ol>
+            <p class="help-block">
+               {if="$fsc->agente"}
                <span class="text-capitalize">{#FS_SERVICIO#}</span> creado por
                <a href="{$fsc->agente->url()}">{$fsc->agente->get_fullname()}</a>.
+               {else}
+               Sin datos de qué empleado ha creado este {#FS_SERVICIO#}.
+               {/if}
             </p>
-            {else}
-            <p>Sin datos de qué empleado ha creado este {#FS_SERVICIO#}.</p>
-            {/if}
          </div>
       </div>
       <div class="row">
