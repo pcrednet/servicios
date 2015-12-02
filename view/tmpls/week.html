@@ -30,7 +30,7 @@
             <% }; %>
             <% for(i = 0; i < hours; i++){ %>
             <div class="cal-week-hour">
-                <% for(l = 0; l < in_hour; l++){ %>
+                <% for(l = 0; l < cal._hour_min(i); l++){ %>
                 <div class="cal-row-fluid cal-week-hour-part">
                     <div class="cal-cell1 cal-offset0"><b><%= cal._hour(i, l) %></b></div>
                 </div>

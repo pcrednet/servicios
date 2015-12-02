@@ -17,7 +17,7 @@
    <columna>
       <nombre>cifnif</nombre>
       <tipo>character varying(12)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>ciudad</nombre>
@@ -47,22 +47,22 @@
    <columna>
       <nombre>coddivisa</nombre>
       <tipo>character varying(3)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>codejercicio</nombre>
       <tipo>character varying(4)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>codigo</nombre>
       <tipo>character varying(20)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>codpago</nombre>
       <tipo>character varying(10)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>codpais</nombre>
@@ -82,7 +82,7 @@
    <columna>
       <nombre>direccion</nombre>
       <tipo>character varying(100)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>editable</nombre>
@@ -144,7 +144,7 @@
    <columna>
       <nombre>irpf</nombre>
       <tipo>double precision</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>neto</nombre>
@@ -209,7 +209,7 @@
    <columna>
       <nombre>recfinanciero</nombre>
       <tipo>double precision</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>tasaconv</nombre>
@@ -224,7 +224,7 @@
    <columna>
       <nombre>totaleuros</nombre>
       <tipo>double precision</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>totalirpf</nombre>
