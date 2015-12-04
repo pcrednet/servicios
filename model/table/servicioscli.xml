@@ -159,7 +159,7 @@
    <columna>
       <nombre>numero</nombre>
       <tipo>character varying(12)</tipo>
-      <nulo>NO</nulo>
+      <nulo>YES</nulo>
    </columna>
    <columna>
       <nombre>numero2</nombre>

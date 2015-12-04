@@ -204,7 +204,7 @@ class ventas_servicio extends fs_controller
       $this->servicio->observaciones = $_POST['observaciones'];
       $this->servicio->numero2 = $_POST['numero2'];
       $this->servicio->estado = $_POST['estado'];
-      
+      $this->servicio->codpago = $_POST['codpago'];
       if( isset($_POST['material']) )
       {
          $this->servicio->material = $_POST['material'];
@@ -256,6 +256,16 @@ class ventas_servicio extends fs_controller
       
       if( $this->servicio->editable() )
       {
+          //si no hay codejercicio; lo buscamos:
+          if($this->servicio->codejercicio !='')
+         {
+             $this->servicio->codejercicio = $this->servicio->codejercicio;
+         }
+         else
+         {   $eje0 = new ejercicio();
+             $ejercicio = $eje0->get_by_fecha($this->servicio->fecha);
+             $this->servicio->codejercicio = $ejercicio->codejercicio;
+         }
          /// obtenemos los datos del ejercicio para acotar la fecha
          $eje0 = $this->ejercicio->get($this->servicio->codejercicio);
          if ($eje0)
@@ -267,9 +277,15 @@ class ventas_servicio extends fs_controller
             $this->new_error_msg('No se encuentra el ejercicio asociado al ' . FS_SERVICIO);
 
          /// ¿cambiamos el cliente?
-         if ($_POST['cliente'] != $this->servicio->codcliente)
+         if ($_POST['cliente'] != $this->servicio->codcliente OR $this->servicio->cifnif == '')
          {
-            $cliente = $this->cliente->get($_POST['cliente']);
+            if(isset($_POST['cliente']))
+            {
+                $cliente = $this->cliente->get($_POST['cliente']);
+            }
+            else
+                $cliente = $this->servicio->codcliente;
+            
             if ($cliente)
             {
                foreach ($cliente->get_direcciones() as $d)
@@ -320,17 +336,15 @@ class ventas_servicio extends fs_controller
             }
          }
          
-         $this->servicio->codpago = $_POST['forma_pago'];
-         
          /// ¿Cambiamos la divisa?
-         if($_POST['divisa'] != $this->servicio->coddivisa)
+        if($_POST['divisa'] != $this->servicio->coddivisa)
          {
-            $divisa = $this->divisa->get($_POST['divisa']);
-            if($divisa)
-            {
-               $this->servicio->coddivisa = $divisa->coddivisa;
-               $this->servicio->tasaconv = $divisa->tasaconv;
-            }
+               $divisa = $this->divisa->get($_POST['divisa']);
+               if($divisa)
+               {
+                  $this->servicio->coddivisa = $divisa->coddivisa;
+                  $this->servicio->tasaconv = $divisa->tasaconv;
+               }
          }
          else if($_POST['tasaconv'] != '')
          {
@@ -506,12 +520,20 @@ class ventas_servicio extends fs_controller
 
    private function generar_albaran()
    {
+       
       $albaran = new albaran_cliente();
       $albaran->apartado = $this->servicio->apartado;
       $albaran->cifnif = $this->servicio->cifnif;
       $albaran->ciudad = $this->servicio->ciudad;
       $albaran->codagente = $this->servicio->codagente;
-      $albaran->codalmacen = $this->servicio->codalmacen;
+      if($servicio->codalmacen !='')
+      {
+          $albaran->codalmacen = $this->servicio->codalmacen;
+      }
+      else
+      {
+          $albaran->codalmacen = $this->empresa->codalmacen;
+      }
       $albaran->codcliente = $this->servicio->codcliente;
       $albaran->coddir = $this->servicio->coddir;
       $albaran->coddivisa = $this->servicio->coddivisa;
