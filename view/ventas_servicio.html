@@ -626,7 +626,7 @@
                         <select name="codpago" class="form-control">
                             {loop="$fsc->forma_pago->all()"}
                                 {if="!$fsc->servicio->codpago"}
-                                <option value="{$value->codpago}"{if="$fsc->empresa->codpago == $value->codpago"} selected=""{/if}>{$value->descripcion}</option>
+                                <option value="{$value->codpago}"{if="$fsc->cliente_s->codpago == $value->codpago"} selected=""{/if}>{$value->descripcion}</option>
                                 {elseif="$value->codpago==$fsc->servicio->codpago"}
                                 <option value="{$value->codpago}" selected="selected">{$value->descripcion}</option>
                                 {else}
