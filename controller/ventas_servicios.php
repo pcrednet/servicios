@@ -18,12 +18,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+require_model('registro_sat.php');
+require_model('detalle_sat.php');
 require_model('agente.php');
 require_model('articulo.php');
 require_model('cliente.php');
 require_model('servicio_cliente.php');
 require_model('estado_servicio.php');
+require_model('detalle_servicio.php');
 
 class ventas_servicios extends fs_controller
 {
@@ -46,6 +48,8 @@ class ventas_servicios extends fs_controller
    public $total_resultados;
    public $total_resultados_txt;
    public $editable;
+   public $registro_sat;
+   public $detalle_sat;
    
    public function __construct()
    {
@@ -75,6 +79,7 @@ class ventas_servicios extends fs_controller
             'servicios_mostrar_fechainicio' => 0,
             'servicios_mostrar_garantia' => 0,
             'servicios_garantia' => 0,
+            'cal_inicio' => "09:00",
          ),
          FALSE
       );
@@ -93,6 +98,16 @@ class ventas_servicios extends fs_controller
          ),
          FALSE
       );
+      $this->avisosat = '';
+      if( class_exists('registro_sat') )
+      {
+         $this->avisosat = TRUE;
+      }
+      
+      if( isset($_GET['importar']) )
+      {
+         $this->importar_sat();
+      }
    
       $servicio = new servicio_cliente();
       $this->agente = new agente();
@@ -513,5 +528,84 @@ class ventas_servicios extends fs_controller
             $this->total_resultados_txt = 'Suma total de los resultados:';
          }
       }
+   }
+   
+   private function importar_sat()
+   {
+      $this->registro_sat = new registro_sat();
+      $this->detalle_sat = new detalle_sat();
+      $this->cliente = new cliente();
+      $importados = 0;
+      $importados_det = 0;
+      $data = $this->db->select("SELECT * FROM registros_sat;");
+      if($data)
+      {
+         foreach($data as $d)
+         {
+            $servicio = $this->registro_sat->get($d['nsat']);
+            if($servicio)
+            {
+               $servicio = new servicio_cliente();
+               $servicio->numero2 = "SAT_".$d['nsat'];
+               $servicio->fecha = $d['fentrada'];
+               if(isset($d['fcomienzo']))
+               {
+                   $servicio->fechainicio = Date('d-m-Y H:i', strtotime($d['fcomienzo']));
+               }
+               if(isset($d['ffin']))
+               {
+                   $servicio->fechafin = Date('d-m-Y H:i', strtotime($d['ffin']));
+               }
+               //obtenemos ejercicio
+               $eje0 = new ejercicio();
+               $ejercicio = $eje0->get_by_fecha($d['fentrada']);
+               $servicio->codejercicio = $ejercicio->codejercicio;
+
+               $servicio->material = $d['modelo'];
+               $servicio->descripcion = $d['averia'];
+               $servicio->accesorios = $d['accesorios'];
+               $servicio->codcliente = $d['codcliente'];
+               $servicio->observaciones  = $d['observaciones'];
+               $servicio->codagente = $d['codagente'];
+               //obtenemos cliente
+               $cliente0 = new cliente();
+               $cliente = $cliente0->get($d['codcliente']);
+               $servicio->nombrecliente = $cliente->nombre;
+               
+               $servicio->codserie = $this->empresa->codserie;
+               $servicio->codpago = $this->empresa->codpago;
+               
+               if( $servicio->save() )
+               {
+                  $importados++;
+               }
+               
+               //Importamos Detalles:  
+               $data2 = $this->db->select("SELECT * FROM detalles_sat WHERE nsat=".$d['nsat'].";");
+               if($data2)
+                {
+                   foreach($data2 as $d2)
+                   {
+                      $detalle = $this->detalle_sat->get($d2['id']);
+                        if($detalle)
+                        {
+                            $detalle = new detalle_servicio();
+                            $detalle->idservicio = $servicio->idservicio;
+                            $detalle->descripcion = $d2['descripcion'];
+                            $detalle->fecha= $d2['fecha'];
+                            if( $detalle->save() )
+                                {
+                                   $importados_det++;
+                                }
+                        }
+                   }
+                }
+               
+            }
+         }
+      }
+      
+      $this->new_message($importados.' registros SAT importados.');
+      $this->new_message($importados_det.' detalles SAT importados.');
    }
 }

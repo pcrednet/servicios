@@ -526,7 +526,7 @@ class ventas_servicio extends fs_controller
       $albaran->cifnif = $this->servicio->cifnif;
       $albaran->ciudad = $this->servicio->ciudad;
       $albaran->codagente = $this->servicio->codagente;
-      if($servicio->codalmacen !='')
+      if($this->servicio->codalmacen !='')
       {
           $albaran->codalmacen = $this->servicio->codalmacen;
       }

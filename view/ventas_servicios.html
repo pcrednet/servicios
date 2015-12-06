@@ -163,7 +163,20 @@
       </div>
    </div>
 </div>
-
+{if="$fsc->avisosat"}
+<div class="panel panel-warning">
+            <div class="panel-heading">
+               <h3 class="panel-title">Hemos detectado que tienes SAT instalado</h3>
+            </div>
+            <div class="panel-body">
+               <p>Si lo deseas puedes importar los registros del SAT a Servicios</p>
+               <a class="btn btn-xs btn-default" href="{$fsc->url()}&importar=TRUE">
+                  <span class="glyphicon glyphicon-import"></span>
+                  <span class="hidden-xs">&nbsp; Importar</span>
+               </a>
+            </div>
+         </div>
+{/if}
 <ul class="nav nav-tabs" role="tablist">
    <li{if="$fsc->mostrar=='todo'"} class="active"{/if}>
       <a href="{$fsc->url()}&mostrar=todo">
