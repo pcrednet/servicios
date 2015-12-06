@@ -607,5 +607,6 @@ class ventas_servicios extends fs_controller
       
       $this->new_message($importados.' registros SAT importados.');
       $this->new_message($importados_det.' detalles SAT importados.');
+      $this->new_message('Deberías <a href="index.php?page=admin_home">desactivar / desinstalar</a> SAT para evitar problmeas.');
    }
 }
