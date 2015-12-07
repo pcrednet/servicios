@@ -19,8 +19,8 @@ window.calendar_languages['es-ES'] = {
 	all_day:     'Todo el día',
 	time:        'Tiempo',
 	events:      'Eventos',
-	before_time: 'Tiempo antes de la cinta final',
-	after_time:  'Fin después de una cinta temporal',
+	before_time: 'Antes',
+	after_time:  'Después',
 
 	m0:  'Enero',
 	m1:  'Febrero',

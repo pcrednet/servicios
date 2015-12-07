@@ -20,14 +20,19 @@
     <hr>
     <div id="cal-week-panel" class="clearfix">
         <%= cal._week() %>
-        <div id="cal-week-panel-hour">
-            <% if(all_day.length) {%>
-            <div class="cal-week-multiple-days">
-                <div class="cal-row-fluid cal-week-multiple-part">
-                    <div class="cal-cell1 cal-offset0"><b><%= cal.locale.all_day %></b></div>
-                </div>
-            </div>
-            <% }; %>
+        <div class="cal-week-hour">
+           <div class="cal-row-fluid cal-week-hour-part">
+               <div class="cal-cell1 cal-offset0"><b><%= cal.locale.before_time %></b></div>
+           </div>
+        </div>
+        <div id="cal-week-hour">
+           <% if(all_day.length) {%>
+           <div class="cal-week-multiple-days">
+               <div class="cal-row-fluid cal-week-multiple-part">
+                   <div class="cal-cell1 cal-offset0"><b><%= cal.locale.all_day %></b></div>
+               </div>
+           </div>
+           <% }; %>
             <% for(i = 0; i < hours; i++){ %>
             <div class="cal-week-hour">
                 <% for(l = 0; l < cal._hour_min(i); l++){ %>
@@ -39,4 +44,9 @@
             <% }; %>
         </div>
     </div>
+    <div class="cal-week-hour">
+      <div class="cal-row-fluid cal-week-hour-part">
+          <div class="cal-cell1 cal-offset0"><b><%= cal.locale.after_time %></b></div>
+      </div>
+   </div>
 </div>

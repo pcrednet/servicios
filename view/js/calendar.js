@@ -475,12 +475,12 @@ if(!String.prototype.formatNum) {
             event.end_hour = event_end_date.getHours().toString().formatNum(2) + ':' + event_end_date.getMinutes().toString().formatNum(2);
 
             if(event.start < time.date_start.getTime()) {
-                warn(1);
+                //warn(1);
                 event.start_hour = event_start_date.getDate() + ' ' + $self.locale['ms' + event_start_date.getMonth()] + ' ' + event.start_hour;
             }
 
             if(event.end > time.date_end.getTime()) {
-                warn(1);
+                //warn(1);
                 event.end_hour = event_end_date.getDate() + ' ' + $self.locale['ms' + event_end_date.getMonth()] + ' ' + event.end_hour;
             }
 
@@ -502,10 +502,15 @@ if(!String.prototype.formatNum) {
             // TODO from the week this is always disabled
             event.width = $self._day_hour_interchange_calculate_width(event, data.events, width_percentage);
             event.margin_left = $self._day_hour_interchange_calculate_margin_left(event, data.events, event.width);
-
+//
             var event_start = time.date_start.getTime() - event.start;
+            var event_end = time.date_end.getTime() - event.end;
 
-            if(event_start >= 0) {
+            if (event.start < time.date_start.getTime() ) {
+                // event is before start hour
+                event.top = 0;
+            } else if ( event.start > time.date_end.getTime() ) {
+                // event is after end hour
                 event.top = 0;
             } else {
                 event.top = Math.abs(event_start) / ms_per_line;
@@ -569,7 +574,7 @@ if(!String.prototype.formatNum) {
     Calendar.prototype._day_hour_interchange_calculate_margin_left = function (event, events_list, width_amount) {
         var $self = this;
 
-        var margin_left = null;
+        var margin_left = 0;
         var events_found = 0;
         var events_to_loop = $self._events_to_loop(event, events_list);
         $.each(events_list, function(key, loop_event) {
@@ -584,7 +589,7 @@ if(!String.prototype.formatNum) {
                 if (events_found == 1)
                     margin_left = width_amount + 0.5;
                 else
-                    margin_left = margin_left + width_amount +0.5;
+                    margin_left = margin_left + width_amount + 0.5;
             }
         });
         return margin_left;
@@ -637,10 +642,9 @@ if(!String.prototype.formatNum) {
             $.error(this.locale.error_timedevide);
         }
 
-        var time_start = this.options.time_start.split(":");
-        var time_end = this.options.time_end.split(":");
+        var time = this.get_start_end_day_time();
 
-        data.hours = (parseInt(time_end[0]) - parseInt(time_start[0]));
+        data.hours = (parseInt(time.end_time[0]) - parseInt(time.start_time[0]));
         var lines = data.hours * data.in_hour;
         var ms_per_line = (60000 * parseInt(this.options.time_split));
 
@@ -652,6 +656,11 @@ if(!String.prototype.formatNum) {
 
         $.each(this.getEventsBetween(week_start, week_end), function(k, event) {
             event.start_day = new Date(parseInt(event.start)).getDay();
+            var event_start_date = new Date(parseInt(event.start));
+            var event_end_date = new Date(parseInt(event.end));
+            event.start_hour = event_start_date.getHours().toString().formatNum(2) + ':' + event_start_date.getMinutes().toString().formatNum(2);
+            event.end_hour = event_end_date.getHours().toString().formatNum(2) + ':' + event_end_date.getMinutes().toString().formatNum(2);
+
             if(first_day == 1) {
                 event.start_day = (event.start_day + 6) % 7;
             }
@@ -679,35 +688,32 @@ if(!String.prototype.formatNum) {
             var day_end_time = day_end_hour.getTime();
             var end_hour = new Date(parseInt(event.end));
 
-            event.display_start_hour = start_hour.getHours().toString().formatNum(2) + ':' + start_hour.getMinutes().toString().formatNum(2);
-            event.display_end_hour = end_hour.getHours().toString().formatNum(2) + ':' + end_hour.getMinutes().toString().formatNum(2);
+            var day_start_hour = start_hour.getHours().toString().formatNum(2) + ':' + start_hour.getMinutes().toString().formatNum(2);
+            var day_end_hour = end_hour.getHours().toString().formatNum(2) + ':' + end_hour.getMinutes().toString().formatNum(2);
 
             var event_start_time = start_hour.getTime();
             var event_end_time = end_hour.getTime();
             var position_start_time = new Date(event_start_time);
-            position_start_time.setHours(time_start[0]);
-            position_start_time.setMinutes(time_start[1]);
+            position_start_time.setHours(time.start_time[0]);
+            position_start_time.setMinutes(time.start_time[1]);
             var position_end_time = new Date(event_end_time);
-            position_end_time.setHours(time_end[0]);
-            position_end_time.setMinutes(time_end[1]);
-
-            // TODO if before start time event
-
-            // TODO if after end time event
-
-            // TODO if all day event
-            if (event.days > 1) {
-                event.width = (event.days * 12.5);
-                events.all_day.push(event);
-                return;
-            }
+            position_end_time.setHours(time.end_time[0]);
+            position_end_time.setMinutes(time.end_time[1]);
+            var open_time = position_start_time.getHours().toString().formatNum(2)+':'+position_start_time.getMinutes().toString().formatNum(2);
+            var close_time = position_end_time.getHours().toString().formatNum(2)+':'+position_end_time.getMinutes().toString().formatNum(2);
 
             var event_start = event_start_time - position_start_time;
+            var event_end = event_end_time - position_end_time;
             var lines_in_event;
+
             if (event_start < 0 ) {
                 // event is before start hour
                 event.top = 0;
-                lines_in_event = (event_end_time - (event_start_time - event_start)) / ms_per_line;
+                lines_in_event = 1;
+            } else if ( event_end > 0 ) {
+                // event is after end hour
+                event.top = Math.abs(position_end_time - position_start_time) / ms_per_line;
+                lines_in_event = 1;
             } else {
                 event.top = Math.abs(event_start) / ms_per_line;
                 lines_in_event = (event_end_time - event_start_time) / ms_per_line;
@@ -715,6 +721,7 @@ if(!String.prototype.formatNum) {
 
             event.width = self._day_hour_interchange_calculate_width(event, total_events_in_week, 12.5);
             event.margin_left = self._day_hour_interchange_calculate_margin_left(event, total_events_in_week, event.width) + (event.start_day * 12.5 );
+//
             var lines_left = lines - ( event.top + lines_in_event) ;
             event.lines = lines_in_event;
 
@@ -724,7 +731,20 @@ if(!String.prototype.formatNum) {
                 event.lines = lines_in_event;
             }
 
-            events.by_hour.push(event);
+            if(event.start_hour < open_time) {
+               // TODO if before start time event
+                events.before_time.push(event);
+            } else if(event.end_hour > close_time) {
+               // TODO if after end time event
+                events.after_time.push(event);
+            } else if (event.days > 1) {
+               // TODO if all day event
+                event.width = (event.days * 12.5);
+                events.all_day.push(event);
+            } else {
+               events.by_hour.push(event);
+            }
+
         });
         t.events = events;
         t.cal = this;
@@ -1206,7 +1226,9 @@ if(!String.prototype.formatNum) {
     };
 
     Calendar.prototype._update_day = function() {
+        $('#cal-day-panel-before').height($('#cal-day-panel-hour-before').height());
         $('#cal-day-panel').height($('#cal-day-panel-hour').height());
+        $('#cal-day-panel-after').height($('#cal-day-panel-hour-after').height());
     };
 
     Calendar.prototype._update_week = function() {

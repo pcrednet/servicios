@@ -345,7 +345,7 @@ hr {
   padding-top: 10px;
   text-align: center;
 }
-.cal-week-box a.cal-week-link {
+.cal-week-box a.cal-week-link a.cal-day-link {
   display: block;
   height: 100%;
   width: 100%;
@@ -355,7 +355,17 @@ hr {
   text-wrap: none;
 }
 #cal-day-box .cal-day-hour-part {
+  text-align: center;
   height: 30px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border-bottom: thin dashed #e1e1e1;
+}
+#cal-day-box .cal-day-hour-part-before,
+#cal-day-box .cal-day-hour-part-after {
+  text-align: center;
+  height: 60px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -364,27 +374,41 @@ hr {
 #cal-day-box .cal-day-hour .day-highlight {
   height: 30px;
 }
+#cal-day-box .cal-day-hour-before .day-highlight-before,
+#cal-day-box .cal-day-hour-after .day-highlight-after {
+  height: 60px;
+}
 #cal-day-box .cal-hours {
   font-weight: bolder;
 }
-#cal-day-box .cal-day-hour:nth-child(odd) {
+#cal-day-box .cal-day-hour:nth-child(odd),
+#cal-day-box .cal-day-hour-before:nth-child(odd),
+#cal-day-box .cal-day-hour-after:nth-child(odd) {
   background-color: #fafafa;
 }
-#cal-day-box #cal-day-panel {
+#cal-day-box #cal-day-panel,
+#cal-day-box #cal-day-panel-before,
+#cal-day-box #cal-day-panel-after {
   position: relative;
   padding-left: 60px;
 }
-#cal-day-box #cal-day-panel-hour {
+#cal-day-box #cal-day-panel-hour,
+#cal-day-box #cal-day-panel-hour-before,
+#cal-day-box #cal-day-panel-hour-after {
   position: absolute;
   width: 100%;
-  margin-left: -60px;
+  margin-left: -90px;
 }
-#cal-day-box .day-event {
+#cal-day-box .day-event,
+#cal-day-box .day-event-before,
+#cal-day-box .day-event-after {
   position: relative;
   max-width: 200px;
   overflow: hidden;
 }
-#cal-day-box .day-highlight {
+#cal-day-box .day-highlight,
+#cal-day-box .day-highlight-before,
+#cal-day-box .day-highlight-after {
   line-height: 30px;
   padding-left: 8px;
   padding-right: 8px;
@@ -396,22 +420,34 @@ hr {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#cal-day-box .day-highlight.dh-event-important {
+#cal-day-box .day-highlight.dh-event-important,
+#cal-day-box .day-highlight-before.dh-event-important,
+#cal-day-box .day-highlight-after.dh-event-important {
   border: 1px solid #ad2121;
 }
-#cal-day-box .day-highlight.dh-event-warning {
+#cal-day-box .day-highlight.dh-event-warning,
+#cal-day-box .day-highlight-before.dh-event-warning,
+#cal-day-box .day-highlight-after.dh-event-warning {
   border: 1px solid #e3bc08;
 }
-#cal-day-box .day-highlight.dh-event-info {
+#cal-day-box .day-highlight.dh-event-info,
+#cal-day-box .day-highlight-before.dh-event-info,
+#cal-day-box .day-highlight-after.dh-event-info {
   border: 1px solid dodgerblue;
 }
-#cal-day-box .day-highlight.dh-event-inverse {
+#cal-day-box .day-highlight.dh-event-inverse,
+#cal-day-box .day-highlight-before.dh-event-inverse,
+#cal-day-box .day-highlight-after.dh-event-inverse {
   border: 1px solid #1b1b1b;
 }
-#cal-day-box .day-highlight.dh-event-success {
+#cal-day-box .day-highlight.dh-event-success,
+#cal-day-box .day-highlight-before.dh-event-inverse,
+#cal-day-box .day-highlight-after.dh-event-inverse {
   border: 1px solid darkgreen;
 }
-#cal-day-box .day-highlight.dh-event-special {
+#cal-day-box .day-highlight.dh-event-special,
+#cal-day-box .day-highlight-before.dh-event-special,
+#cal-day-box .day-highlight-after.dh-event-special {
   background-color: #ffe6ff;
   border: 1px solid #800080;
 }
@@ -455,31 +491,60 @@ hr {
   background-color: #800080;
 }
 .day-highlight:hover,
-.day-highlight {
+.day-highlight,
+.day-highlight-before:hover,
+.day-highlight-before,
+.day-highlight-after:hover,
+.day-highlight-after
+ {
   background-color: #dddddd;
 }
 .day-highlight.dh-event-important:hover,
-.day-highlight.dh-event-important {
+.day-highlight.dh-event-important,
+.day-highlight-before.dh-event-important:hover,
+.day-highlight-before.dh-event-important,
+.day-highlight-after.dh-event-important:hover,
+.day-highlight-after.dh-event-important {
   background-color: #fae3e3;
 }
 .day-highlight.dh-event-warning:hover,
-.day-highlight.dh-event-warning {
+.day-highlight.dh-event-warning,
+.day-highlight-before.dh-event-warning:hover,
+.day-highlight-before.dh-event-warning,
+.day-highlight-after.dh-event-warning:hover,
+.day-highlight-after.dh-event-warning {
   background-color: #fdf1ba;
 }
 .day-highlight.dh-event-info:hover,
-.day-highlight.dh-event-info {
+.day-highlight.dh-event-info,
+.day-highlight-before.dh-event-info:hover,
+.day-highlight-before.dh-event-info,
+.day-highlight-after.dh-event-info:hover,
+.day-highlight-after.dh-event-info {
   background-color: #d1e8ff;
 }
 .day-highlight.dh-event-inverse:hover,
-.day-highlight.dh-event-inverse {
+.day-highlight.dh-event-inverse,
+.day-highlight-before.dh-event-inverse:hover,
+.day-highlight-before.dh-event-inverse,
+.day-highlight-after.dh-event-inverse:hover,
+.day-highlight-after.dh-event-inverse {
   background-color: #c1c1c1;
 }
 .day-highlight.dh-event-success:hover,
-.day-highlight.dh-event-success {
+.day-highlight.dh-event-success,
+.day-highlight-before.dh-event-success:hover,
+.day-highlight-before.dh-event-success,
+.day-highlight-after.dh-event-success:hover,
+.day-highlight-after.dh-event-success {
   background-color: #caffca;
 }
 .day-highlight.dh-event-special:hover,
-.day-highlight.dh-event-special {
+.day-highlight.dh-event-special,
+.day-highlight-before.dh-event-special:hover,
+.day-highlight-before.dh-event-special,
+.day-highlight-after.dh-event-special:hover,
+.day-highlight-after.dh-event-special {
   background-color: #ffe6ff;
 }
 .cal-row-head [class*="cal-cell"]:first-child,
@@ -512,17 +577,20 @@ hr {
   min-height: 60px;
 }
 .cal-year-box .row-fluid [class*="span"]:last-child,
-.cal-month-box .cal-row-fluid [class*="cal-cell"]:last-child {
+.cal-month-box .cal-row-fluid [class*="cal-cell"]:last-child,
+.cal-day-box .row-fluid [class*="span"]:last-child, {
   border-right: 0px;
 }
 .cal-year-box .row-fluid,
-.cal-month-box .cal-row-fluid {
+.cal-month-box .cal-row-fluid,
+.cal-day-box .row-fluid {
   border-bottom: 1px solid #e1e1e1;
   margin-left: 0px;
   margin-right: 0px;
 }
 .cal-year-box .row-fluid:last-child,
-.cal-month-box .cal-row-fluid:last-child {
+.cal-month-box .cal-row-fluid:last-child,
+.cal-day-box .row-fluid {
   border-bottom: 0px;
 }
 .cal-month-box,
@@ -611,7 +679,8 @@ span[data-cal-date]:hover {
 .cal-column {
   border-left: 1px solid #e1e1e1;
 }
-a.cal-event-week {
+a.cal-event-week,
+a.cal-event-day {
   text-decoration: none;
   color: #151515;
 }

@@ -154,7 +154,7 @@ class ventas_servicios_calendario extends fs_controller
          {
             $aux = array(
                 'id' => $s['idservicio'],
-                'title' => $s['codigo'].'<br/>'.$s['nombrecliente'],
+                'title' => $s['codigo'].' - '.$s['nombrecliente'],
                 'url' => 'index.php?page=ventas_servicio&id=' . $s['idservicio'],
                 'class' => $this->class_prioridad($s['prioridad']),
                 'start' => strtotime($s['fechainicio'].' '.$s['horainicio'])*1000,
