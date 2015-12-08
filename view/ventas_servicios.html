@@ -163,7 +163,7 @@
       </div>
    </div>
 </div>
-{if="$fsc->avisosat"}
+{if="$fsc->avisosat=='1'"}
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
       <h1>Tienes SAT instalado</h1>
@@ -174,7 +174,20 @@
    </p>
    <a href="{$fsc->url()}&importar=TRUE" class="btn btn-sm btn-info">
       <span class="glyphicon glyphicon-import"></span>
-      <span class="glyphicon glyphicon-ok"></span> &nbsp; Importar
+      &nbsp; Importar
+   </a>
+</div>
+{elseif="$fsc->avisosat=='2'"}
+<div class="well">
+   <div class="page-header" style="margin-top: 0px;">
+      <h1>Desactivar SAT</h1>
+   </div>
+   <p>
+      Desactiva SAT para evitar problemas
+   </p>
+   <a href="index.php?page=admin_home&disable=SAT#plugins" class="btn btn-sm btn-danger">
+      <span class="glyphicon glyphicon-lock"></span>
+      &nbsp; Desactivar
    </a>
 </div>
 {/if}
