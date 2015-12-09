@@ -117,42 +117,42 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=fecha_desc">
+                  <a href="{$fsc->url()}&order=fecha_desc">
                      <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                      &nbsp; Fecha &nbsp;
                      {if="$fsc->order=='fecha DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=fecha_asc">
+                  <a href="{$fsc->url()}&order=fecha_asc">
                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                      &nbsp; Fecha &nbsp;
                      {if="$fsc->order=='fecha ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=codigo_desc">
+                  <a href="{$fsc->url()}&order=codigo_desc">
                      <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                      &nbsp; Código &nbsp;
                      {if="$fsc->order=='codigo DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=codigo_asc">
+                  <a href="{$fsc->url()}&order=codigo_asc">
                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                      &nbsp; Código &nbsp;
                      {if="$fsc->order=='codigo ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=prioridad_desc">
+                  <a href="{$fsc->url()}&order=prioridad_desc">
                      <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                      &nbsp; Prioridad &nbsp;
                      {if="$fsc->order=='prioridad DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&mostrar={$fsc->mostrar}&order=prioridad_desc">
+                  <a href="{$fsc->url()}&order=prioridad_desc">
                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                      &nbsp; Prioridad &nbsp;
                      {if="$fsc->order=='prioridad ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
@@ -191,27 +191,15 @@
    </a>
 </div>
 {/if}
-<ul class="nav nav-tabs" role="tablist">
-   <li{if="$fsc->mostrar=='todo'"} class="active"{/if}>
-      <a href="{$fsc->url()}&mostrar=todo">
-         <span class="glyphicon glyphicon-wrench"></span>
-         <span class="hidden-xs">&nbsp; {$fsc->st['st_servicios']}</span>
-      </a>
-   </li>
-   <li{if="$fsc->mostrar=='buscar'"} class="active"{/if}>
-      <a href="{$fsc->url()}&mostrar=buscar" title="Buscar">
+<ul class="nav nav-tabs" role="tablist"> 
+   <li  class="active">
+      <a href="#" title="Buscar">
          <span class="glyphicon glyphicon-search"></span>
-         {if="$fsc->num_resultados!==''"}
+         <span class="hidden-xs">&nbsp; Servicios</span>
          <span class="hidden-xs badge">{$fsc->num_resultados}</span>
-         <span class="hidden-xs">resultados</span>
-         {else}
-         <span class="hidden-xs">&nbsp; Buscar</span>
-         {/if}
       </a>
    </li>
 </ul>
-
-{if="$fsc->mostrar=='buscar'"}
 <br/>
 <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
    {if="$fsc->cliente"}
@@ -315,7 +303,6 @@
       </div>
    </div>
 </form>
-{/if}
 
 <div class="table-responsive">
   <table class="table table-hover">
@@ -383,23 +370,19 @@
       {/if}
    </table>
 </div>
-
-<ul class="pager">
-   {if="$fsc->anterior_url()!=''"}
-   <li class="previous">
-      <a href="{$fsc->anterior_url()}">
-         <span class="glyphicon glyphicon-chevron-left"></span> &nbsp; Anteriores
-      </a>
-   </li>
-   {/if}
-   {if="$fsc->siguiente_url()!=''"}
-   <li class="next">
-      <a href="{$fsc->siguiente_url()}">
-         Siguientes &nbsp; <span class="glyphicon glyphicon-chevron-right"></span>
-      </a>
-   </li>
-   {/if}
-</ul>
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-sm-12 text-center">
+         <ul class="pagination">
+            {loop="$fsc->paginas()"}
+            <li{if="$value['actual']"} class="active"{/if}>
+               <a href="{$value['url']}">{$value['num']}</a>
+            </li>
+            {/loop}
+         </ul>
+      </div>
+   </div>
+</div>
 
 {loop="$fsc->extensions"}
    {if="$value->type=='minicron'"}

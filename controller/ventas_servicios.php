@@ -38,7 +38,6 @@ class ventas_servicios extends fs_controller
    public $desde;
    public $hasta;
    public $lineas;
-   public $mostrar;
    public $num_resultados;
    public $offset;
    public $order;
@@ -113,18 +112,7 @@ class ventas_servicios extends fs_controller
       $this->agente = new agente();
       $this->serie = new serie();
       $this->estados = new estado_servicio();
-      
-      $this->mostrar = 'todo';
-      if( isset($_GET['mostrar']) )
-      {
-         $this->mostrar = $_GET['mostrar'];
-         setcookie('ventas_serv_mostrar', $this->mostrar, time()+FS_COOKIES_EXPIRE);
-      }
-      else if( isset($_COOKIE['ventas_serv_mostrar']) )
-      {
-         $this->mostrar = $_COOKIE['ventas_serv_mostrar'];
-      }
-      
+      $this->estado = '';
       $this->offset = 0;
       if( isset($_REQUEST['offset']) )
       {
@@ -174,10 +162,6 @@ class ventas_servicios extends fs_controller
       {
          $this->buscar_cliente();
       }
-      else if($this->mostrar == 'rechazados')
-      {
-         $this->resultados = $servicio->all_rechazados($this->offset);
-      }
       else if( isset($_GET['ref']) )
       {
          $this->template = 'extension/ventas_servicios_articulo';
@@ -193,7 +177,6 @@ class ventas_servicios extends fs_controller
          $this->share_extension();
          $this->cliente = FALSE;
          $this->codagente = '';
-         $this->estado = '';
          $this->codserie = '';
          $this->desde = '';
          $this->hasta = '';
@@ -208,11 +191,6 @@ class ventas_servicios extends fs_controller
          }
          else
          {
-            if( isset($_REQUEST['codagente']) OR isset($_REQUEST['codcliente']) OR isset($_REQUEST['estado']) OR isset($_REQUEST['editable']) )
-            {
-               $this->mostrar = 'buscar';
-            }
-            
             if( isset($_REQUEST['codcliente']) )
             {
                if($_REQUEST['codcliente'] != '')
@@ -245,27 +223,8 @@ class ventas_servicios extends fs_controller
             }
          }
          
-         if($this->mostrar == 'pendientes')
-         {
-            $this->resultados = $servicio->all_ptealbaran($this->offset, $this->order);
-            
-            if($this->offset == 0)
-            {
-               $this->total_resultados = 0;
-               $this->total_resultados_txt = 'Suma total de esta página:';
-               foreach($this->resultados as $serv)
-               {
-                  $this->total_resultados += $serv->total;
-               }
-            }
-         }
-         else if($this->mostrar == 'buscar')
-         {
-            $this->buscar();
-         }
-         else
-            $this->resultados = $servicio->all($this->offset, $this->order);
       }
+      $this->buscar();
    }
    
    private function buscar_cliente()
@@ -284,56 +243,6 @@ class ventas_servicios extends fs_controller
       echo json_encode( array('query' => $_REQUEST['buscar_cliente'], 'suggestions' => $json) );
    }
 
-    public function anterior_url()
-   {
-      $url = '';
-      $codcliente = '';
-      if($this->cliente)
-      {
-         $codcliente = $this->cliente->codcliente;
-      }
-      
-      if($this->offset > 0)
-      {
-         $url = $this->url()."&mostrar=".$this->mostrar
-                 ."&query=".$this->query
-                 ."&codserie=".$this->codserie
-                 ."&codagente=".$this->codagente
-                 ."&estado=".$this->estado
-                 ."&codcliente=".$codcliente
-                 ."&desde=".$this->desde
-                 ."&hasta=".$this->hasta
-                 ."&offset=".($this->offset-FS_ITEM_LIMIT);
-      }
-      
-      return $url;
-   }
-   
-   public function siguiente_url()
-   {
-      $url = '';
-      $codcliente = '';
-      if($this->cliente)
-      {
-         $codcliente = $this->cliente->codcliente;
-      }
-      
-      if( count($this->resultados) == FS_ITEM_LIMIT )
-      {
-         $url = $this->url()."&mostrar=".$this->mostrar
-                 ."&query=".$this->query
-                 ."&codserie=".$this->codserie
-                 ."&codagente=".$this->codagente
-                 ."&estado=".$this->estado
-                 ."&codcliente=".$codcliente
-                 ."&desde=".$this->desde
-                 ."&hasta=".$this->hasta
-                 ."&offset=".($this->offset+FS_ITEM_LIMIT);
-      }
-      
-      return $url;
-   }
-   
   public function buscar_lineas()
    {
       /// cambiamos la plantilla HTML
@@ -406,28 +315,6 @@ class ventas_servicios extends fs_controller
             $this->new_error_msg('Imposible guardar los datos de la extensión ' . $ext['name'] . '.');
          }
       }
-   }
-   
-   public function total_pendientes()
-   {
-      $data = $this->db->select("SELECT COUNT(idservicio) as total FROM servicioscli WHERE idalbaran IS NULL AND status=0;");
-      if($data)
-      {
-         return intval($data[0]['total']);
-      }
-      else
-         return 0;
-   }
-   
-   public function total_rechazados()
-   {
-      $data = $this->db->select("SELECT COUNT(idservicio) as total FROM servicioscli WHERE status=2");
-      if($data)
-      {
-         return intval($data[0]['total']);
-      }
-      else
-         return 0;
    }
    
    private function buscar()
@@ -610,5 +497,71 @@ class ventas_servicios extends fs_controller
       $this->new_message($importados.' registros SAT importados.');
       $this->new_message($importados_det.' detalles SAT importados.');
       $this->avisosat = '2';
+   }
+   
+    public function paginas()
+   {
+      $codcliente = '';
+      if($this->cliente)
+      {
+         $codcliente = $this->cliente->codcliente;
+      }
+      $total = $this->num_resultados;
+      
+      $url = $this->url()."&query=".$this->query
+                 ."&codserie=".$this->codserie
+                 ."&codagente=".$this->codagente
+                 ."&estado=".$this->estado
+                 ."&codcliente=".$codcliente
+                 ."&desde=".$this->desde
+                 ."&hasta=".$this->hasta
+                 ."&offset=".($this->offset-FS_ITEM_LIMIT);
+      
+      $paginas = array();
+      $i = 0;
+      $num = 0;
+      $actual = 1;
+
+      /// añadimos todas la página
+      while($num < $total)
+      {
+         $paginas[$i] = array(
+             'url' => $url."&offset=".($i*FS_ITEM_LIMIT),
+             'num' => $i + 1,
+             'actual' => ($num == $this->offset)
+         );
+         
+         if($num == $this->offset)
+         {
+            $actual = $i;
+         }
+         
+         $i++;
+         $num += FS_ITEM_LIMIT;
+      }
+      
+      /// ahora descartamos
+      foreach($paginas as $j => $value)
+      {
+         $enmedio = intval($i/2);
+         
+         /**
+          * descartamos todo excepto la primera, la última, la de enmedio,
+          * la actual, las 5 anteriores y las 5 siguientes
+          */
+         if( ($j>1 AND $j<$actual-5 AND $j!=$enmedio) OR ($j>$actual+5 AND $j<$i-1 AND $j!=$enmedio) )
+         {
+            unset($paginas[$j]);
+         }
+      }
+      
+      if( count($paginas) > 1 )
+      {
+         return $paginas;
+      }
+      else
+      {
+         return array();
+      }
    }
 }
