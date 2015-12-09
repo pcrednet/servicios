@@ -567,6 +567,8 @@ class ventas_servicios extends fs_controller
                $servicio->codcliente = $d['codcliente'];
                $servicio->observaciones  = $d['observaciones'];
                $servicio->codagente = $d['codagente'];
+               $servicio->idestado = '1';
+               $servicio->prioridad = $d['prioridad'];
                //obtenemos cliente
                $cliente0 = new cliente();
                $cliente = $cliente0->get($d['codcliente']);
