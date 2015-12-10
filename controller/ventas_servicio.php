@@ -664,7 +664,7 @@ class ventas_servicio extends fs_controller
       if($estado)
       {
          $detalle = new detalle_servicio();
-         $detalle->descripcion = "Se ha cambiado el estado a: " . $estado->descripcion;
+         $detalle->descripcion = "Se a cambiado el estado a: " . $estado->descripcion;
          $detalle->idservicio = $this->servicio->idservicio;
          $detalle->nick = $this->user->nick;
          
