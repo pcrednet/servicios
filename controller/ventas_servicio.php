@@ -545,7 +545,7 @@ class ventas_servicio extends fs_controller
       $albaran->direccion = $this->servicio->direccion;
       $albaran->neto = $this->servicio->neto;
       $albaran->nombrecliente = $this->servicio->nombrecliente;
-      $albaran->observaciones = $this->servicio->observaciones;
+      $albaran->observaciones = "Servicio: ".$this->servicio->codigo." | Fecha: ".$this->servicio->fecha."\nDescripcion: ".$this->servicio->descripcion."\nSolución: ". $this->servicio->solucion."\nObservaciones: ".$this->servicio->observaciones;
       $albaran->provincia = $this->servicio->provincia;
       $albaran->total = $this->servicio->total;
       $albaran->totaliva = $this->servicio->totaliva;
