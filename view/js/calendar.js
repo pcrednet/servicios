@@ -474,16 +474,6 @@ if(!String.prototype.formatNum) {
             event.start_hour = event_start_date.getHours().toString().formatNum(2) + ':' + event_start_date.getMinutes().toString().formatNum(2);
             event.end_hour = event_end_date.getHours().toString().formatNum(2) + ':' + event_end_date.getMinutes().toString().formatNum(2);
 
-            if(event.start < time.date_start.getTime()) {
-                //warn(1);
-                event.start_hour = event_start_date.getDate() + ' ' + $self.locale['ms' + event_start_date.getMonth()] + ' ' + event.start_hour;
-            }
-
-            if(event.end > time.date_end.getTime()) {
-                //warn(1);
-                event.end_hour = event_end_date.getDate() + ' ' + $self.locale['ms' + event_end_date.getMonth()] + ' ' + event.end_hour;
-            }
-
             if(event.start < time.date_start.getTime() && event.end > time.date_end.getTime()) {
                 data.all_day.push(event);
                 return;

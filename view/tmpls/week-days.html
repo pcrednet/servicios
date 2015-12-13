@@ -39,7 +39,7 @@ function parseTitle(events_title, id) {
 <% if(events.by_hour.length) {%>
    <% _.each(events.by_hour, function(event){ %>
    <div class="cal-week-row-fluid">
-       <div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>" data-event-class="<%= event['class'] %>" style="position: absolute; margin-top: <%= ((event.top * 40)+40) %>px; height: <%= (event.lines * 40) %>px; <%= cal._get_week_day_width(event) %>  <%= cal._get_week_day_margin_left(event) %>"
+       <div class="cal-cell<%= event.days%> cal-offset<%= event.start_day %> day-highlight dh-<%= event['class'] %>" data-event-class="<%= event['class'] %>" style="position: absolute; margin-top: <%= ((event.top * 40)+40) %>px; height: <%= (event.lines * 24.61538) %>px; <%= cal._get_week_day_width(event) %>  <%= cal._get_week_day_margin_left(event) %>"
           data-toggle="tooltip" data-placement="rigth" data-original-title="Desde <%= event.start_hour %> hasta <%= event.end_hour %> <%= event.title %>">
            <a href="<%= event.url ? event.url : 'javascript:void(0)' %>" data-event-id="<%= event.id %>" class="cal-event-week event<%= event.id %> cal-week-link">
                <span class="cal-hours"><b><%= event.start_hour %> - <%= event.end_hour %></b></span>

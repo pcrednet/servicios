@@ -115,7 +115,9 @@
                </button>
             </div>
          </div>
-         <div class="col-sm-4 hidden-xs"></div>
+         <div class="col-sm-4 hidden-xs">
+            <center><strong><div class="title">Calendario</div></strong></center>
+         </div>
          <div class="col-sm-4 col-xs-6 text-right">
             <div class="btn-group">
                <button type="button" class="btn btn-sm btn-warning" data-calendar-view="year">Año</button>
@@ -187,7 +189,7 @@
    			});
    		},
    		onAfterViewLoad: function(view) {
-   			$('.page-header .title').text(this.getTitle());
+   			$('.title').text(this.getTitle());
    			$('.btn-group button').removeClass('active');
    			$('button[data-calendar-view="' + view + '"]').addClass('active');
    		},
