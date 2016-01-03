@@ -69,7 +69,7 @@ class nuevo_servicio extends fs_controller
    
    public function __construct()
    {
-      parent::__construct(__CLASS__, 'nuevo servicio', 'ventas', FALSE, FALSE);
+      parent::__construct(__CLASS__, 'Nuevo servicio...', 'ventas', FALSE, FALSE, TRUE);
    }
    
    protected function private_core()
