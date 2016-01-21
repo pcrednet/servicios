@@ -561,7 +561,6 @@ class nuevo_servicio extends fs_controller
             $servicio->numero2 = $_POST['numero2'];
          }
          
-         $servicio->irpf = $serie->irpf;
          $servicio->porcomision = $this->agente->porcomision;
          
          $servicio->codcliente = $cliente->codcliente;
@@ -661,6 +660,11 @@ class nuevo_servicio extends fs_controller
                      $servicio->totaliva += ($linea->pvptotal * $linea->iva/100);
                      $servicio->totalirpf += ($linea->pvptotal * $linea->irpf/100);
                      $servicio->totalrecargo += ($linea->pvptotal * $linea->recargo/100);
+                     
+                     if($linea->irpf > $servicio->irpf)
+                     {
+                        $servicio->irpf = $linea->irpf;
+                     }
                   }
                   else
                   {

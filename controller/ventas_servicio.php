@@ -1,9 +1,9 @@
 <?php
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2014-2015  Carlos Garcia Gomez  neorazorx@gmail.com
- * Copyright (C) 2014-2015  Francesc Pineda Segarra  shawe.ewahs@gmail.com
- * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2014-2015    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014-2015    Francesc Pineda Segarra  shawe.ewahs@gmail.com
+ * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -205,6 +205,7 @@ class ventas_servicio extends fs_controller
       $this->servicio->numero2 = $_POST['numero2'];
       $this->servicio->estado = $_POST['estado'];
       $this->servicio->codpago = $_POST['codpago'];
+      
       if( isset($_POST['material']) )
       {
          $this->servicio->material = $_POST['material'];
@@ -250,41 +251,43 @@ class ventas_servicio extends fs_controller
          $this->servicio->garantia = $_POST['garantia'];
       }
       else
+      {
          $this->servicio->garantia = FALSE;
+      }
       
       $this->servicio->prioridad = $_POST['prioridad'];
       
       if( $this->servicio->editable() )
       {
-          //si no hay codejercicio; lo buscamos:
-          if($this->servicio->codejercicio !='')
+         /// si no hay codejercicio; lo buscamos:
+         if(!$this->servicio->codejercicio)
          {
-             $this->servicio->codejercicio = $this->servicio->codejercicio;
+            $ejercicio = $this->ejercicio->get_by_fecha($this->servicio->fecha);
+            if($ejercicio)
+            {
+               $this->servicio->codejercicio = $ejercicio->codejercicio;
+            }
          }
-         else
-         {   $eje0 = new ejercicio();
-             $ejercicio = $eje0->get_by_fecha($this->servicio->fecha);
-             $this->servicio->codejercicio = $ejercicio->codejercicio;
-         }
+         
          /// obtenemos los datos del ejercicio para acotar la fecha
          $eje0 = $this->ejercicio->get($this->servicio->codejercicio);
-         if ($eje0)
+         if($eje0)
          {
             $this->servicio->fecha = $eje0->get_best_fecha($_POST['fecha'], TRUE);
             $this->servicio->hora = $_POST['hora'];
          }
          else
             $this->new_error_msg('No se encuentra el ejercicio asociado al ' . FS_SERVICIO);
-
+         
          /// ¿cambiamos el cliente?
          if ($_POST['cliente'] != $this->servicio->codcliente OR $this->servicio->cifnif == '')
          {
             if(isset($_POST['cliente']))
             {
-                $cliente = $this->cliente->get($_POST['cliente']);
+               $cliente = $this->cliente->get($_POST['cliente']);
             }
             else
-                $cliente = $this->servicio->codcliente;
+               $cliente = $this->servicio->codcliente;
             
             if ($cliente)
             {
@@ -329,7 +332,6 @@ class ventas_servicio extends fs_controller
             if ($serie2)
             {
                $this->servicio->codserie = $serie2->codserie;
-               $this->servicio->irpf = $serie2->irpf;
                $this->servicio->new_codigo();
 
                $serie = $serie2;
@@ -337,14 +339,14 @@ class ventas_servicio extends fs_controller
          }
          
          /// ¿Cambiamos la divisa?
-        if($_POST['divisa'] != $this->servicio->coddivisa)
+         if($_POST['divisa'] != $this->servicio->coddivisa)
          {
-               $divisa = $this->divisa->get($_POST['divisa']);
-               if($divisa)
-               {
-                  $this->servicio->coddivisa = $divisa->coddivisa;
-                  $this->servicio->tasaconv = $divisa->tasaconv;
-               }
+            $divisa = $this->divisa->get($_POST['divisa']);
+            if($divisa)
+            {
+               $this->servicio->coddivisa = $divisa->coddivisa;
+               $this->servicio->tasaconv = $divisa->tasaconv;
+            }
          }
          else if($_POST['tasaconv'] != '')
          {
@@ -359,6 +361,8 @@ class ventas_servicio extends fs_controller
             $this->servicio->totaliva = 0;
             $this->servicio->totalirpf = 0;
             $this->servicio->totalrecargo = 0;
+            $this->servicio->irpf = 0;
+            
             $lineas = $this->servicio->get_lineas();
             $articulo = new articulo();
 
@@ -379,8 +383,10 @@ class ventas_servicio extends fs_controller
                }
                if (!$encontrada)
                {
-                  if (!$l->delete())
+                  if( !$l->delete() )
+                  {
                      $this->new_error_msg("¡Imposible eliminar la línea del artículo " . $l->referencia . "!");
+                  }
                }
             }
 
@@ -406,12 +412,14 @@ class ventas_servicio extends fs_controller
                         $lineas[$k]->codimpuesto = NULL;
                         $lineas[$k]->iva = 0;
                         $lineas[$k]->recargo = 0;
-                        $lineas[$k]->irpf = $this->servicio->irpf;
+                        $lineas[$k]->irpf = floatval($_POST['irpf_'.$num]);
                         if (!$serie->siniva AND $cliente->regimeniva != 'Exento')
                         {
                            $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                            if ($imp0)
+                           {
                               $lineas[$k]->codimpuesto = $imp0->codimpuesto;
+                           }
 
                            $lineas[$k]->iva = floatval($_POST['iva_' . $num]);
                            $lineas[$k]->recargo = floatval($_POST['recargo_' . $num]);
@@ -423,6 +431,11 @@ class ventas_servicio extends fs_controller
                            $this->servicio->totaliva += $value->pvptotal * $value->iva / 100;
                            $this->servicio->totalirpf += $value->pvptotal * $value->irpf / 100;
                            $this->servicio->totalrecargo += $value->pvptotal * $value->recargo / 100;
+                           
+                           if($value->irpf > $this->servicio->irpf)
+                           {
+                              $this->servicio->irpf = $value->irpf;
+                           }
                         }
                         else
                            $this->new_error_msg("¡Imposible modificar la línea del artículo " . $value->referencia . "!");
@@ -441,7 +454,9 @@ class ventas_servicio extends fs_controller
                      {
                         $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                         if($imp0)
+                        {
                            $linea->codimpuesto = $imp0->codimpuesto;
+                        }
                         
                         $linea->iva = floatval($_POST['iva_' . $num]);
                         $linea->recargo = floatval($_POST['recargo_' . $num]);
@@ -466,6 +481,11 @@ class ventas_servicio extends fs_controller
                         $this->servicio->totaliva += $linea->pvptotal * $linea->iva / 100;
                         $this->servicio->totalirpf += $linea->pvptotal * $linea->irpf / 100;
                         $this->servicio->totalrecargo += $linea->pvptotal * $linea->recargo / 100;
+                        
+                        if($linea->irpf > $this->servicio->irpf)
+                        {
+                           $this->servicio->irpf = $linea->irpf;
+                        }
                      }
                      else
                         $this->new_error_msg("¡Imposible guardar la línea del artículo " . $linea->referencia . "!");
@@ -520,20 +540,21 @@ class ventas_servicio extends fs_controller
 
    private function generar_albaran()
    {
-       
       $albaran = new albaran_cliente();
       $albaran->apartado = $this->servicio->apartado;
       $albaran->cifnif = $this->servicio->cifnif;
       $albaran->ciudad = $this->servicio->ciudad;
       $albaran->codagente = $this->servicio->codagente;
+      
       if($this->servicio->codalmacen !='')
       {
-          $albaran->codalmacen = $this->servicio->codalmacen;
+         $albaran->codalmacen = $this->servicio->codalmacen;
       }
       else
       {
-          $albaran->codalmacen = $this->empresa->codalmacen;
+         $albaran->codalmacen = $this->empresa->codalmacen;
       }
+      
       $albaran->codcliente = $this->servicio->codcliente;
       $albaran->coddir = $this->servicio->coddir;
       $albaran->coddivisa = $this->servicio->coddivisa;
@@ -545,7 +566,11 @@ class ventas_servicio extends fs_controller
       $albaran->direccion = $this->servicio->direccion;
       $albaran->neto = $this->servicio->neto;
       $albaran->nombrecliente = $this->servicio->nombrecliente;
-      $albaran->observaciones = "Servicio: ".$this->servicio->codigo." | Fecha: ".$this->servicio->fecha."\nDescripcion: ".$this->servicio->descripcion."\nSolución: ". $this->servicio->solucion."\nObservaciones: ".$this->servicio->observaciones;
+      
+      $albaran->observaciones = "Servicio: ".$this->servicio->codigo." | Fecha: ".$this->servicio->fecha
+              ."\nDescripcion: ".$this->servicio->descripcion."\nSolución: ". $this->servicio->solucion
+              ."\nObservaciones: ".$this->servicio->observaciones;
+      
       $albaran->provincia = $this->servicio->provincia;
       $albaran->total = $this->servicio->total;
       $albaran->totaliva = $this->servicio->totaliva;
@@ -562,16 +587,14 @@ class ventas_servicio extends fs_controller
        */
       $eje0 = $this->ejercicio->get_by_fecha($albaran->fecha);
       $albaran->codejercicio = $eje0->codejercicio;
-
-      $regularizacion = new regularizacion_iva();
-
-      if (!$eje0->abierto())
+      
+      if (!$eje0)
+      {
+         $this->new_error_msg("Ejercicio no encontrado.");
+      }
+      else if (!$eje0->abierto())
       {
          $this->new_error_msg("El ejercicio está cerrado.");
-      }
-      else if ($regularizacion->get_fecha_inside($albaran->fecha))
-      {
-         $this->new_error_msg("El IVA de ese periodo ya ha sido regularizado. No se pueden añadir más " . FS_ALBARANES . " en esa fecha.");
       }
       else if ($albaran->save())
       {
@@ -678,5 +701,4 @@ class ventas_servicio extends fs_controller
          }
       }
    }
-   
 }
