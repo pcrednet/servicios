@@ -84,7 +84,10 @@ class imprimir_servicio extends fs_controller
             'st_material_estado' => "Estado del material entregado",
             'st_accesorios' => "Accesorios que entrega",
             'st_descripcion' => "Descripción de la averia",
-            'st_solucion' => "Solución"
+            'st_solucion' => "Solución",
+            'st_fechainicio' => "Fecha de Inicio",
+            'st_fechafin' => "Fecha de finalización",
+            'st_garantía' => "Garantía"
          ),
          FALSE
       );

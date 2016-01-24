@@ -132,11 +132,11 @@ class ventas_servicios extends fs_controller
          }
          else if($_GET['order'] == 'codigo_desc')
          {
-            $this->order = 'codigo DESC';
+            $this->order = 'idservicio DESC';
          }
          else if($_GET['order'] == 'codigo_asc')
          {
-            $this->order = 'codigo ASC';
+            $this->order = 'idservicio ASC';
          }
          else if($_GET['order'] == 'prioridad_desc')
          {

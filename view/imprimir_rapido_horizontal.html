@@ -89,6 +89,19 @@
 					</div>
 					{/if}
 				</div>
+                                <div class="col-xs-12">
+					<br/>
+					{if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->st['st_fechainicio']}:</strong><br/>{$fsc->servicio->fechainicio}
+					</div>
+					{/if}
+					{if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->st['st_fechafin']}:</strong><br/>{$fsc->servicio->fechafin}
+					</div>
+					{/if}
+				</div>
 				<div class="col-xs-12">
 					<br/>
 					<font size="1"><p align="justify">{$fsc->condiciones()}</p></font>
@@ -174,6 +187,19 @@
 					{if="$fsc->agente"}
 					<div class="col-xs-4">
 						<strong>Email:</strong><br/> {$fsc->agente->email}
+					</div>
+					{/if}
+				</div>
+                                <div class="col-xs-12">
+					<br/>
+					{if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->st['st_fechainicio']}:</strong><br/>{$fsc->servicio->fechainicio}
+					</div>
+					{/if}
+					{if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+					<div class="col-xs-6">
+						<strong>{$fsc->st['st_fechafin']}:</strong><br/>{$fsc->servicio->fechafin}
 					</div>
 					{/if}
 				</div>
