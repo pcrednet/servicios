@@ -222,9 +222,9 @@ class ventas_servicios extends fs_controller
                $this->hasta = $_REQUEST['hasta'];
             }
          }
-         
+         $this->buscar();
       }
-      $this->buscar();
+      
    }
    
    private function buscar_cliente()

@@ -216,13 +216,19 @@
                   <span class="input-group-btn">
                      <button class="btn btn-primary hidden-sm" type="submit">
                         <span class="glyphicon glyphicon-search"></span>
-                     </button>
+                     </button> 
                   </span>
+               </div>
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
+                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
+                  </label>
                </div>
             </div>
          </div>
          <div class="col-sm-1">
-             <div class="form-group">
+            <div class="form-group">
                <select name="estado" class="form-control" onchange="this.form.submit()">
                   <option value="">Estado</option>
                   <option value="">------</option>
@@ -253,21 +259,6 @@
          </div>
          <div class="col-sm-2">
             <div class="form-group">
-               <select name="codagente" class="form-control" onchange="this.form.submit()">
-                  <option value="">Empleado</option>
-                  <option value="">------</option>
-                  {loop="$fsc->agente->all()"}
-                     {if="$value->codagente==$fsc->codagente"}
-                     <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
-                     {else}
-                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                     {/if}
-                  {/loop}
-               </select>
-            </div>
-         </div>
-         <div class="col-sm-2">
-            <div class="form-group">
                <div class="input-group">
                   {if="$fsc->cliente"}
                   <input class="form-control" type="text" name="ac_cliente" value="{$fsc->cliente->nombre}" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
@@ -283,21 +274,28 @@
             </div>
          </div>
          <div class="col-sm-2">
-               <div class="checkbox">
-                  <label>
-                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
-                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
-                  </label>
-               </div>
-            </div>
-         <div class="col-sm-1">
             <div class="form-group">
                <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
             </div>
          </div>
-         <div class="col-sm-1">
+         <div class="col-sm-2">
             <div class="form-group">
                <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
+            </div>
+         </div>
+         <div class="col-sm-2">
+            <div class="form-group">
+               <select name="codagente" class="form-control" onchange="this.form.submit()">
+                  <option value="">Empleado</option>
+                  <option value="">------</option>
+                  {loop="$fsc->agente->all()"}
+                     {if="$value->codagente==$fsc->codagente"}
+                     <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
+                     {else}
+                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                     {/if}
+                  {/loop}
+               </select>
             </div>
          </div>
       </div>

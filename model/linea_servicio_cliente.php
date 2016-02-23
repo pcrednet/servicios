@@ -276,8 +276,9 @@ class linea_servicio_cliente extends fs_model
    public function all_from_articulo($ref, $offset=0, $limit=FS_ITEM_LIMIT)
    {
       $linealist = array();
-      
-      $lineas = $this->db->select_limit("SELECT * FROM ".$this->table_name." WHERE referencia = ".$this->var2str($ref)." ORDER BY idservicio DESC", $limit, $offset);
+      $lineas = $this->db->select_limit("SELECT * FROM ".$this->table_name.
+              " WHERE referencia = ".$this->var2str($ref).
+              " ORDER BY idservicio DESC", $limit, $offset);
       if( $lineas )
       {
          foreach($lineas as $l)
