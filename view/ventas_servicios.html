@@ -211,8 +211,9 @@
       <div class="row">
          <div class="col-sm-2">
             <div class="form-group">
+               Buscar
                <div class="input-group">
-                  <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off" placeholder="Buscar">
+                  <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off">
                   <span class="input-group-btn">
                      <button class="btn btn-primary hidden-sm" type="submit">
                         <span class="glyphicon glyphicon-search"></span>
@@ -227,10 +228,11 @@
                </div>
             </div>
          </div>
-         <div class="col-sm-1">
+         <div class="col-sm-2">
             <div class="form-group">
+               Estado
                <select name="estado" class="form-control" onchange="this.form.submit()">
-                  <option value="">Estado</option>
+                  <option value="">   </option>
                   <option value="">------</option>
                   {loop="$fsc->estados->all()"}
                      {if="$value->id==$fsc->estado"}
@@ -244,8 +246,9 @@
          </div>
          <div class="col-sm-1">
             <div class="form-group">
+               Serie
                <select class="form-control" name="codserie" onchange="this.form.submit()">
-                  <option value="">Serie</option>
+                  <option value="">    </option>
                   <option value="">-----</option>
                   {loop="$fsc->serie->all()"}
                      {if="$value->codserie==$fsc->codserie"}
@@ -258,6 +261,7 @@
             </div>
          </div>
          <div class="col-sm-2">
+            Cliente
             <div class="form-group">
                <div class="input-group">
                   {if="$fsc->cliente"}
@@ -275,18 +279,21 @@
          </div>
          <div class="col-sm-2">
             <div class="form-group">
-               <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
+               Desde
+               <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
             </div>
          </div>
          <div class="col-sm-2">
             <div class="form-group">
-               <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
+               Hasta
+               <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
             </div>
          </div>
-         <div class="col-sm-2">
+         <div class="col-sm-1">
             <div class="form-group">
+               Empleado
                <select name="codagente" class="form-control" onchange="this.form.submit()">
-                  <option value="">Empleado</option>
+                  <option value="">      </option>
                   <option value="">------</option>
                   {loop="$fsc->agente->all()"}
                      {if="$value->codagente==$fsc->codagente"}
@@ -329,6 +336,9 @@
          <td class="text-center">
             {if condition="$value->idalbaran"}
             <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
+            {/if}
+            {if="$value->femail"}
+            <span class="glyphicon glyphicon-send" title="El {#FS_SERVICIO#} fue enviado por email el {$value->femail}"></span>
             {/if}
          </td>
          <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
