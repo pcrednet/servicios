@@ -49,6 +49,7 @@ class ventas_servicios extends fs_controller
    public $editable;
    public $registro_sat;
    public $detalle_sat;
+   public $servicios_setup;
    
    public function __construct()
    {
@@ -79,6 +80,7 @@ class ventas_servicios extends fs_controller
             'servicios_mostrar_garantia' => 0,
             'servicios_garantia' => 0,
             'cal_inicio' => "09:00",
+            'usar_direccion'=> 0
          ),
          FALSE
       );
@@ -333,21 +335,33 @@ class ventas_servicios extends fs_controller
             $sql .= "(codigo LIKE '%".$query."%' OR numero2 LIKE '%".$query."%' OR observaciones LIKE '%".$query."%'"
                     . "OR material LIKE '%".$query."%'"
                     . "OR material_estado LIKE '%".$query."%'"
-                    . "OR accesorios LIKE '%".$query."%'"
-                    . "OR descripcion LIKE '%".$query."%'"
-                    . "OR solucion LIKE '%".$query."%'"
-                    . ")";
+                    . "OR accesorios LIKE '%" . $query . "%'"
+                    . "OR descripcion LIKE '%" . $query . "%'"
+                    . "OR solucion LIKE '%" . $query . "%'";
+
+            if ($this->servicios_setup['usar_direccion'])
+            {
+               $sql .= " OR direccion LIKE '%" . $query . "%'";
+            }
+
+            $sql .= ")";
          }
          else
          {
-            $sql .= "(lower(codigo) LIKE '%".$query."%' OR lower(numero2) LIKE '%".$query."%' "
-                    . "OR lower(observaciones) LIKE '%".str_replace(' ', '%', $query)."%'"
-                    . "OR lower(material) LIKE '%".$query."%'"
+            $sql .= "(lower(codigo) LIKE '%" . $query . "%' OR lower(numero2) LIKE '%" . $query . "%' "
+                    . "OR lower(observaciones) LIKE '%" . str_replace(' ', '%', $query) . "%'"
+                    . "OR lower(material) LIKE '%" . $query . "%'"
                     . "OR lower(material_estado) LIKE '%".$query."%'"
                     . "OR lower(accesorios) LIKE '%".$query."%'"
                     . "OR lower(descripcion) LIKE '%".$query."%'"
-                    . "OR lower(solucion) LIKE '%".$query."%'"
-                    . ")";
+                    . "OR lower(solucion) LIKE '%".$query."%'";
+            
+            if ($this->servicios_setup['usar_direccion'])
+            {
+               $sql .= " OR lower(direccion) LIKE '%" . $query . "%'";
+            }
+
+            $sql .= ")";
          }
          $where = ' AND ';
       }

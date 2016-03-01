@@ -101,7 +101,7 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="general">
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <br/>
                         <div class="form-group">
                             <label>
@@ -110,12 +110,21 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-sm-9 text-right">
-                        <br/>
-                        <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true;
+                    <div class="col-sm-4">
+                       <br/>
+                       <div class="checkbox">
+                          <label>
+                             <input type="checkbox" name="usar_direccion" value="TRUE"{if="$fsc->servicios_setup['usar_direccion']"} checked="checked"{/if}/>
+                            Usar dirección cliente en búsquedas
+                          </label>
+                       </div>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                       <br/>
+                       <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled = true;
                           this.form.submit();">
-                            <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
-                        </button>
+                          <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                       </button>
                     </div>
                 </div>
                 <div class="row">

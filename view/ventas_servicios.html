@@ -220,12 +220,6 @@
                      </button> 
                   </span>
                </div>
-               <div class="checkbox">
-                  <label>
-                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
-                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
-                  </label>
-               </div>
             </div>
          </div>
          <div class="col-sm-2">
@@ -242,6 +236,12 @@
                      {/if}
                   {/loop}
                </select>
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
+                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
+                  </label>
+               </div>
             </div>
          </div>
          <div class="col-sm-1">
@@ -321,6 +321,9 @@
             {if="$fsc->servicios_setup['servicios_mostrar_material']"}
             <th class="text-left">{$fsc->st['st_material']}</th>
             {/if}
+            {if="$fsc->servicios_setup['usar_direccion']"}
+            <th class="text-left">Dirección</th>
+            {/if}
             <th class="text-right">Total</th>
             <th class="text-right">Fecha</th>
             {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
@@ -350,6 +353,9 @@
          <td>{$value->nombre_estado()}</td>
          {if="$fsc->servicios_setup['servicios_mostrar_material']"}
          <td>{$value->material}</td>
+         {/if}
+         {if="$fsc->servicios_setup['usar_direccion']"}
+         <td>{$value->direccion}, ({$value->ciudad}) </td>
          {/if}
          <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
          <td class="text-right">

@@ -88,7 +88,8 @@ class opciones_servicios extends fs_controller
             'st_garantia' => "Garantía",
             'cal_inicio' => "09:00",
             'cal_fin' => "20:00",
-            'cal_intervalo' => "30"
+            'cal_intervalo' => "30",
+            'usar_direccion'=> 0
          ),
          FALSE
       );
@@ -126,6 +127,7 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['cal_inicio'] = $_POST['cal_inicio'];
          $this->servicios_setup['cal_fin'] = $_POST['cal_fin'];
          $this->servicios_setup['cal_intervalo'] = $_POST['cal_intervalo'];
+         $this->servicios_setup['usar_direccion'] = $_POST['usar_direccion'];
          
          if( $fsvar->array_save($this->servicios_setup) )
          {
