@@ -21,8 +21,8 @@
  */
 
 /*Esto es temporal*/
-define('FS_SERVICIOS', 'servicios');
-define('FS_SERVICIO', 'servicio');
+define('FS_SERVICIOS', 'Servicios');
+define('FS_SERVICIO', 'Servicio');
 
 
 require_model('albaran_cliente.php');
@@ -32,7 +32,7 @@ require_model('secuencia.php');
 require_model('estado_servicio.php');
 
 /**
- * Pedido de cliente
+ * Servicio de cliente
  */
 class servicio_cliente extends fs_model
 {
@@ -872,5 +872,29 @@ class servicio_cliente extends fs_model
       }
       
       return $num;
+   }
+   
+   /**
+    * Devuelve un array con los servicios comprendidos entre $desde y $hasta
+    * @param type $desde
+    * @param type $hasta
+    * @return \servicio cliente
+    */
+   public function all_desde($desde, $hasta)
+   {
+      $servlist = array();
+      $sql = "SELECT * FROM ".$this->table_name." WHERE fecha >= ".$this->var2str($desde)
+              ." AND fecha <= ".$this->var2str($hasta)." ORDER BY codigo ASC;";
+      
+      $data = $this->db->select($sql);
+      if($data)
+      {
+         foreach($data as $s)
+         {
+            $alblist[] = new servicio_cliente($s);
+         }
+      }
+      
+      return $servlist;
    }
 }
