@@ -891,7 +891,7 @@ class servicio_cliente extends fs_model
       {
          foreach($data as $s)
          {
-            $alblist[] = new servicio_cliente($s);
+            $servlist[] = new servicio_cliente($s);
          }
       }
       
