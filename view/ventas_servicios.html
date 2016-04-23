@@ -327,10 +327,10 @@
             <th class="text-right">Total</th>
             <th class="text-right">Fecha</th>
             {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-            <th data-sortable="true" class="text-right">Fecha inicio</th>
+            <th data-sortable="true" class="text-right">{$fsc->st['st_fechainicio']}</th>
             {/if}
             {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-            <th data-sortable="true" class="text-right">Fecha Prev. Fin</th>
+            <th data-sortable="true" class="text-right">{$fsc->st['st_fechafin']}</th>
             {/if}
          </tr>
       </thead>

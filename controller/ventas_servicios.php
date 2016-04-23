@@ -95,6 +95,8 @@ class ventas_servicios extends fs_controller
             'st_material_estado' => "Estado del material entregado",
             'st_accesorios' => "Accesorios que entrega",
             'st_descripcion' => "Descripción de la averia",
+            'st_fechainicio' => "Fecha de inicio",
+            'st_fechafin' => "Fecha de fin",
             'st_solucion' => "Solución"
          ),
          FALSE
