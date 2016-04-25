@@ -29,8 +29,9 @@
    <input type="hidden" name="cliente" value="{$fsc->cliente_s->codcliente}"/>
    <div class="container-fluid">
       <div class="row">
-         <div class="col-sm-6">
+         <div class="col-sm-7">
             <h1 style="margin-top: 5px;">
+               Nuevo {#FS_SERVICIO#} a: 
                <a href="{$fsc->cliente_s->url()}">{$fsc->cliente_s->nombre}</a>
             </h1>
          </div>
@@ -50,7 +51,7 @@
                <input type="text" name="fecha" class="form-control datepicker" value="{$fsc->today()}" autocomplete="off"/>
             </div>
          </div>
-         <div class="col-sm-2">
+         <div class="col-sm-1">
             <div class="form-group">
                Hora:
                <input type="text" name="hora" class="form-control" value="{$fsc->hour()}" autocomplete="off"/>
@@ -73,15 +74,9 @@
             </a>
          </li>
          <li role="presentation">
-            <a href="#direccion" aria-controls="direccion" role="tab" data-toggle="tab">
-               <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
-               <span class="hidden-xs">&nbsp; Dirección</span>
-            </a>
-         </li>
-         <li role="presentation">
-            <a href="#opciones" aria-controls="opciones" role="tab" data-toggle="tab">
-               <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
-               <span class="hidden-xs">&nbsp; Opciones</span>
+            <a href="#datos" aria-controls="datos" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Datos</span>
             </a>
          </li>
       </ul>
@@ -131,102 +126,6 @@
                      </div>
                   </div>
                   {/if}
-               </div>
-               <div class="row">
-               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-                <div class='col-sm-3'>
-                    <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
-                        {$fsc->st['st_fechainicio']}
-                        <div class='input-group date' id='fechainicio'>
-                            <input type='text' name="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div> 
-                </div>   
-                {/if}  
-               <script type="text/javascript">
-                $(function () {
-                    $('[data-toggle="tooltip"]').tooltip()
-                    
-                    $('#fechainicio').datetimepicker({
-                        language: 'es',
-                        format: 'DD-MM-YYYY HH:mm',
-                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                        startDate: new Date(),
-                        defaultDate: new Date(),
-                        
-                    });
-                    $('#fechafin').datetimepicker({
-                        language: 'es',
-                        format: 'DD-MM-YYYY HH:mm',
-                        startDate: new Date(), 
-                        defaultDate: '{$fsc->fechaprevista}',
-                    });
-                    $('#fechainicio input').click(function(event){
-                        $('#fechainicio ').data("DateTimePicker").show();
-                    });
-                    $('#fechafin input').click(function(event){
-                        $('#fechafin ').data("DateTimePicker").show();
-                    });
-                });
-                </script>
-                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-                  <div class='col-sm-3'>
-                    <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
-                        {$fsc->st['st_fechafin']}
-                        <div class='input-group date' id='fechafin'>
-                            <input type='text' data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                  {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-                  <div class="col-sm-1">
-                     <div class="checkbox">
-                        <label>
-                           <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}/>
-                           Es garantía
-                        </label>
-                     </div>
-                  </div>
-                  {/if}
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        Prioridad:
-                        <select name="prioridad" class="form-control">
-                           {loop="$fsc->servicio->listar_prioridad()"}
-                           <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == 3"} selected=""{/if}>{$value['nombre_prioridad']}</option>
-                           {/loop}
-                        </select>
-                     </div>
-                  </div>
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        <a href="{$fsc->agente->url()}">Empleado</a>:
-                        <select name="codagente" class="form-control">
-                           <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
-                           {if="$fsc->user->admin"}
-                              <option value="{$fsc->agente->codagente}">-----</option>
-                              {loop="$fsc->agente->all()"}
-                              <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                              {/loop}
-                           {/if}
-                        </select>
-                     </div>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-sm-12">
-                     <div class="form-group">
-                        Observaciones:
-                        <textarea class="form-control" name="observaciones" rows="3"></textarea>
-                     </div>
-                  </div>
                </div>
             </div>
          </div>
@@ -279,8 +178,72 @@
                </table>
             </div>
          </div>
-         <div role="tabpanel" class="tab-pane" id="direccion">
+         <div role="tabpanel" class="tab-pane" id="datos">
             <div class="container-fluid" style="margin-top: 10px;">
+               <div class="row">
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
+                        <select name="forma_pago" class="form-control">
+                           {loop="$fsc->forma_pago->all()"}
+                              {if="$fsc->cliente_s->codpago==$value->codpago"}
+                              <option value="{$value->codpago}" selected="">{$value->descripcion}</option>
+                              {else}
+                              <option value="{$value->codpago}">{$value->descripcion}</option>
+                              {/if}
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->almacen->url()}">Almacén</a>:
+                        <select name="almacen" class="form-control">
+                           {loop="$fsc->almacen->all()"}
+                           <option value="{$value->codalmacen}"{if="$value->is_default()"} selected=""{/if}>{$value->nombre}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->serie->url()}">Serie</a>:
+                        <select name="serie" class="form-control" id="codserie" onchange="usar_serie();recalcular();">
+                        {loop="$fsc->serie->all()"}
+                           {if="$value->codserie==$fsc->cliente_s->codserie"}
+                           <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
+                           {else}
+                           <option value="{$value->codserie}">{$value->descripcion}</option>
+                           {/if}
+                        {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        <a href="{$fsc->divisa->url()}">Divisa</a>:
+                        <select name="divisa" class="form-control">
+                           {loop="$fsc->divisa->all()"}
+                           <option value="{$value->coddivisa}"{if="$value->is_default()"} selected=""{/if}>{$value->descripcion}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        Tasa de conversión a €
+                        <input type="text" name="tasaconv" class="form-control" placeholder="(predeterminada)" autocomplete="off"/>
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-sm-12">
+                     <h3>
+                        <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+                        &nbsp; Dirección de facturación:
+                     </h3>
+                  </div>
+               </div>
                <div class="row">
                   <div class="col-sm-3">
                      <div class="form-group">
@@ -341,69 +304,107 @@
                </div>
             </div>
          </div>
-         <div role="tabpanel" class="tab-pane" id="opciones">
-            <div class="container-fluid" style="margin-top: 10px;">
-               <div class="row">
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
-                        <select name="forma_pago" class="form-control">
-                           {loop="$fsc->forma_pago->all()"}
-                              {if="$fsc->cliente_s->codpago==$value->codpago"}
-                              <option value="{$value->codpago}" selected="">{$value->descripcion}</option>
-                              {else}
-                              <option value="{$value->codpago}">{$value->descripcion}</option>
-                              {/if}
-                           {/loop}
-                        </select>
-                     </div>
+      </div>
+      <div class="container-fluid">
+         <div class="row bg-danger">
+            {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+            <div class='col-sm-3'>
+               <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
+                  {$fsc->st['st_fechainicio']}
+                  <div class='input-group date' id='fechainicio'>
+                     <input type='text' name="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
+                     <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
                   </div>
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        <a href="{$fsc->almacen->url()}">Almacén</a>:
-                        <select name="almacen" class="form-control">
-                           {loop="$fsc->almacen->all()"}
-                           <option value="{$value->codalmacen}"{if="$value->is_default()"} selected=""{/if}>{$value->nombre}</option>
-                           {/loop}
-                        </select>
-                     </div>
+               </div> 
+            </div>   
+            {/if}  
+            <script type="text/javascript">
+             $(function () {
+                 $('[data-toggle="tooltip"]').tooltip()
+                 var dt = new Date();
+        
+                 $('#fechainicio').datetimepicker({
+                     language: 'es',
+                     format: 'DD-MM-YYYY HH:mm',
+                     extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+                     startDate: new Date(),
+                     defaultDate: new Date(),
+                        
+                 });
+                 $('#fechafin').datetimepicker({
+                     language: 'es',
+                     format: 'DD-MM-YYYY HH:mm',
+                     startDate: new Date(), 
+                     defaultDate: dt.setDate(dt.getDate() + {$fsc->servicios_setup['servicios_diasfin']}),    
+                 });
+                 $('#fechainicio input').click(function(event){
+                     $('#fechainicio ').data("DateTimePicker").show();
+                 });
+                 $('#fechafin input').click(function(event){
+                     $('#fechafin ').data("DateTimePicker").show();
+                 });
+             });
+            </script>
+            {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+            <div class='col-sm-3'>
+               <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
+                  {$fsc->st['st_fechafin']}
+                  <div class='input-group date' id='fechafin'>
+                     <input type='text' data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
+                     <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
                   </div>
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        <a href="{$fsc->serie->url()}">Serie</a>:
-                        <select name="serie" class="form-control" id="codserie" onchange="usar_serie();recalcular();">
-                        {loop="$fsc->serie->all()"}
-                           {if="$value->codserie==$fsc->cliente_s->codserie"}
-                           <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
-                           {else}
-                           <option value="{$value->codserie}">{$value->descripcion}</option>
-                           {/if}
-                        {/loop}
-                        </select>
-                     </div>
-                  </div>
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        <a href="{$fsc->divisa->url()}">Divisa</a>:
-                        <select name="divisa" class="form-control">
-                           {loop="$fsc->divisa->all()"}
-                           <option value="{$value->coddivisa}"{if="$value->is_default()"} selected=""{/if}>{$value->descripcion}</option>
-                           {/loop}
-                        </select>
-                     </div>
-                  </div>
-                  <div class="col-sm-2">
-                     <div class="form-group">
-                        Tasa de conversión a €
-                        <input type="text" name="tasaconv" class="form-control" placeholder="(predeterminada)" autocomplete="off"/>
-                     </div>
-                  </div>
+               </div>
+            </div>
+            {/if}
+            {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+            <div class="col-sm-2">
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}/>
+                     {$fsc->st['st_garantia']}
+                  </label>
+               </div>
+            </div>
+            {/if}
+            <div class="col-sm-2">
+               <div class="form-group">
+                  Prioridad:
+                  <select name="prioridad" class="form-control">
+                     {loop="$fsc->servicio->listar_prioridad()"}
+                     <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == 3"} selected=""{/if}>{$value['nombre_prioridad']}</option>
+                     {/loop}
+                  </select>
+               </div>
+            </div>
+            <div class="col-sm-2">
+               <div class="form-group">
+                  <a href="{$fsc->agente->url()}">Empleado</a>:
+                  <select name="codagente" class="form-control">
+                     <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
+                     {if="$fsc->user->admin"}
+                     <option value="{$fsc->agente->codagente}">-----</option>
+                     {loop="$fsc->agente->all()"}
+                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                     {/loop}
+                     {/if}
+                  </select>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="form-group">
+                  Observaciones:
+                  <textarea class="form-control" name="observaciones" rows="3"></textarea>
                </div>
             </div>
          </div>
       </div>
    </div>
-   
    <div class="container-fluid" style="margin-top: 10px;">
       <div class="row">
          <div class="col-sm-6">

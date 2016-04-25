@@ -58,7 +58,6 @@ class nuevo_servicio extends fs_controller
    public $accesorios;
    public $grupo;
    public $estado;
-   public $fechaprevista;
    public $servicios_setup;
    public $fechafin;
    public $fechainicio;
@@ -115,7 +114,7 @@ class nuevo_servicio extends fs_controller
                   'st_solucion' => "Solución",
                   'st_fechainicio' => "Fecha de Inicio",
                   'st_fechafin' => "Fecha de finalización",
-                  'st_garantía' => "Garantía"
+                  'st_garantia' => "Garantía"
                ),
                FALSE
       );
@@ -159,7 +158,6 @@ class nuevo_servicio extends fs_controller
       $this->grupo = new grupo_clientes();
       $this->estado = new estado_servicio();
       $this->pais = new pais();
-      $this->fechaprevista = date('Y-m-d', strtotime($this->today(). '+ '.$this->servicios_setup['servicios_diasfin'].'days'));
       
       if( isset($_REQUEST['buscar_cliente']) )
       {

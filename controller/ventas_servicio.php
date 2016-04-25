@@ -1,3 +1,4 @@
+
 <?php
 /*
  * This file is part of FacturaSctipts
@@ -122,7 +123,7 @@ class ventas_servicio extends fs_controller
             'st_solucion' => "Solución",
             'st_fechainicio' => "Fecha de Inicio",
             'st_fechafin' => "Fecha de finalización",
-            'st_garantía' => "Garantía"
+            'st_garantia' => "Garantía"
          ),
          FALSE
       );
@@ -317,6 +318,8 @@ class ventas_servicio extends fs_controller
          }
          else
          {
+            $this->servicio->nombrecliente = $_POST['nombrecliente'];
+            $this->servicio->cifnif = $_POST['cifnif'];
             $this->servicio->codpais = $_POST['codpais'];
             $this->servicio->provincia = $_POST['provincia'];
             $this->servicio->ciudad = $_POST['ciudad'];
