@@ -406,17 +406,28 @@
                         $('[data-toggle="tooltip"]').tooltip()
 
                         $('#cal_inicio').datetimepicker({
-                            language: 'es',
+                            locale: 'es',
                             format: 'HH:mm',
-                            orientation: "left",
-                            pickDate: false,
+                            widgetPositioning: {
+								horizontal: 'left',
+								vertical: 'auto',
+							},
                         });
                         $('#cal_fin').datetimepicker({
-                            language: 'es',
+                            locale: 'es',
                             format: 'HH:mm',
-                            orientation: "left",
-                            pickDate: false,
+                            widgetPositioning: {
+								horizontal: 'left',
+								vertical: 'auto',
+							},
                         });
+                        $('#cal_inicio input').click(function(event){
+							$('#cal_inicio').data('DateTimePicker').show();
+						});
+
+						$('#cal_fin input').click(function(event){
+							$('#cal_fin').data('DateTimePicker').show();
+						});
 
                     });
                 </script>
