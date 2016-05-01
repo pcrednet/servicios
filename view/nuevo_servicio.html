@@ -138,7 +138,7 @@
                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
                         {$fsc->st['st_fechainicio']}
                         <div class='input-group date' id='fechainicio'>
-                            <input type='text' name="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
+                            <input type='text' name="fechainicio" data-toggle="tooltip" data-placement="top" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
@@ -146,38 +146,57 @@
                     </div> 
                 </div>   
                 {/if}  
-               <script type="text/javascript">
-                $(function () {
-                    $('[data-toggle="tooltip"]').tooltip()
-                    
-                    $('#fechainicio').datetimepicker({
-                        language: 'es',
-                        format: 'DD-MM-YYYY HH:mm',
-                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                        startDate: new Date(),
-                        defaultDate: new Date(),
-                        
-                    });
-                    $('#fechafin').datetimepicker({
-                        language: 'es',
-                        format: 'DD-MM-YYYY HH:mm',
-                        startDate: new Date(), 
-                        defaultDate: '{$fsc->fechaprevista}',
-                    });
-                    $('#fechainicio input').click(function(event){
-                        $('#fechainicio ').data("DateTimePicker").show();
-                    });
-                    $('#fechafin input').click(function(event){
-                        $('#fechafin ').data("DateTimePicker").show();
-                    });
-                });
-                </script>
+				<script type="text/javascript">
+					$(function () {
+						$('[data-toggle="tooltip"]').tooltip()
+						var dt = new Date();
+						
+						$('#fechainicio').datetimepicker({
+							locale: 'es',
+							format: 'DD-MM-YYYY HH:mm',
+							extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+							defaultDate: new Date(),
+							minDate: moment(),
+							showTodayButton: true,
+							showClear: true,
+						});
+						$('#fechafin').datetimepicker({
+							locale: 'es',
+							format: 'DD-MM-YYYY HH:mm',
+							defaultDate: dt.setDate(dt.getDate() + {$fsc->servicios_setup['servicios_diasfin']}),
+							minDate: moment(),
+							useCurrent: false,
+							showTodayButton: true,
+							showClear: true,
+						});
+/* Control para limitar fechainicio>fechafin y fechafin<fechainicio */
+						$('#fechainicio').on('dp.change', function (e) {
+							$('#fechafin').data("DateTimePicker").minDate(e.date);
+						});
+						$('#fechafin').on('dp.change', function (e) {
+							$('#fechainicio').data("DateTimePicker").maxDate(e.date);
+						});
+/* Control para limitar fechainicio>fechafin y fechafin<fechainicio */
+						$('#fechainicio input').click(function(event){
+							$('#fechainicio').data('DateTimePicker').show();
+						});
+						$('#fechafin input').click(function(event){
+							$('#fechafin').data('DateTimePicker').show();
+						});
+/* Controla cuando hay un cambio en la fechainicio */
+						$('#fechainicio').on( 'dp.change', function(e){
+							var date_inicio = new Date(e.date);
+							var date_fin = new Date (e.date + {$fsc->servicios_setup['servicios_diasfin']}*24*60*60*1000);
+						    $('#fechafin').data("DateTimePicker").date(date_fin);
+						}); 
+					});
+				</script>
                   {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
                   <div class='col-sm-3'>
                     <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                         {$fsc->st['st_fechafin']}
                         <div class='input-group date' id='fechafin'>
-                            <input type='text' data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
+                            <input type='text' name="fechafin" data-toggle="tooltip" data-placement="top" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </span>
