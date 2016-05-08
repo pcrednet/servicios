@@ -128,11 +128,11 @@ class ventas_servicios extends fs_controller
       {
          if($_GET['order'] == 'fecha_desc')
          {
-            $this->order = 'fecha DESC';
+            $this->order = 'fecha DESC, hora DESC';
          }
          else if($_GET['order'] == 'fecha_asc')
          {
-            $this->order = 'fecha ASC';
+            $this->order = 'fecha ASC, hora ASC';
          }
          else if($_GET['order'] == 'codigo_desc')
          {
