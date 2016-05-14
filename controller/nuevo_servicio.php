@@ -352,7 +352,14 @@ class nuevo_servicio extends fs_controller
       $this->template = FALSE;
       
       $art0 = new articulo();
-      $art0->referencia = $_REQUEST['referencia'];
+      if($_REQUEST['referencia'] != '')
+      {
+         $art0->referencia = $_REQUEST['referencia'];
+      }
+      else
+      {
+         $art0->referencia = $art0->get_new_referencia();
+      }
       if( $art0->exists() )
       {
          $this->results[] = $art0->get($_REQUEST['referencia']);
@@ -360,13 +367,20 @@ class nuevo_servicio extends fs_controller
       else
       {
          $art0->descripcion = $_REQUEST['descripcion'];
+         $art0->codbarras = $_REQUEST['codbarras'];
          $art0->set_impuesto($_REQUEST['codimpuesto']);
          $art0->set_pvp( floatval($_REQUEST['pvp']) );
          
-         if($_POST['codfamilia'] != '')
+         $art0->secompra = isset($_POST['secompra']);
+         $art0->sevende = isset($_POST['sevende']);
+         $art0->nostock = isset($_POST['nostock']);
+         $art0->publico = isset($_POST['publico']);
+         
+         if($_REQUEST['codfamilia'] != '')
          {
             $art0->codfamilia = $_REQUEST['codfamilia'];
          }
+         
          if($_REQUEST['codfabricante'] != '')
          {
             $art0->codfabricante = $_REQUEST['codfabricante'];

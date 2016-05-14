@@ -246,6 +246,13 @@
                <span class="hidden-xs">&nbsp; {$fsc->st['st_servicios']}</span>
             </a>
          </li>
+         {loop="$fsc->extensions"}
+            {if="$value->type=='tab'"}
+            <li role="presentation">
+               <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+            </li>
+            {/if}
+         {/loop}
          <li role="presentation">
             <a href="#lineas_p" aria-controls="lineas_p" role="tab" data-toggle="tab">
                <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
@@ -267,13 +274,6 @@
             </a>
         </li>
          {/if}
-         {loop="$fsc->extensions"}
-            {if="$value->type=='tab'"}
-            <li role="presentation">
-               <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
-            </li>
-            {/if}
-         {/loop}
       </ul>
    </div>
    <div class="tab-content">
@@ -323,6 +323,79 @@
                </div>
                {/if}
             </div>    
+            <div class="row bg-info">
+               <script type="text/javascript">
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                    
+                    $('#fechainicio').datetimepicker({
+                        language: 'es',
+                        format: 'DD-MM-YYYY HH:mm',
+                        extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
+                        startDate: new Date(),
+                        minDate: moment(),
+                    });
+                    $('#fechafin').datetimepicker({
+                        language: 'es',
+                        format: 'DD-MM-YYYY HH:mm',
+                        startDate: new Date(), 
+                        minDate: moment(),
+                    });
+                    $('#fechainicio input').click(function(event){
+                        $('#fechainicio ').data("DateTimePicker").show();
+                    });
+                    $('#fechafin input').click(function(event){
+                        $('#fechafin ').data("DateTimePicker").show();
+                    });
+                });
+               </script>
+               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+               <div class='col-sm-3'>
+                  <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
+                     {$fsc->st['st_fechainicio']}
+                     <div class='input-group date' id='fechainicio'>
+                        <input type='text' id="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechainicio" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
+                        <span class="input-group-addon">
+                           <span class="glyphicon glyphicon-calendar"></span>
+                        </span>             
+                     </div>
+                  </div>
+               </div>   
+               {/if}  
+               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+               <div class='col-sm-3'>
+                  <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
+                     {$fsc->st['st_fechafin']}
+                     <div class='input-group date' id='fechafin' {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}>
+                        <input type="text" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
+                        <span class="input-group-addon">
+                           <span class="glyphicon glyphicon-calendar"></span>
+                        </span> 
+                     </div>
+                  </div>
+               </div>
+               {/if}
+               {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+               <div class="col-sm-2">
+                  <div class="checkbox">
+                     <label>
+                        <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}{if="!$fsc->servicio->editable()"} disabled{/if}/>
+                        {$fsc->st['st_garantia']}
+                     </label>
+                  </div>
+               </div>
+               {/if}
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Prioridad:                       
+                     <select name="prioridad" class="form-control"{if="!$fsc->servicio->editable()"} disabled{/if}>
+                        {loop="$fsc->servicio->listar_prioridad()"}
+                        <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == $fsc->servicio->prioridad"} selected="selected"{/if}>{$value['nombre_prioridad']}</option>
+                        {/loop}
+                     </select>
+                  </div>
+               </div>   
+            </div>
          </div>
       </div>
       <div role="tabpanel" class="tab-pane" id="lineas_p">
@@ -620,79 +693,6 @@
    </div>
    <hr>
    <div class="container-fluid">
-      <div class="row bg-info">
-         <script type="text/javascript">
-          $(function () {
-              $('[data-toggle="tooltip"]').tooltip()
-                    
-              $('#fechainicio').datetimepicker({
-                  language: 'es',
-                  format: 'DD-MM-YYYY HH:mm',
-                  extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                  startDate: new Date(),
-                  minDate: moment(),
-              });
-              $('#fechafin').datetimepicker({
-                  language: 'es',
-                  format: 'DD-MM-YYYY HH:mm',
-                  startDate: new Date(), 
-                  minDate: moment(),
-              });
-              $('#fechainicio input').click(function(event){
-                  $('#fechainicio ').data("DateTimePicker").show();
-              });
-              $('#fechafin input').click(function(event){
-                  $('#fechafin ').data("DateTimePicker").show();
-              });
-          });
-         </script>
-         {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-         <div class='col-sm-3'>
-            <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
-               {$fsc->st['st_fechainicio']}
-               <div class='input-group date' id='fechainicio'>
-                  <input type='text' id="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechainicio" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
-                  <span class="input-group-addon">
-                     <span class="glyphicon glyphicon-calendar"></span>
-                  </span>             
-               </div>
-            </div>
-         </div>   
-         {/if}  
-         {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-         <div class='col-sm-3'>
-            <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
-               {$fsc->st['st_fechafin']}
-               <div class='input-group date' id='fechafin' {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}>
-                  <input type="text" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
-                  <span class="input-group-addon">
-                     <span class="glyphicon glyphicon-calendar"></span>
-                  </span> 
-               </div>
-            </div>
-         </div>
-         {/if}
-         {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-         <div class="col-sm-2">
-            <div class="checkbox">
-               <label>
-                  <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}{if="!$fsc->servicio->editable()"} disabled{/if}/>
-                  {$fsc->st['st_garantia']}
-               </label>
-            </div>
-         </div>
-         {/if}
-         <div class="col-sm-2">
-            <div class="form-group">
-               Prioridad:                       
-               <select name="prioridad" class="form-control"{if="!$fsc->servicio->editable()"} disabled{/if}>
-                  {loop="$fsc->servicio->listar_prioridad()"}
-                  <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == $fsc->servicio->prioridad"} selected="selected"{/if}>{$value['nombre_prioridad']}</option>
-                  {/loop}
-               </select>
-            </div>
-         </div>   
-      </div>
       <div class="row">
          <div class="col-md-12">
             <div class="form-group">
@@ -773,27 +773,40 @@
             <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-sm-3">
+                     <div class="col-sm-4">
                         <div class="form-group">
                            Referencia:
                            <div class="input-group">
-                              <input class="form-control" type="text" name="referencia" id="referencia" maxlength="18" autocomplete="off"/>
-                              <span class="input-group-btn">
-                                 <button class="btn btn-default" type="button" onclick="document.f_nuevo_articulo.referencia.value=''; document.f_nuevo_articulo.descripcion.focus();" title="Borrar">
+                              <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
+                              <span class="input-group-btn" title="Borrar">
+                                 <button class="btn btn-default" type="button" onclick="document.f_nuevo_articulo.referencia.value='';document.f_nuevo_articulo.descripcion.focus();">
                                     <span class="glyphicon glyphicon-edit"></span>
                                  </button>
                               </span>
                            </div>
-                           En blanco-> Ref. autom.
-                        </div>  
+                           <p class="help-block">Dejar en blanco para asignar una referencia automática.</p>
+                        </div>   
                      </div>
-                     <div class="col-sm-6">
+                     <div class="col-sm-8">
                         <div class="form-group">
                            Descripción:
                            <textarea name="descripcion" rows="1" class="form-control"></textarea>
                         </div>
                      </div>
-                     <div class="col-sm-3">
+                  </div>
+                  <div class="row">
+                     <div class="col-sm-4">
+                        <div class="form-group">
+                           Código de barras:
+                           <div class="input-group">
+                              <span class="input-group-addon">
+                                 <span class="glyphicon glyphicon-barcode"></span>
+                              </span>
+                              <input class="form-control" type="text" name="codbarras" maxlength="18" autocomplete="off"/>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-sm-4">
                         <div class="form-group">
                            <a href="{$fsc->familia->url()}">Familia</a>:
                            <select name="codfamilia" class="form-control">
@@ -805,8 +818,6 @@
                            </select>
                         </div>
                      </div>
-                  </div>
-                  <div class="row">
                      <div class="col-sm-4">
                         <div class="form-group">
                            <a href="{$fsc->fabricante->url()}">Fabricante</a>:
@@ -819,12 +830,14 @@
                            </select>
                         </div>
                      </div>
+                  </div>
+                  <div class="row">
                      <div class="col-sm-4">
                         <div class="form-group">
                            <a href="{$fsc->impuesto->url()}">{#FS_IVA#}</a>:
                            <select name="codimpuesto" class="form-control">
                               {loop="$fsc->impuesto->all()"}
-                              <option value="{$value->codimpuesto}"{if="$value->is_default()"} selected="selected"{/if}>{$value->descripcion}</option>
+                              <option value="{$value->codimpuesto}"{if="$value->is_default()"} selected=""{/if}>{$value->descripcion}</option>
                               {/loop}
                            </select>
                         </div>
@@ -835,12 +848,28 @@
                            <input type="text" name="pvp" value="0" class="form-control" autocomplete="off"/>
                         </div>
                      </div>
+                     <div class="col-sm-4 text-right">
+                        <br/>
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="new_articulo();return false;">
+                           <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar y seleccionar
+                        </button>
+                     </div>
                   </div>
                   <div class="row">
-                     <div class="col-sm-12 text-right">
-                        <button class="btn btn-sm btn-primary" type="submit" onclick="new_articulo();return false;">
-                           <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar y seleccionar
-                        </button>
+                     <div class="col-sm-12">
+                        <label class="checkbox-inline">
+                           <input type="checkbox" name="secompra" value="TRUE" checked=""/> Se compra
+                        </label> &nbsp;
+                        <label class="checkbox-inline">
+                           <input type="checkbox" name="sevende" value="TRUE" checked=""/> Se vende
+                        </label> &nbsp;
+                        <label class="checkbox-inline">
+                           <input type="checkbox" name="nostock" value="TRUE"/> No controlar stock
+                        </label> &nbsp;
+                        <label class="checkbox-inline">
+                           <input type="checkbox" name="publico" value="TRUE"/>
+                           <span class="glyphicon glyphicon-globe"></span> Público
+                        </label>
                      </div>
                   </div>
                </div>
