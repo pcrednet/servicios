@@ -29,11 +29,25 @@
    <input type="hidden" name="cliente" value="{$fsc->cliente_s->codcliente}"/>
    <div class="container-fluid">
       <div class="row">
-         <div class="col-sm-7">
+         <div class="col-sm-5">
             <h1 style="margin-top: 5px;">
                Nuevo {#FS_SERVICIO#} a: 
                <a href="{$fsc->cliente_s->url()}">{$fsc->cliente_s->nombre}</a>
             </h1>
+         </div>
+         <div class="col-sm-2">
+            <div class="form-group">
+               <a href="{$fsc->agente->url()}">Empleado</a>:
+               <select name="codagente" class="form-control">
+                  <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
+                  {if="$fsc->user->admin"}
+                  <option value="{$fsc->agente->codagente}">-----</option>
+                  {loop="$fsc->agente->all()"}
+                  <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                  {/loop}
+                  {/if}
+               </select>
+            </div>
          </div>
          <div class="col-sm-2">
             <div class="form-group">
@@ -198,20 +212,6 @@
                                     {loop="$fsc->servicio->listar_prioridad()"}
                                     <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == 3"} selected=""{/if}>{$value['nombre_prioridad']}</option>
                                     {/loop}
-                                 </select>
-                              </div>
-                           </div>
-                           <div class="col-sm-2">
-                              <div class="form-group">
-                                 <a href="{$fsc->agente->url()}">Empleado</a>:
-                                 <select name="codagente" class="form-control">
-                                    <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
-                                    {if="$fsc->user->admin"}
-                                    <option value="{$fsc->agente->codagente}">-----</option>
-                                    {loop="$fsc->agente->all()"}
-                                    <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                                    {/loop}
-                                    {/if}
                                  </select>
                               </div>
                            </div>

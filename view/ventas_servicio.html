@@ -194,15 +194,15 @@
          </div>
          <div class="col-sm-2">
             <div class="form-group">
-               <a href="{$fsc->serie->url()}">Serie</a>:
-               <select class="form-control" name="serie" id="codserie" onchange="usar_serie();recalcular();">
-                  {loop="$fsc->serie->all()"}
-                  {if="$value->codserie==$fsc->servicio->codserie"}
-                  <option value="{$value->codserie}" selected="selected">{$value->descripcion}</option>
-                  {else}
-                  <option value="{$value->codserie}">{$value->descripcion}</option>
-                  {/if}
+               <a href="{$fsc->agente->url()}">Empleado</a>:
+               <select name="codagente" class="form-control">
+                  <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
+                  {if="$fsc->user->admin"}
+                  <option value="{$fsc->agente->codagente}">-----</option>
+                  {loop="$fsc->agente->all()"}
+                  <option value="{$value->codagente}">{$value->get_fullname()}</option>
                   {/loop}
+                  {/if}
                </select>
             </div>
          </div>
@@ -561,7 +561,21 @@
                      <input class="form-control" type="text" name="cifnif" value="{$fsc->servicio->cifnif}" autocomplete="off"/>
                   </div>
                </div>
-               <div class="col-sm-3">
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     <a href="{$fsc->serie->url()}">Serie</a>:
+                     <select class="form-control" name="serie" id="codserie" onchange="usar_serie();recalcular();">
+                        {loop="$fsc->serie->all()"}
+                        {if="$value->codserie==$fsc->servicio->codserie"}
+                        <option value="{$value->codserie}" selected="selected">{$value->descripcion}</option>
+                        {else}
+                        <option value="{$value->codserie}">{$value->descripcion}</option>
+                        {/if}
+                        {/loop}
+                     </select>
+                  </div>
+               </div>
+               <div class="col-sm-2">
                   <div class="form-group">
                      <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
                      <select name="codpago" class="form-control">
@@ -577,7 +591,7 @@
                      </select>
                   </div>
                </div>
-               <div class="col-sm-2">
+               <div class="col-sm-1">
                   <div class="form-group">
                      <a href="{$fsc->divisa->url()}">Divisa</a>:
                      <select name="divisa" class="form-control">

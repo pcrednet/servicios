@@ -207,6 +207,7 @@ class ventas_servicio extends fs_controller
    {
       $this->servicio->observaciones = $_POST['observaciones'];
       $this->servicio->numero2 = $_POST['numero2'];
+      $this->servicio->codagente = $_POST['codagente'];
       $this->servicio->estado = $_POST['estado'];
       $this->servicio->codpago = $_POST['codpago'];
       

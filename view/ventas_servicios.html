@@ -238,9 +238,9 @@
                   {/loop}
                </select>
                <div class="checkbox">
-                  <label>
-                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
-                     <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Pendiente Albarán
+                  <label title="Por defecto sólo se muestran los servicios no facturados">
+                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()" title="Por defecto sólo se muestran los servicios no facturados"/>
+                     <span class="glyphicon glyphicon-lock" aria-hidden="true" title="Por defecto sólo se muestran los servicios no facturados"></span> Mostrar todos
                   </label>
                </div>
             </div>

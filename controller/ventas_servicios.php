@@ -187,7 +187,7 @@ class ventas_servicios extends fs_controller
          $this->num_resultados = '';
          $this->total_resultados = '';
          $this->total_resultados_txt = '';
-         $this->editable ='';
+         $this->editable = FALSE;
          
          if( isset($_POST['delete']) )
          {
@@ -216,7 +216,7 @@ class ventas_servicios extends fs_controller
             
             if( isset($_REQUEST['editable']) )
             {
-               $this->editable = $_REQUEST['editable'];
+               $this->editable = TRUE;
             }
             
             if( isset($_REQUEST['codserie']) )
@@ -404,7 +404,7 @@ class ventas_servicios extends fs_controller
          $where = ' AND ';
       }
       
-      if($this->editable != '')
+      if(!$this->editable)
       {
          $sql .= $where."idalbaran IS NULL";
          $where = ' AND ';
