@@ -189,13 +189,13 @@
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
                <span class='text-capitalize'>{#FS_NUMERO2#}:</span>
-               <input class="form-control" type="text" name="numero2" value="{$fsc->servicio->numero2}"/>
+               <input class="form-control" type="text" name="numero2" value="{$fsc->servicio->numero2}" {if="!$fsc->servicio->editable()"} disabled{/if}/>
             </div>
          </div>
          <div class="col-sm-2">
             <div class="form-group">
                <a href="{$fsc->agente->url()}">Empleado</a>:
-               <select name="codagente" class="form-control">
+               <select name="codagente" class="form-control" {if="!$fsc->servicio->editable()"} disabled{/if}>
                   <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
                   {if="$fsc->user->admin"}
                   <option value="{$fsc->agente->codagente}">-----</option>
@@ -209,7 +209,7 @@
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
                <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
-               <select name="estado" class="form-control">
+               <select name="estado" class="form-control" {if="!$fsc->servicio->editable()"} disabled{/if}>
                   {loop="$fsc->estado->all()"}
                   <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
                   {/loop}
@@ -354,7 +354,7 @@
                   <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
                      {$fsc->st['st_fechainicio']}
                      <div class='input-group date' id='fechainicio'>
-                        <input type='text' id="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechainicio" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
+                        <input type='text' id="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechainicio" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechainicio}" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if} {if="!$fsc->servicio->editable()"} disabled{/if}/>
                         <span class="input-group-addon">
                            <span class="glyphicon glyphicon-calendar"></span>
                         </span>             
@@ -367,7 +367,7 @@
                   <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
                      {$fsc->st['st_fechafin']}
                      <div class='input-group date' id='fechafin' {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}>
-                        <input type="text" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
+                        <input type="text" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" value="{$fsc->servicio->fechafin}" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if} {if="!$fsc->servicio->editable()"} disabled{/if}/>
                         <span class="input-group-addon">
                            <span class="glyphicon glyphicon-calendar"></span>
                         </span> 

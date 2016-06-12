@@ -67,7 +67,7 @@ class ventas_servicio extends fs_controller
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       
       $this->ppage = $this->page->get('ventas_servicios');
-      $this->agente = FALSE;
+      $this->agente = new agente();
       $this->estado = new estado_servicio();
       $servicio = new servicio_cliente();
       $this->servicio = FALSE;
@@ -164,6 +164,11 @@ class ventas_servicio extends fs_controller
       else if( isset($_GET['id']) )
       {
          $this->servicio = $servicio->get($_GET['id']);
+         if ($this->servicio)
+         {
+            if ($this->servicio->idalbaran == NULL)
+               $this->servicio->idestado = '1';
+         }
       }
 
       if($this->servicio)
@@ -178,8 +183,12 @@ class ventas_servicio extends fs_controller
          /// cargamos el agente
          if( !is_null($this->servicio->codagente) )
          {
-            $agente = new agente();
-            $this->agente = $agente->get($this->servicio->codagente);
+            $age0 = new agente();
+            $this->agente = $age0->get($this->servicio->codagente);
+            if (!$this->agente)
+            {
+               $this->agente = new agente();
+            }
          }
 
          /// cargamos el cliente

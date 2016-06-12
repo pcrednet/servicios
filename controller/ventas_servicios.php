@@ -29,6 +29,7 @@ require_model('detalle_servicio.php');
 
 class ventas_servicios extends fs_controller
 {
+   public $servicio;
    public $agente;
    public $articulo;
    public $buscar_lineas;
@@ -49,8 +50,11 @@ class ventas_servicios extends fs_controller
    public $editable;
    public $registro_sat;
    public $detalle_sat;
-   public $servicios_setup;
-   
+   public $ervicios_setup;
+   public $fechainicio;
+   public $fechafin;
+   public $garantia;
+
    public function __construct()
    {
       parent::__construct(__CLASS__, FS_SERVICIOS. ' a clientes', 'ventas');
@@ -97,10 +101,12 @@ class ventas_servicios extends fs_controller
             'st_descripcion' => "Descripción de la averia",
             'st_fechainicio' => "Fecha de inicio",
             'st_fechafin' => "Fecha de fin",
-            'st_solucion' => "Solución"
+            'st_solucion' => "Solución",
+            'st_garantia' => "Garantía"
          ),
          FALSE
       );
+       
       $this->avisosat = '0';
       if( class_exists('registro_sat') )
       {
@@ -112,7 +118,7 @@ class ventas_servicios extends fs_controller
          $this->importar_sat();
       }
    
-      $servicio = new servicio_cliente();
+      $this->servicio = new servicio_cliente();
       $this->agente = new agente();
       $this->serie = new serie();
       $this->estados = new estado_servicio();
@@ -188,6 +194,8 @@ class ventas_servicios extends fs_controller
          $this->total_resultados = '';
          $this->total_resultados_txt = '';
          $this->editable = FALSE;
+         $this->fechainicio = '';
+         $this->fechafin = '';
          
          if( isset($_POST['delete']) )
          {
@@ -222,15 +230,32 @@ class ventas_servicios extends fs_controller
             if( isset($_REQUEST['codserie']) )
             {
                $this->codserie = $_REQUEST['codserie'];
+            }
+            if (isset($_REQUEST['fechainicio']))
+            {
+               $this->fechainicio = $_REQUEST['fechainicio'];
+            }
+            if (isset($_REQUEST['fechainicio']))
+            {
+               $this->fechafin = $_REQUEST['fechafin'];
+            }
+            if (isset($_REQUEST['garantia']))
+            {
+               $this->garantia = TRUE;
+            }
+            if (isset($_REQUEST['desde']))
+            {
                $this->desde = $_REQUEST['desde'];
+            }
+            if (isset($_REQUEST['hasta']))
+            {
                $this->hasta = $_REQUEST['hasta'];
             }
          }
          $this->buscar();
       }
-      
    }
-   
+
    private function buscar_cliente()
    {
       /// desactivamos la plantilla HTML
@@ -404,6 +429,24 @@ class ventas_servicios extends fs_controller
          $where = ' AND ';
       }
       
+      if($this->fechainicio != '')
+      {
+         $sql .= $where."fechainicio >= ".$this->agente->var2str($this->fechainicio);
+         $where = ' AND ';
+      }
+      
+      if($this->fechafin != '')
+      {
+         $sql .= $where."fechafin >= ".$this->agente->var2str($this->fechafin);
+         $where = ' AND ';
+      }
+      
+      if($this->garantia)
+      {
+         $sql .= $where."garantia = TRUE";
+         $where = ' AND ';
+      }
+      
       if(!$this->editable)
       {
          $sql .= $where."idalbaran IS NULL";
@@ -445,42 +488,42 @@ class ventas_servicios extends fs_controller
       {
          foreach($data as $d)
          {
-            $servicio = $this->registro_sat->get($d['nsat']);
-            if($servicio)
+            $this->servicio = $this->registro_sat->get($d['nsat']);
+            if($this->servicio)
             {
-               $servicio = new servicio_cliente();
-               $servicio->numero2 = "SAT_".$d['nsat'];
-               $servicio->fecha = $d['fentrada'];
+               $this->servicio = new servicio_cliente();
+               $this->servicio->numero2 = "SAT_".$d['nsat'];
+               $this->servicio->fecha = $d['fentrada'];
                if(isset($d['fcomienzo']))
                {
-                   $servicio->fechainicio = Date('d-m-Y H:i', strtotime($d['fcomienzo']));
+                   $this->servicio->fechainicio = Date('d-m-Y H:i', strtotime($d['fcomienzo']));
                }
                if(isset($d['ffin']))
                {
-                   $servicio->fechafin = Date('d-m-Y H:i', strtotime($d['ffin']));
+                   $this->servicio->fechafin = Date('d-m-Y H:i', strtotime($d['ffin']));
                }
                //obtenemos ejercicio
                $eje0 = new ejercicio();
                $ejercicio = $eje0->get_by_fecha($d['fentrada']);
-               $servicio->codejercicio = $ejercicio->codejercicio;
+               $this->servicio->codejercicio = $ejercicio->codejercicio;
 
-               $servicio->material = $d['modelo'];
-               $servicio->descripcion = $d['averia'];
-               $servicio->accesorios = $d['accesorios'];
-               $servicio->codcliente = $d['codcliente'];
-               $servicio->observaciones  = $d['observaciones'];
-               $servicio->codagente = $d['codagente'];
-               $servicio->idestado = '1';
-               $servicio->prioridad = $d['prioridad'];
+               $this->servicio->material = $d['modelo'];
+               $this->servicio->descripcion = $d['averia'];
+               $this->servicio->accesorios = $d['accesorios'];
+               $this->servicio->codcliente = $d['codcliente'];
+               $this->servicio->observaciones  = $d['observaciones'];
+               $this->servicio->codagente = $d['codagente'];
+               $this->servicio->idestado = '1';
+               $this->servicio->prioridad = $d['prioridad'];
                //obtenemos cliente
                $cliente0 = new cliente();
                $cliente = $cliente0->get($d['codcliente']);
-               $servicio->nombrecliente = $cliente->nombre;
+               $this->servicio->nombrecliente = $cliente->nombre;
                
-               $servicio->codserie = $this->empresa->codserie;
-               $servicio->codpago = $this->empresa->codpago;
+               $this->servicio->codserie = $this->empresa->codserie;
+               $this->servicio->codpago = $this->empresa->codpago;
                
-               if( $servicio->save() )
+               if( $this->servicio->save() )
                {
                   $importados++;
                }
@@ -495,7 +538,7 @@ class ventas_servicios extends fs_controller
                         if($detalle)
                         {
                             $detalle = new detalle_servicio();
-                            $detalle->idservicio = $servicio->idservicio;
+                            $detalle->idservicio = $this->servicio->idservicio;
                             $detalle->descripcion = $d2['descripcion'];
                             $detalle->fecha= $d2['fecha'];
                             if( $detalle->save() )

@@ -42,7 +42,8 @@
       document.f_custom_search.codcliente.value='';
       document.f_custom_search.ac_cliente.focus();
       document.f_custom_search.submit();
-   }    
+   }
+   
    $(document).ready(function() {
       $('#b_buscar_lineas').click(function(event) {
          event.preventDefault();
@@ -192,126 +193,177 @@
    </a>
 </div>
 {/if}
-<ul class="nav nav-tabs" role="tablist"> 
-   <li  class="active">
-      <a href="#" title="Buscar">
-         <span class="glyphicon glyphicon-search"></span>
-         <span class="hidden-xs">&nbsp; Servicios</span>
-         <span class="hidden-xs badge">{$fsc->num_resultados}</span>
-      </a>
-   </li>
-</ul>
-<br/>
-<form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
-   {if="$fsc->cliente"}
-   <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#servicios" aria-controls="servicios" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-search"></span>
+            <span class="hidden-xs">&nbsp; Servicios</span>
+            <span class="hidden-xs badge">{$fsc->num_resultados}</span>
+         </a>
+      </li>
+      {loop="$fsc->extensions"}
+      {if="$value->type=='tab'"}
+      <li role="presentation">
+         <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+      </li>
+      {/if}
+      {/loop}
+   </ul>
+   </div>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="servicios">
+   <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+      {if="$fsc->cliente"}
+      <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
    {else}
    <input type="hidden" name="codcliente"/>
    {/if}
-   <div class="container-fluid">
-      <div class="row">
-         <div class="col-sm-2">
-            <div class="form-group">
-               Buscar
-               <div class="input-group">
-                  <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off">
-                  <span class="input-group-btn">
-                     <button class="btn btn-primary hidden-sm" type="submit">
-                        <span class="glyphicon glyphicon-search"></span>
-                     </button> 
-                  </span>
+   <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
+      <div class="panel panel-success">
+         <div class="panel-heading">Búsqueda de {#FS_SERVICIOS#}</div>
+         <div class="panel-body">
+            <div class="row">
+               <div class="col-sm-4">
+                  <div class="form-group">
+                     Buscar
+                     <div class="input-group">
+                        <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off">
+                        <span class="input-group-btn">
+                           <button class="btn btn-primary hidden-sm" type="submit">
+                              <span class="glyphicon glyphicon-search"></span>
+                           </button> 
+                        </span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-3">
+                  <div class="form-group">
+                     Estado
+                     <select name="estado" class="form-control" onchange="this.form.submit()">
+                        <option value="">Cualquiera</option>
+                        <option value="">------</option>
+                        {loop="$fsc->estados->all()"}
+                        {if="$value->id==$fsc->estado"}
+                        <option value="{$value->id}" selected="">{$value->descripcion}</option>
+                        {else}
+                        <option value="{$value->id}">{$value->descripcion}</option>
+                        {/if}
+                        {/loop}
+                     </select>
+                  </div>
+               </div>
+               <div class="col-sm-3">
+                  Cliente
+                  <div class="form-group">
+                     <div class="input-group">
+                        {if="$fsc->cliente"}
+                        <input class="form-control" type="text" name="ac_cliente" value="{$fsc->cliente->nombre}" id="ac_cliente" autocomplete="off"/>
+                        {else}
+                        <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
+                        {/if}
+                        <span class="input-group-btn">
+                           <button class="btn btn-default" type="button" onclick="clean_cliente()">
+                              <span class="glyphicon glyphicon-remove"></span>
+                           </button>
+                        </span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Serie
+                     <select class="form-control" name="codserie" onchange="this.form.submit()">
+                        <option value="">Cualquiera</option>
+                        <option value="">-----</option>
+                        {loop="$fsc->serie->all()"}
+                        {if="$value->codserie==$fsc->codserie"}
+                        <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
+                        {else}
+                        <option value="{$value->codserie}">{$value->descripcion}</option>
+                        {/if}
+                        {/loop}
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Desde
+                     <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
+                  </div>
+               </div>
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Hasta
+                     <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
+                  </div>
+               </div>
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     Empleado
+                     <select name="codagente" class="form-control" onchange="this.form.submit()">
+                        <option value="">Cualquier empleado</option>
+                        <option value="">------</option>
+                        {loop="$fsc->agente->all()"}
+                        {if="$value->codagente==$fsc->codagente"}
+                        <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
+                        {else}
+                        <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                        {/if}
+                        {/loop}
+                     </select>
+                  </div>
+               </div>
+               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     {$fsc->st['st_fechainicio']}
+                     <input type="text" name="fechainicio" value="{$fsc->fechainicio}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
+                  </div>
+               </div>
+               {/if}
+               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     {$fsc->st['st_fechafin']}
+                     <input type="text" name="fechafin" value="{$fsc->fechafin}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
+                  </div>
+               </div>
+               {/if}
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     <div class="checkbox">
+                        <label title="Por defecto sólo se muestran los servicios no facturados">
+                           <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()" title="Por defecto sólo se muestran los servicios no facturados"/>
+                           <span class="glyphicon glyphicon-lock" aria-hidden="true" title="Por defecto sólo se muestran los servicios no facturados"></span>
+                           Mostrar todos
+                        </label>
+                     </div>
+                     {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+                     <div class="checkbox">
+                        <label>
+                           <input type="checkbox" name="garantia" {if="$fsc->garantia"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
+                           <span class="fa fa-wrench" aria-hidden="true"></span>
+                           {$fsc->st['st_garantia']}
+                        </label>
+                     </div>
+                     {/if}
+                  </div>
                </div>
             </div>
          </div>
-         <div class="col-sm-2">
-            <div class="form-group">
-               Estado
-               <select name="estado" class="form-control" onchange="this.form.submit()">
-                  <option value="">   </option>
-                  <option value="">------</option>
-                  {loop="$fsc->estados->all()"}
-                     {if="$value->id==$fsc->estado"}
-                     <option value="{$value->id}" selected="">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->id}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
-               </select>
-               <div class="checkbox">
-                  <label title="Por defecto sólo se muestran los servicios no facturados">
-                     <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()" title="Por defecto sólo se muestran los servicios no facturados"/>
-                     <span class="glyphicon glyphicon-lock" aria-hidden="true" title="Por defecto sólo se muestran los servicios no facturados"></span> Mostrar todos
-                  </label>
-               </div>
-            </div>
+         {if="!$fsc->editable"}
+         <div class="bg-warning text-center">
+         Se están mostrando los servicios que están sin generar albarán
          </div>
-         <div class="col-sm-1">
-            <div class="form-group">
-               Serie
-               <select class="form-control" name="codserie" onchange="this.form.submit()">
-                  <option value="">    </option>
-                  <option value="">-----</option>
-                  {loop="$fsc->serie->all()"}
-                     {if="$value->codserie==$fsc->codserie"}
-                     <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->codserie}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
-               </select>
-            </div>
-         </div>
-         <div class="col-sm-2">
-            Cliente
-            <div class="form-group">
-               <div class="input-group">
-                  {if="$fsc->cliente"}
-                  <input class="form-control" type="text" name="ac_cliente" value="{$fsc->cliente->nombre}" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
-                  {else}
-                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Cualquier cliente" autocomplete="off"/>
-                  {/if}
-                  <span class="input-group-btn">
-                     <button class="btn btn-default" type="button" onclick="clean_cliente()">
-                        <span class="glyphicon glyphicon-remove"></span>
-                     </button>
-                  </span>
-               </div>
-            </div>
-         </div>
-         <div class="col-sm-2">
-            <div class="form-group">
-               Desde
-               <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
-            </div>
-         </div>
-         <div class="col-sm-2">
-            <div class="form-group">
-               Hasta
-               <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
-            </div>
-         </div>
-         <div class="col-sm-1">
-            <div class="form-group">
-               Empleado
-               <select name="codagente" class="form-control" onchange="this.form.submit()">
-                  <option value="">      </option>
-                  <option value="">------</option>
-                  {loop="$fsc->agente->all()"}
-                     {if="$value->codagente==$fsc->codagente"}
-                     <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
-                     {else}
-                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                     {/if}
-                  {/loop}
-               </select>
-            </div>
-         </div>
+         {/if}
       </div>
-   </div>
 </form>
 
 <div class="table-responsive">
-  <table class="table table-hover">
+   <table class="table table-hover">
       <thead>
          <tr>
             <th></th>
@@ -412,13 +464,21 @@
       </div>
    </div>
 </div>
-
+</div>
+      </div>
+      {loop="$fsc->extensions"}
+      {if="$value->type=='tab'"}
+      <div role="tabpanel" class="tab-pane" id="ext_{$value->name}">
+         <iframe src="index.php?page={$value->from}{$value->params}&id={$fsc->servicio->idservicio}" width="100%" height="600" frameborder="0"></iframe>
+      </div>
+      {/if}
+      {/loop}
 {loop="$fsc->extensions"}
    {if="$value->type=='minicron'"}
    <iframe src="index.php?page={$value->from}{$value->params}" style="display: none;"></iframe>
    {/if}
 {/loop}
-
+   </div>
 <form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action="{$fsc->url()}" method="post">
    <input type="hidden" name="offset" value="0"/>
    <div class="modal" id="modal_buscar_lineas">
