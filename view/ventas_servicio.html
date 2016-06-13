@@ -195,7 +195,7 @@
          <div class="col-sm-2">
             <div class="form-group">
                <a href="{$fsc->agente->url()}">Empleado</a>:
-               <select name="codagente" class="form-control" {if="!$fsc->servicio->editable()"} disabled{/if}>
+               <select name="codagente" class="form-control" {if="!$fsc->servicio->editable()"} readonly{/if}>
                   <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
                   {if="$fsc->user->admin"}
                   <option value="{$fsc->agente->codagente}">-----</option>
@@ -209,7 +209,7 @@
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
                <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
-               <select name="estado" class="form-control" {if="!$fsc->servicio->editable()"} disabled{/if}>
+               <select name="estado" class="form-control">
                   {loop="$fsc->estado->all()"}
                   <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
                   {/loop}

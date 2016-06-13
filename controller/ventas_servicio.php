@@ -161,21 +161,16 @@ class ventas_servicio extends fs_controller
          $this->servicio = $servicio->get($_POST['idservicio']);
          $this->modificar();
       }
-      else if( isset($_GET['id']) )
+      else if (isset($_GET['id']))
       {
          $this->servicio = $servicio->get($_GET['id']);
-         if ($this->servicio)
-         {
-            if ($this->servicio->idalbaran == NULL)
-               $this->servicio->idestado = '1';
-         }
       }
 
-      if($this->servicio)
+      if ($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
-         
-         if( isset($_POST['detalle']) )
+
+         if (isset($_POST['detalle']))
          {
             $this->agrega_detalle();
          }
