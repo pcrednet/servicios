@@ -106,7 +106,17 @@ class ventas_servicio extends fs_controller
             'servicios_garantia' => 0,
             'cal_inicio' => "09:00",
             'cal_fin' => "20:00",
-            'cal_intervalo' => "30"
+            'cal_intervalo' => "30",
+            'servicios_linea' => 0,
+            'servicios_linea1' => 0,
+            'servicios_material_linea' => 0,
+            'servicios_material_estado_linea' => 0,
+            'servicios_accesorios_linea' => 0,
+            'servicios_descripcion_linea' => 0,
+            'servicios_solucion_linea' => 0, 
+            'servicios_fechainicio_linea' => 0,
+            'servicios_fechafin_linea' => 0,
+            'servicios_garantia_linea' => 0
          ),
          FALSE
       );
@@ -185,6 +195,8 @@ class ventas_servicio extends fs_controller
                $this->agente = new agente();
             }
          }
+         else
+            $this->agente = $this->user->get_agente();
 
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
@@ -578,9 +590,7 @@ class ventas_servicio extends fs_controller
       $albaran->neto = $this->servicio->neto;
       $albaran->nombrecliente = $this->servicio->nombrecliente;
       
-      $albaran->observaciones = "Servicio: ".$this->servicio->codigo." | Fecha: ".$this->servicio->fecha
-              ."\nDescripcion: ".$this->servicio->descripcion."\nSolución: ". $this->servicio->solucion
-              ."\nObservaciones: ".$this->servicio->observaciones;
+      $albaran->observaciones = $this->servicio->observaciones;
       
       $albaran->provincia = $this->servicio->provincia;
       $albaran->total = $this->servicio->total;
@@ -609,18 +619,58 @@ class ventas_servicio extends fs_controller
       }
       else if ($albaran->save())
       {
+         $this->new_message("El ".FS_ALBARAN." ".$albaran->codigo." ha sido creado correctamente.");
          $continuar = TRUE;
          $art0 = new articulo();
-
+         $i = 0;
          foreach ($this->servicio->get_lineas() as $l)
          {
             $n = new linea_albaran_cliente();
-            $n->idlineaservicio = $l->idlinea;
-            $n->idservicio = $l->idservicio;
             $n->idalbaran = $albaran->idalbaran;
             $n->cantidad = $l->cantidad;
             $n->codimpuesto = $l->codimpuesto;
             $n->descripcion = $l->descripcion;
+            if ($i == 0)
+            {
+               if ($this->servicios_setup['servicios_linea'] && $this->servicios_setup['servicios_linea1'])
+               {
+                  $n->descripcion .= "\n";
+
+                  if ($this->servicios_setup['servicios_material_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_material'] . ": " . $this->servicio->material . "\n";
+                  }
+                  if ($this->servicios_setup['servicios_material_estado_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
+                  }
+                  if ($this->servicios_setup['servicios_accesorios_linea'])
+                  {
+                     $n->descripcion.= $this->st['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
+                  }
+                  if ($this->servicios_setup['servicios_descripcion_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
+                  }
+                  if ($this->servicios_setup['servicios_solucion_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_solucion'] . ": " . $this->servicio->solucion . "\n";
+                  }
+                  if ($this->servicios_setup['servicios_fechainicio_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
+                  }
+                  if ($this->servicios_setup['servicios_fechafin_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
+                  }
+                  if ($this->servicios_setup['servicios_garantia_linea'])
+                  {
+                     $n->descripcion .= $this->st['st_garantia'] . ": " . $this->servicio->garantia . "\n";
+                  }
+               }
+            }
+
             $n->dtopor = $l->dtopor;
             $n->irpf = $l->irpf;
             $n->iva = $l->iva;
@@ -629,14 +679,16 @@ class ventas_servicio extends fs_controller
             $n->pvpunitario = $l->pvpunitario;
             $n->recargo = $l->recargo;
             $n->referencia = $l->referencia;
+            
+            $i++;
 
             if ($n->save())
             {
                /// descontamos del stock
-               if( !is_null($n->referencia) )
+               if (!is_null($n->referencia))
                {
                   $articulo = $art0->get($n->referencia);
-                  if($articulo)
+                  if ($articulo)
                   {
                      $articulo->sum_stock($albaran->codalmacen, 0 - $l->cantidad);
                   }
@@ -650,7 +702,62 @@ class ventas_servicio extends fs_controller
             }
          }
 
-         if($continuar)
+         if (!$this->servicio->get_lineas())
+         {
+            //generamos la linea con detalles del servicio
+            if ($this->servicios_setup['servicios_linea'])
+            {
+
+               $ns = new linea_albaran_cliente();
+               $ns->idalbaran = $albaran->idalbaran;
+               $ns->cantidad = '0';
+               $ns->codimpuesto = '';
+               $ns->descripcion = FS_SERVICIO . ": " . $this->servicio->codigo . " Fecha: " . $this->servicio->fecha . "\n";
+               if ($this->servicios_setup['servicios_material_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_material'] . ": " . $this->servicio->material . "\n";
+               }
+               if ($this->servicios_setup['servicios_material_estado_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
+               }
+               if ($this->servicios_setup['servicios_accesorios_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
+               }
+               if ($this->servicios_setup['servicios_descripcion_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
+               }
+               if ($this->servicios_setup['servicios_solucion_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_solucion'] . ": " . $this->servicio->solucion . "\n";
+               }
+               if ($this->servicios_setup['servicios_fechainicio_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
+               }
+               if ($this->servicios_setup['servicios_fechafin_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
+               }
+               if ($this->servicios_setup['servicios_garantia_linea'])
+               {
+                  $ns->descripcion .= $this->st['st_garantia'] . ": " . $this->servicio->garantia . "\n";
+               }
+
+               $ns->dtopor = '0';
+               $ns->irpf = '0';
+               $ns->iva = '0';
+               $ns->pvpsindto = '0';
+               $ns->pvptotal = '0';
+               $ns->pvpunitario = '0';
+               $ns->recargo = '0';
+               $ns->referencia = '';
+               $ns->save();
+            }
+         }
+         if ($continuar)
          {
             $this->servicio->idalbaran = $albaran->idalbaran;
          }

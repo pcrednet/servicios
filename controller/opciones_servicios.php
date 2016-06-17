@@ -70,6 +70,16 @@ class opciones_servicios extends fs_controller
             'servicios_mostrar_fechainicio' => 0,
             'servicios_mostrar_garantia' => 0,
             'servicios_garantia' => 0,
+            'servicios_linea' => 0,
+            'servicios_linea1' => 0,
+            'servicios_material_linea' => 0,
+            'servicios_material_estado_linea' => 0,
+            'servicios_accesorios_linea' => 0,
+            'servicios_descripcion_linea' => 0,
+            'servicios_solucion_linea' => 0, 
+            'servicios_fechainicio_linea' => 0,
+            'servicios_fechafin_linea' => 0,
+            'servicios_garantia_linea' => 0,
             'servicios_condiciones' => "Condiciones del deposito:\nLos presupuestos realizados tienen una".
                " validez de 15 días.\nUna vez avisado al cliente para que recoja el producto este dispondrá".
                " de un plazo máximo de 2 meses para recogerlo, de no ser así y no haber aviso por parte del".
@@ -114,6 +124,16 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['servicios_mostrar_fechainicio'] = ( isset($_POST['servicios_mostrar_fechainicio']) ? 1 : 0 );
          $this->servicios_setup['servicios_mostrar_garantia'] = ( isset($_POST['servicios_mostrar_garantia']) ? 1 : 0 );
          $this->servicios_setup['servicios_condiciones'] = $fsvar->no_html($_POST['condiciones']);
+         $this->servicios_setup['servicios_linea'] = ( isset($_POST['servicios_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_linea1'] = ( isset($_POST['servicios_linea1']) ? 1 : 0 );
+         $this->servicios_setup['servicios_material_linea'] = ( isset($_POST['servicios_material_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_material_estado_linea'] = ( isset($_POST['servicios_material_estado_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_accesorios_linea'] = ( isset($_POST['servicios_accesorios_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_descripcion_linea'] = ( isset($_POST['servicios_descripcion_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_solucion_linea'] = ( isset($_POST['servicios_solucion_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_fechainicio_linea'] = ( isset($_POST['servicios_fechainicio_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_fechafin_linea'] = ( isset($_POST['servicios_fechafin_linea']) ? 1 : 0 );
+         $this->servicios_setup['servicios_garantia_linea'] = ( isset($_POST['servicios_garantia_linea']) ? 1 : 0 );
          $this->servicios_setup['st_servicio'] = $_POST['st_servicio'];
          $this->servicios_setup['st_servicios'] = $_POST['st_servicios'];
          $this->servicios_setup['st_material'] = $_POST['st_material'];
