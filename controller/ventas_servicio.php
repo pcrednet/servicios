@@ -711,7 +711,18 @@ class ventas_servicio extends fs_controller
                $ns = new linea_albaran_cliente();
                $ns->idalbaran = $albaran->idalbaran;
                $ns->cantidad = '0';
-               $ns->codimpuesto = '';
+               
+               //usamos el impuestos por defecto
+               $imp0 = new impuesto();          
+               foreach ($imp0->all() as $imp)
+               {
+                  if($imp->is_default())
+                  {
+                     $ns->codimpuesto = $imp->codimpuesto;
+                     $ns->iva = $imp->iva;
+                  }
+               }
+
                $ns->descripcion = FS_SERVICIO . ": " . $this->servicio->codigo . " Fecha: " . $this->servicio->fecha . "\n";
                if ($this->servicios_setup['servicios_material_linea'])
                {
@@ -748,7 +759,6 @@ class ventas_servicio extends fs_controller
 
                $ns->dtopor = '0';
                $ns->irpf = '0';
-               $ns->iva = '0';
                $ns->pvpsindto = '0';
                $ns->pvptotal = '0';
                $ns->pvpunitario = '0';
