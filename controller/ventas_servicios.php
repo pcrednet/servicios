@@ -134,19 +134,19 @@ class ventas_servicios extends fs_controller
       {
          if($_GET['order'] == 'fecha_desc')
          {
-            $this->order = 'fecha DESC, hora DESC';
+            $this->order = 'fecha DESC';
          }
          else if($_GET['order'] == 'fecha_asc')
          {
-            $this->order = 'fecha ASC, hora ASC';
+            $this->order = 'fecha ASC';
          }
          else if($_GET['order'] == 'codigo_desc')
          {
-            $this->order = 'idservicio DESC';
+            $this->order = 'codigo DESC';
          }
          else if($_GET['order'] == 'codigo_asc')
          {
-            $this->order = 'idservicio ASC';
+            $this->order = 'codigo ASC';
          }
          else if($_GET['order'] == 'prioridad_desc')
          {
@@ -155,6 +155,21 @@ class ventas_servicios extends fs_controller
          else if($_GET['order'] == 'prioridad_asc')
          {
             $this->order = 'prioridad ASC';
+         }
+         else if($_GET['order'] == 'total_desc')
+         {
+            $this->order = 'total DESC';
+         }
+         
+         /// añadimos segundo nivel de ordenación
+         $order2 = '';
+         if($this->order == 'fecha DESC')
+         {
+            $order2 = ', hora DESC';
+         }
+         else if($this->order == 'fecha ASC')
+         {
+            $order2 = ', hora ASC';
          }
          
          setcookie('ventas_serv_order', $this->order, time()+FS_COOKIES_EXPIRE);
@@ -458,7 +473,7 @@ class ventas_servicios extends fs_controller
       {
          $this->num_resultados = intval($data[0]['total']);
          
-         $data2 = $this->db->select_limit("SELECT *".$sql." ORDER BY ".$this->order, FS_ITEM_LIMIT, $this->offset);
+         $data2 = $this->db->select_limit("SELECT *".$sql." ORDER BY ".$this->order.$order2, FS_ITEM_LIMIT, $this->offset);
          if($data2)
          {
             foreach($data2 as $d)

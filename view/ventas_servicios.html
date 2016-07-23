@@ -154,10 +154,17 @@
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&order=prioridad_desc">
+                  <a href="{$fsc->url()}&order=prioridad_asc">
                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                      &nbsp; Prioridad &nbsp;
                      {if="$fsc->order=='prioridad ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
+                  </a>
+               </li>
+               <li>
+                  <a href="{$fsc->url(TRUE)}&order=total_desc">
+                     <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+                     &nbsp; Total &nbsp;
+                     {if="$fsc->order=='total DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
             </ul>

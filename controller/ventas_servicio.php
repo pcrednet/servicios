@@ -702,7 +702,7 @@ class ventas_servicio extends fs_controller
             }
          }
 
-         if (!$this->servicio->get_lineas())
+         if ($this->servicios_setup['servicios_linea'] && !$this->servicios_setup['servicios_linea1'])
          {
             //generamos la linea con detalles del servicio
             if ($this->servicios_setup['servicios_linea'])
