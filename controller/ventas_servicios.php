@@ -589,6 +589,7 @@ class ventas_servicios extends fs_controller
                  ."&codcliente=".$codcliente
                  ."&desde=".$this->desde
                  ."&hasta=".$this->hasta
+                 ."&editable=".$this->editable
                  ."&offset=".($this->offset-FS_ITEM_LIMIT);
       
       $paginas = array();
