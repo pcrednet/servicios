@@ -234,6 +234,12 @@ class servicio_cliente extends fs_model
    public $femail;
    
    /**
+    * Fecha de la última modificación
+    * @var type 
+    */
+   public $lastmod;
+   
+   /**
     * Todavía sin uso.
     * @var type 
     */
@@ -290,6 +296,7 @@ class servicio_cliente extends fs_model
          $this->material_estado = $s['material_estado'];
          $this->accesorios = $s['accesorios'];
          $this->idestado = $s['idestado'];
+         $this->lastmod = date('d-m-Y H:i:s');
          
          $this->fechafin = NULL;
          if( isset($s['fechafin']) )
@@ -361,6 +368,7 @@ class servicio_cliente extends fs_model
          $this->garantia = FALSE;
          $this->editable = TRUE;
          $this->femail = NULL;
+         $this->lastmod = date('d-m-Y H:i:s');
       }
       
       if( !isset(self::$estados) )
@@ -627,6 +635,7 @@ class servicio_cliente extends fs_model
                     .", totalrecargo = " . $this->var2str($this->totalrecargo)
                     .", editable = " . $this->var2str($this->editable)
                     .", femail = ".$this->var2str($this->femail)
+                    .", lastmod = ".$this->var2str($this->femail)
                     ."  WHERE idservicio = " . $this->var2str($this->idservicio).";";
             
             return $this->db->exec($sql);

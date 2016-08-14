@@ -249,6 +249,10 @@
       <nombre>idestado</nombre>
       <tipo>integer</tipo>
    </columna>
+   <columna>
+      <nombre>lastmod</nombre>
+      <tipo>date</tipo>
+   </columna>
    <restriccion>
       <nombre>servicioscli_pkey</nombre>
       <consulta>PRIMARY KEY (idservicio)</consulta>
