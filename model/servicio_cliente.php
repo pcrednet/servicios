@@ -296,7 +296,7 @@ class servicio_cliente extends fs_model
          $this->material_estado = $s['material_estado'];
          $this->accesorios = $s['accesorios'];
          $this->idestado = $s['idestado'];
-         $this->lastmod = date('d-m-Y H:i:s');
+         $this->lastmod = Date('d-m-Y H:i:s');
          
          $this->fechafin = NULL;
          if( isset($s['fechafin']) )
@@ -368,7 +368,7 @@ class servicio_cliente extends fs_model
          $this->garantia = FALSE;
          $this->editable = TRUE;
          $this->femail = NULL;
-         $this->lastmod = date('d-m-Y H:i:s');
+         $this->lastmod = Date('d-m-Y H:i:s');
       }
       
       if( !isset(self::$estados) )
@@ -635,7 +635,7 @@ class servicio_cliente extends fs_model
                     .", totalrecargo = " . $this->var2str($this->totalrecargo)
                     .", editable = " . $this->var2str($this->editable)
                     .", femail = ".$this->var2str($this->femail)
-                    .", lastmod = ".$this->var2str($this->femail)
+                    .", lastmod = ".$this->var2str($this->lastmod)
                     ."  WHERE idservicio = " . $this->var2str($this->idservicio).";";
             
             return $this->db->exec($sql);
@@ -648,7 +648,7 @@ class servicio_cliente extends fs_model
                direccion,fecha,hora,idalbaran,irpf,neto,nombrecliente,numero,observaciones,
                porcomision,fechafin,fechainicio,garantia,provincia,recfinanciero,tasaconv,
                total,totaleuros,totalirpf,totaliva,totalrecargo,descripcion,solucion,material,
-               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail) VALUES (" . $this->var2str($this->apartado)
+               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail,lastmod) VALUES (" . $this->var2str($this->apartado)
                     . "," . $this->var2str($this->cifnif)
                     . "," . $this->var2str($this->ciudad)
                     . "," . $this->var2str($this->codagente)
@@ -694,7 +694,8 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->editable)
                     . "," . $this->var2str($horaini)
                     . "," . $this->var2str($horafin)
-                    . "," . $this->var2str($this->femail).");";
+                    . "," . $this->var2str($this->femail)
+                    . "," . $this->var2str($this->lastmod).");";
             
             if( $this->db->exec($sql) )
             {
