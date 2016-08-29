@@ -54,6 +54,7 @@ class ventas_servicios extends fs_controller
    public $fechainicio;
    public $fechafin;
    public $garantia;
+   public $order2;
 
    public function __construct()
    {
@@ -128,7 +129,7 @@ class ventas_servicios extends fs_controller
       {
          $this->offset = intval($_REQUEST['offset']);
       }
-      
+      $this->order2 = '';
       $this->order = 'fecha DESC';
       if( isset($_GET['order']) )
       {
@@ -162,14 +163,14 @@ class ventas_servicios extends fs_controller
          }
          
          /// añadimos segundo nivel de ordenación
-         $order2 = '';
+         
          if($this->order == 'fecha DESC')
          {
-            $order2 = ', hora DESC';
+            $this->order2 = ', hora DESC';
          }
          else if($this->order == 'fecha ASC')
          {
-            $order2 = ', hora ASC';
+            $this->order2 = ', hora ASC';
          }
          
          setcookie('ventas_serv_order', $this->order, time()+FS_COOKIES_EXPIRE);
@@ -473,7 +474,7 @@ class ventas_servicios extends fs_controller
       {
          $this->num_resultados = intval($data[0]['total']);
          
-         $data2 = $this->db->select_limit("SELECT *".$sql." ORDER BY ".$this->order.$order2, FS_ITEM_LIMIT, $this->offset);
+         $data2 = $this->db->select_limit("SELECT *".$sql." ORDER BY ".$this->order.$this->order2, FS_ITEM_LIMIT, $this->offset);
          if($data2)
          {
             foreach($data2 as $d)

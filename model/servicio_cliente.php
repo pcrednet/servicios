@@ -635,7 +635,7 @@ class servicio_cliente extends fs_model
                     .", totalrecargo = " . $this->var2str($this->totalrecargo)
                     .", editable = " . $this->var2str($this->editable)
                     .", femail = ".$this->var2str($this->femail)
-                    .", lastmod = ".$this->var2str($this->lastmod)
+                    .", lastmod = ".$this->var2str(Date('d-m-Y H:i:s'))
                     ."  WHERE idservicio = " . $this->var2str($this->idservicio).";";
             
             return $this->db->exec($sql);
@@ -695,7 +695,7 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($horaini)
                     . "," . $this->var2str($horafin)
                     . "," . $this->var2str($this->femail)
-                    . "," . $this->var2str($this->lastmod).");";
+                    . "," . $this->var2str(Date('d-m-Y H:i:s')).");";
             
             if( $this->db->exec($sql) )
             {
