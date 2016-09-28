@@ -1,9 +1,9 @@
 <?php
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2014-2015  Carlos Garcia Gomez  neorazorx@gmail.com
- * Copyright (C) 2014-2015  Francesc Pineda Segarra  shawe.ewahs@gmail.com
- * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014-2015    Francesc Pineda Segarra  shawe.ewahs@gmail.com
+ * Copyright (C) 2015-2016    Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -161,17 +161,6 @@ class ventas_servicios extends fs_controller
             $this->order = 'total DESC';
          }
          
-         /// añadimos segundo nivel de ordenación
-         $order2 = '';
-         if($this->order == 'fecha DESC')
-         {
-            $order2 = ', hora DESC';
-         }
-         else if($this->order == 'fecha ASC')
-         {
-            $order2 = ', hora ASC';
-         }
-         
          setcookie('ventas_serv_order', $this->order, time()+FS_COOKIES_EXPIRE);
       }
       else if( isset($_COOKIE['ventas_serv_order']) )
@@ -267,6 +256,7 @@ class ventas_servicios extends fs_controller
                $this->hasta = $_REQUEST['hasta'];
             }
          }
+         
          $this->buscar();
       }
    }
@@ -473,6 +463,17 @@ class ventas_servicios extends fs_controller
       {
          $this->num_resultados = intval($data[0]['total']);
          
+         /// añadimos segundo nivel de ordenación
+         $order2 = '';
+         if($this->order == 'fecha DESC')
+         {
+            $order2 = ', hora DESC';
+         }
+         else if($this->order == 'fecha ASC')
+         {
+            $order2 = ', hora ASC';
+         }
+         
          $data2 = $this->db->select_limit("SELECT *".$sql." ORDER BY ".$this->order.$order2, FS_ITEM_LIMIT, $this->offset);
          if($data2)
          {
@@ -482,10 +483,10 @@ class ventas_servicios extends fs_controller
             }
          }
          
-         $data2 = $this->db->select("SELECT SUM(total) as total".$sql);
+         $data2 = $this->db->select("SELECT SUM(totaleuros) as total".$sql);
          if($data2)
          {
-            $this->total_resultados = floatval($data2[0]['total']);
+            $this->total_resultados = $this->euro_convert( floatval($data2[0]['total']) );
             $this->total_resultados_txt = 'Suma total de los resultados:';
          }
       }

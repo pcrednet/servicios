@@ -114,7 +114,7 @@
             <span class="hidden-xs">&nbsp; Líneas</span>
          </a>
          <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
                <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
@@ -172,18 +172,18 @@
       </div>
    </div>
 </div>
+
 {if="$fsc->avisosat=='1'"}
 <div class="well">
    <div class="page-header" style="margin-top: 0px;">
       <h1>Tienes SAT instalado</h1>
    </div>
    <p>
-      Si lo deseas, puedes importar tus registros de SAT con sus detalles a Servicios. Una vez realizado esto deberás borrar o desactivar el plugin SAT para evitar
-      confusiones.
+      Si lo deseas, puedes importar tus registros de SAT con sus detalles a {#FS_SERVICIOS#}.
+      Una vez realizado esto deberás borrar o desactivar el plugin SAT para evitar confusiones.
    </p>
    <a href="{$fsc->url()}&importar=TRUE" class="btn btn-sm btn-info">
-      <span class="glyphicon glyphicon-import"></span>
-      &nbsp; Importar
+      <span class="glyphicon glyphicon-import"></span>&nbsp; Importar
    </a>
 </div>
 {elseif="$fsc->avisosat=='2'"}
@@ -195,45 +195,44 @@
       Desactiva SAT para evitar problemas
    </p>
    <a href="index.php?page=admin_home&disable=SAT#plugins" class="btn btn-sm btn-danger">
-      <span class="glyphicon glyphicon-lock"></span>
-      &nbsp; Desactivar
+      <span class="glyphicon glyphicon-lock"></span>&nbsp; Desactivar
    </a>
 </div>
 {/if}
+
 <div role="tabpanel">
    <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active">
          <a href="#servicios" aria-controls="servicios" role="tab" data-toggle="tab">
             <span class="glyphicon glyphicon-search"></span>
-            <span class="hidden-xs">&nbsp; Servicios</span>
+            <span class="hidden-xs text-capitalize">&nbsp; {#FS_SERVICIOS#}</span>
             <span class="hidden-xs badge">{$fsc->num_resultados}</span>
          </a>
       </li>
       {loop="$fsc->extensions"}
-      {if="$value->type=='tab'"}
-      <li role="presentation">
-         <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
-      </li>
-      {/if}
+         {if="$value->type=='tab'"}
+         <li role="presentation">
+            <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+         </li>
+         {/if}
       {/loop}
    </ul>
-   </div>
-   <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="servicios">
-   <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
-      {if="$fsc->cliente"}
-      <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
-   {else}
-   <input type="hidden" name="codcliente"/>
-   {/if}
-   <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
-      <div class="panel panel-success">
-         <div class="panel-heading">Búsqueda de {#FS_SERVICIOS#}</div>
-         <div class="panel-body">
+</div>
+
+<br/>
+
+<div class="tab-content">
+   <div role="tabpanel" class="tab-pane active" id="servicios">
+      <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+         {if="$fsc->cliente"}
+         <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
+         {else}
+         <input type="hidden" name="codcliente"/>
+         {/if}
+         <div class="container-fluid">
             <div class="row">
-               <div class="col-sm-4">
+               <div class="col-sm-2">
                   <div class="form-group">
-                     Buscar
                      <div class="input-group">
                         <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off">
                         <span class="input-group-btn">
@@ -244,24 +243,56 @@
                      </div>
                   </div>
                </div>
-               <div class="col-sm-3">
+               <div class="col-sm-2">
                   <div class="form-group">
-                     Estado
                      <select name="estado" class="form-control" onchange="this.form.submit()">
-                        <option value="">Cualquiera</option>
+                        <option value="">Cualquier estado</option>
                         <option value="">------</option>
                         {loop="$fsc->estados->all()"}
-                        {if="$value->id==$fsc->estado"}
-                        <option value="{$value->id}" selected="">{$value->descripcion}</option>
+                           {if="$value->id==$fsc->estado"}
+                           <option value="{$value->id}" selected="">{$value->descripcion}</option>
+                           {else}
+                           <option value="{$value->id}">{$value->descripcion}</option>
+                           {/if}
+                        {/loop}
+                     </select>
+                     <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} sin {#FS_ALBARAN#}">
+                        {if="$fsc->editable"}
+                        <input type="checkbox" name="editable" value="TRUE" checked="" onchange="this.form.submit()"/>
                         {else}
-                        <option value="{$value->id}">{$value->descripcion}</option>
+                        <input type="checkbox" name="editable" value="TRUE" onchange="this.form.submit()"/>
                         {/if}
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> incluir los terminados
+                     </label>
+                  </div>
+               </div>
+               <div class="col-sm-2">
+                  <div class="form-group">
+                     <select name="codagente" class="form-control" onchange="this.form.submit()">
+                        <option value="">Cualquier empleado</option>
+                        <option value="">------</option>
+                        {loop="$fsc->agente->all()"}
+                           {if="$value->codagente==$fsc->codagente"}
+                           <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
+                           {else}
+                           <option value="{$value->codagente}">{$value->get_fullname()}</option>
+                           {/if}
+                        {/loop}
+                     </select>
+                     <select class="form-control" name="codserie" onchange="this.form.submit()">
+                        <option value="">Cualquier serie</option>
+                        <option value="">-----</option>
+                        {loop="$fsc->serie->all()"}
+                           {if="$value->codserie==$fsc->codserie"}
+                           <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
+                           {else}
+                           <option value="{$value->codserie}">{$value->descripcion}</option>
+                           {/if}
                         {/loop}
                      </select>
                   </div>
                </div>
-               <div class="col-sm-3">
-                  Cliente
+               <div class="col-sm-2">
                   <div class="form-group">
                      <div class="input-group">
                         {if="$fsc->cliente"}
@@ -279,213 +310,155 @@
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
-                     Serie
-                     <select class="form-control" name="codserie" onchange="this.form.submit()">
-                        <option value="">Cualquiera</option>
-                        <option value="">-----</option>
-                        {loop="$fsc->serie->all()"}
-                        {if="$value->codserie==$fsc->codserie"}
-                        <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
-                        {else}
-                        <option value="{$value->codserie}">{$value->descripcion}</option>
-                        {/if}
-                        {/loop}
-                     </select>
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-sm-2">
-                  <div class="form-group">
-                     Desde
-                     <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
+                     <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="desde" autocomplete="off" onchange="this.form.submit()"/>
+                     {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+                     <input type="text" name="fechainicio" value="{$fsc->fechainicio}" class="form-control datepicker" placeholder="inicio" autocomplete="off" onchange="this.form.submit()"/>
+                     {/if}
                   </div>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
-                     Hasta
-                     <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
-                  </div>
-               </div>
-               <div class="col-sm-2">
-                  <div class="form-group">
-                     Empleado
-                     <select name="codagente" class="form-control" onchange="this.form.submit()">
-                        <option value="">Cualquier empleado</option>
-                        <option value="">------</option>
-                        {loop="$fsc->agente->all()"}
-                        {if="$value->codagente==$fsc->codagente"}
-                        <option value="{$value->codagente}" selected="">{$value->get_fullname()}</option>
-                        {else}
-                        <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                        {/if}
-                        {/loop}
-                     </select>
-                  </div>
-               </div>
-               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-               <div class="col-sm-2">
-                  <div class="form-group">
-                     {$fsc->st['st_fechainicio']}
-                     <input type="text" name="fechainicio" value="{$fsc->fechainicio}" class="form-control datepicker" autocomplete="off" onchange="this.form.submit()"/>
-                  </div>
-               </div>
-               {/if}
-               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-               <div class="col-sm-2">
-                  <div class="form-group">
-                     {$fsc->st['st_fechafin']}
-                     <input type="text" name="fechafin" value="{$fsc->fechafin}" class="form-control datepicker"  autocomplete="off" onchange="this.form.submit()"/>
-                  </div>
-               </div>
-               {/if}
-               <div class="col-sm-2">
-                  <div class="form-group">
-                     <div class="checkbox">
-                        <label title="Por defecto sólo se muestran los servicios no facturados">
-                           <input type="checkbox" name="editable"{if="$fsc->editable"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()" title="Por defecto sólo se muestran los servicios no facturados"/>
-                           <span class="glyphicon glyphicon-lock" aria-hidden="true" title="Por defecto sólo se muestran los servicios no facturados"></span>
-                           Mostrar todos
-                        </label>
-                     </div>
-                     {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-                     <div class="checkbox">
-                        <label>
-                           <input type="checkbox" name="garantia" {if="$fsc->garantia"} checked="checked"{/if} value="TRUE" onchange="this.form.submit()"/>
-                           <span class="fa fa-wrench" aria-hidden="true"></span>
-                           {$fsc->st['st_garantia']}
-                        </label>
-                     </div>
+                     <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="hasta" autocomplete="off" onchange="this.form.submit()"/>
+                     {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                     <input type="text" name="fechafin" value="{$fsc->fechafin}" class="form-control datepicker" placeholder="fin" autocomplete="off" onchange="this.form.submit()"/>
                      {/if}
                   </div>
                </div>
             </div>
+            <div class="row">
+               <div class="col-sm-12">
+                  {if="!$fsc->editable"}
+                  <div class="alert alert-warning">Se están mostrando los {#FS_SERVICIOS#} que están sin generar {#FS_ALBARAN#}</div>
+                  {/if}
+               </div>
+            </div>
          </div>
-         {if="!$fsc->editable"}
-         <div class="bg-warning text-center">
-         Se están mostrando los servicios que están sin generar albarán
-         </div>
-         {/if}
-      </div>
-</form>
-
-<div class="table-responsive">
-   <table class="table table-hover">
-      <thead>
-         <tr>
-            <th></th>
-            <th class="text-left">Código + {#FS_NUMERO2#}</th>
-            <th class="text-left">Prioridad</th>
-            <th class="text-left">Cliente</th>
-            <th class="text-left">Estado</th>
-            {if="$fsc->servicios_setup['servicios_mostrar_material']"}
-            <th class="text-left">{$fsc->st['st_material']}</th>
-            {/if}
-            {if="$fsc->servicios_setup['usar_direccion']"}
-            <th class="text-left">Dirección</th>
-            {/if}
-            <th class="text-right">Total</th>
-            <th class="text-right">Fecha</th>
-            {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-            <th data-sortable="true" class="text-right">{$fsc->st['st_fechainicio']}</th>
-            {/if}
-            {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-            <th data-sortable="true" class="text-right">{$fsc->st['st_fechafin']}</th>
-            {/if}
-         </tr>
-      </thead>
-      {loop="$fsc->resultados"}
-      <tr class="clickableRow" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
-         <td class="text-center">
-            {if condition="$value->idalbaran"}
-            <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
-            {/if}
-            {if="$value->femail"}
-            <span class="glyphicon glyphicon-send" title="El {#FS_SERVICIO#} fue enviado por email el {$value->femail}"></span>
-            {/if}
-         </td>
-         <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
-         <td>{$value->estrellas_prioridad()}</td>
-         <td>
-            {$value->nombrecliente}
-            <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
-         </td>
-         <td>{$value->nombre_estado()}</td>
-         {if="$fsc->servicios_setup['servicios_mostrar_material']"}
-         <td>{$value->material}</td>
-         {/if}
-         {if="$fsc->servicios_setup['usar_direccion']"}
-         <td>{$value->direccion}, ({$value->ciudad}) </td>
-         {/if}
-         <td class="text-right">{$fsc->show_precio($value->total, $value->coddivisa)}</td>
-         <td class="text-right">
-            {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
-         </td>
-         {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-         <td class="text-right">{$value->fechainicio}</td>
-         {/if}
-         {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-         <td class="text-right">{$value->fechafin}</td>
-         {/if}
-      </tr>
-      {else}
-      <tr class="warning">
-         <td></td>
-         <td colspan="9">Ningún {#FS_SERVICIO#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
-      </tr>
-      {/loop}
-      {if="$fsc->total_resultados!==''"}
-      <tr>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-         {if="$fsc->servicios_setup['servicios_mostrar_material']"}
-         <td></td>
-         {/if}
-         <td class="text-right">
-            {$fsc->total_resultados_txt} &nbsp; <b>{$fsc->show_precio($fsc->total_resultados)}</b>
-         </td>
-         <td></td>
-         {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-         <td></td>
-         {/if}
-         {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-         <td></td>
-         {/if}
-      </tr>
-      {/if}
-   </table>
-</div>
-<div class="container-fluid">
-   <div class="row">
-      <div class="col-sm-12 text-center">
-         <ul class="pagination">
-            {loop="$fsc->paginas()"}
-            <li{if="$value['actual']"} class="active"{/if}>
-               <a href="{$value['url']}">{$value['num']}</a>
-            </li>
+      </form>
+      <div class="table-responsive">
+         <table class="table table-hover">
+            <thead>
+               <tr>
+                  <th></th>
+                  <th class="text-left">Código + {#FS_NUMERO2#}</th>
+                  <th class="text-left">Prioridad</th>
+                  <th class="text-left">Cliente</th>
+                  <th class="text-left">Estado</th>
+                  {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+                  <th class="text-left">{$fsc->st['st_material']}</th>
+                  {/if}
+                  {if="$fsc->servicios_setup['usar_direccion']"}
+                  <th class="text-left">Dirección</th>
+                  {/if}
+                  <th class="text-right">Total</th>
+                  <th class="text-right">Fecha</th>
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+                  <th data-sortable="true" class="text-right">{$fsc->st['st_fechainicio']}</th>
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  <th data-sortable="true" class="text-right">{$fsc->st['st_fechafin']}</th>
+                  {/if}
+               </tr>
+            </thead>
+            {loop="$fsc->resultados"}
+            <tr class="clickableRow" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
+               <td class="text-center">
+                  {if="$value->idalbaran"}
+                  <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
+                  {/if}
+                  {if="$value->femail"}
+                  <span class="glyphicon glyphicon-send" title="El {#FS_SERVICIO#} fue enviado por email el {$value->femail}"></span>
+                  {/if}
+               </td>
+               <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
+               <td>{$value->estrellas_prioridad()}</td>
+               <td>
+                  {$value->nombrecliente}
+                  {if="$value->codcliente"}
+                  <a href="{$fsc->url()}&codcliente={$value->codcliente}" class="cancel_clickable" title="Ver más {#FS_SERVICIOS#} de {$value->nombrecliente}">[+]</a>
+                  {else}
+                  <span class="label label-danger" title="Cliente desconocido">???</span>
+                  {/if}
+               </td>
+               <td>{$value->nombre_estado()}</td>
+               {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+               <td>{$value->material}</td>
+               {/if}
+               {if="$fsc->servicios_setup['usar_direccion']"}
+               <td>{$value->direccion}, ({$value->ciudad}) </td>
+               {/if}
+               <td class="text-right" title="{$fsc->show_precio($fsc->euro_convert($value->totaleuros, $value->coddivisa, $value->tasaconv))}">
+                  {$fsc->show_precio($value->total, $value->coddivisa)}
+               </td>
+               <td class="text-right">
+                  {if="$value->fecha==$fsc->today()"}<b>{$value->fecha}</b>{else}{$value->fecha}{/if} | {$value->show_hora()}
+               </td>
+               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+               <td class="text-right">{$value->fechainicio}</td>
+               {/if}
+               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+               <td class="text-right">{$value->fechafin}</td>
+               {/if}
+            </tr>
+            {else}
+            <tr class="warning">
+               <td></td>
+               <td colspan="9">Ningún {#FS_SERVICIO#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+            </tr>
             {/loop}
-         </ul>
+            {if="$fsc->total_resultados!==''"}
+            <tr>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+               <td></td>
+               {/if}
+               <td class="text-right">
+                  {$fsc->total_resultados_txt} &nbsp; <b>{$fsc->show_precio($fsc->total_resultados)}</b>
+               </td>
+               <td></td>
+               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+               <td></td>
+               {/if}
+               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+               <td></td>
+               {/if}
+            </tr>
+            {/if}
+         </table>
+      </div>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-12 text-center">
+               <ul class="pagination">
+                  {loop="$fsc->paginas()"}
+                  <li{if="$value['actual']"} class="active"{/if}>
+                     <a href="{$value['url']}">{$value['num']}</a>
+                  </li>
+                  {/loop}
+               </ul>
+            </div>
+         </div>
       </div>
    </div>
-</div>
-</div>
-      </div>
-      {loop="$fsc->extensions"}
+   {loop="$fsc->extensions"}
       {if="$value->type=='tab'"}
       <div role="tabpanel" class="tab-pane" id="ext_{$value->name}">
          <iframe src="index.php?page={$value->from}{$value->params}&id={$fsc->servicio->idservicio}" width="100%" height="600" frameborder="0"></iframe>
       </div>
       {/if}
-      {/loop}
+   {/loop}
+</div>
+
 {loop="$fsc->extensions"}
    {if="$value->type=='minicron'"}
    <iframe src="index.php?page={$value->from}{$value->params}" style="display: none;"></iframe>
    {/if}
 {/loop}
-   </div>
+
+
 <form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action="{$fsc->url()}" method="post">
    <input type="hidden" name="offset" value="0"/>
    <div class="modal" id="modal_buscar_lineas">
@@ -507,7 +480,7 @@
                <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
                <div class="container-fluid">
                   <div class="row">
-                     <div class="col-lg-6 col-md-6 col-sm-6">
+                     <div class="col-sm-6">
                         <div class="input-group">
                            <input class="form-control" type="text" name="buscar_lineas" placeholder="Referencia" autocomplete="off"/>
                            <span class="input-group-btn">
@@ -517,7 +490,7 @@
                            </span>
                         </div>
                      </div>
-                     <div class="col-lg-6 col-md-6 col-sm-6">
+                     <div class="col-sm-6">
                         <div class="form-group">
                            <input class="form-control" type="text" name="buscar_lineas_o" placeholder="Observaciones" autocomplete="off"/>
                         </div>
@@ -540,4 +513,5 @@
       </div>
    </div>
 </form>
+
 {include="footer"}

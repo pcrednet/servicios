@@ -2,8 +2,8 @@
 
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2015   Carlos Garcia Gomez        neorazorx@gmail.com
- * Copyright (C) 2015   Luis Miguel Pérez Romero   luismipr@gmail.com
+ * Copyright (C) 2015-2016    Carlos Garcia Gomez        neorazorx@gmail.com
+ * Copyright (C) 2015         Luis Miguel Pérez Romero   luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -147,7 +147,7 @@ class opciones_servicios extends fs_controller
          $this->servicios_setup['cal_inicio'] = $_POST['cal_inicio'];
          $this->servicios_setup['cal_fin'] = $_POST['cal_fin'];
          $this->servicios_setup['cal_intervalo'] = $_POST['cal_intervalo'];
-         $this->servicios_setup['usar_direccion'] = $_POST['usar_direccion'];
+         $this->servicios_setup['usar_direccion'] = ( isset($_POST['usar_direccion']) ? 1 : 0 );
          
          if( $fsvar->array_save($this->servicios_setup) )
          {

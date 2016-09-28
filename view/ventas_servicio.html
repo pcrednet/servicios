@@ -83,7 +83,7 @@
    <input type="hidden" name="cliente" value="{$fsc->servicio->codcliente}"/>
    <input type="hidden" id="numlineas" name="numlineas" value="0"/>
    <div class="container-fluid">
-      <div class="row" style="margin-top: 10px;">
+      <div class="row">
          <div class="col-md-8 col-sm-8 col-xs-8">
             <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
                <span class="glyphicon glyphicon-refresh"></span>
@@ -91,15 +91,15 @@
             <div class="btn-group">
                <a id="b_imprimir" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-print"></span>
-                  <span class="hidden-xs"> &nbsp; Imprimir</span>
+                  <span class="hidden-xs">&nbsp; Imprimir</span>
                </a>
                {if="$fsc->empresa->can_send_mail()"}
                <a id="b_enviar" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-envelope"></span>
                   {if="$fsc->servicio->femail"}
-                  <span class="hidden-xs"> &nbsp; Reenviar</span>
+                  <span class="hidden-xs">&nbsp; Reenviar</span>
                   {else}
-                  <span class="hidden-xs"> &nbsp; Enviar</span>
+                  <span class="hidden-xs">&nbsp; Enviar</span>
                   {/if}
                </a>
                {/if}
@@ -130,12 +130,12 @@
                {if="$fsc->allow_delete"}
                <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
                   <span class="glyphicon glyphicon-trash"></span>
-                  <span class="hidden-xs"> &nbsp; Eliminar</span>
+                  <span class="hidden-xs">&nbsp; Eliminar</span>
                </a>
                {/if}
                <button class="btn btn-sm btn-primary" type="submit" onclick="show_tab_grupos()">
                   <span class="glyphicon glyphicon-floppy-disk"></span>
-                  <span class="hidden-xs"> &nbsp; Guardar</span>
+                  <span class="hidden-xs">&nbsp; Guardar</span>
                </button>
             </div>
          </div>
@@ -707,7 +707,7 @@
          <div class="col-md-12">
             <div class="form-group">
                Observaciones:
-               <textarea class="form-control" name="observaciones" rows="3">{$fsc->servicio->observaciones}</textarea>
+               <textarea class="form-control" name="observaciones" rows="7">{$fsc->servicio->observaciones}</textarea>
             </div>
          </div>
       </div>
