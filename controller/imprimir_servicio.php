@@ -499,7 +499,7 @@ class imprimir_servicio extends fs_controller
                $mail->addAttachment($_FILES['adjunto']['tmp_name'], $_FILES['adjunto']['name']);
             }
             
-            if( $mail->smtpConnect($this->empresa->smtp_options()) )
+            if( $this->empresa->mail_connect($mail) )
             {
                if( $mail->Send() )
                {

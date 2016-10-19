@@ -2,10 +2,10 @@
 
 if( !defined('FS_SERVICIOS') )
 {
-   define('FS_SERVICIOS', 'Servicios');
+   define('FS_SERVICIOS', 'servicios');
 }
 
 if( !defined('FS_SERVICIO') )
 {
-   define('FS_SERVICIO', 'Servicio');
+   define('FS_SERVICIO', 'servicio');
 }

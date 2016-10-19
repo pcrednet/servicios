@@ -45,6 +45,8 @@
    }
    
    $(document).ready(function() {
+      document.f_custom_search.query.focus();
+      
       $('#b_buscar_lineas').click(function(event) {
          event.preventDefault();
          $('#modal_buscar_lineas').modal('show');
@@ -234,7 +236,7 @@
                <div class="col-sm-2">
                   <div class="form-group">
                      <div class="input-group">
-                        <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off">
+                        <input class="form-control" type="text" name="query" value="{$fsc->query}" placeholder="Buscar" autocomplete="off">
                         <span class="input-group-btn">
                            <button class="btn btn-primary hidden-sm" type="submit">
                               <span class="glyphicon glyphicon-search"></span>
@@ -328,7 +330,10 @@
             <div class="row">
                <div class="col-sm-12">
                   {if="!$fsc->editable"}
-                  <div class="alert alert-warning">Se están mostrando los {#FS_SERVICIOS#} que están sin generar {#FS_ALBARAN#}</div>
+                  <span class="label label-warning">
+                     <span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;
+                     Solamente {#FS_SERVICIOS#} activos.
+                  </span>
                   {/if}
                </div>
             </div>
