@@ -83,7 +83,7 @@
    <input type="hidden" name="cliente" value="{$fsc->servicio->codcliente}"/>
    <input type="hidden" id="numlineas" name="numlineas" value="0"/>
    <div class="container-fluid">
-      <div class="row" style="margin-top: 10px;">
+      <div class="row">
          <div class="col-md-8 col-sm-8 col-xs-8">
             <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
                <span class="glyphicon glyphicon-refresh"></span>
@@ -91,15 +91,15 @@
             <div class="btn-group">
                <a id="b_imprimir" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-print"></span>
-                  <span class="hidden-xs"> &nbsp; Imprimir</span>
+                  <span class="hidden-xs">&nbsp; Imprimir</span>
                </a>
                {if="$fsc->empresa->can_send_mail()"}
                <a id="b_enviar" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-envelope"></span>
                   {if="$fsc->servicio->femail"}
-                  <span class="hidden-xs"> &nbsp; Reenviar</span>
+                  <span class="hidden-xs">&nbsp; Reenviar</span>
                   {else}
-                  <span class="hidden-xs"> &nbsp; Enviar</span>
+                  <span class="hidden-xs">&nbsp; Enviar</span>
                   {/if}
                </a>
                {/if}
@@ -130,12 +130,12 @@
                {if="$fsc->allow_delete"}
                <a id="b_eliminar" class="btn btn-sm btn-danger" href="#">
                   <span class="glyphicon glyphicon-trash"></span>
-                  <span class="hidden-xs"> &nbsp; Eliminar</span>
+                  <span class="hidden-xs hidden-sm">&nbsp; Eliminar</span>
                </a>
                {/if}
                <button class="btn btn-sm btn-primary" type="submit" onclick="show_tab_grupos()">
                   <span class="glyphicon glyphicon-floppy-disk"></span>
-                  <span class="hidden-xs"> &nbsp; Guardar</span>
+                  <span class="hidden-xs">&nbsp; Guardar</span>
                </button>
             </div>
          </div>
@@ -172,7 +172,7 @@
       </div>
       <div class="row">
          {if="$fsc->servicio->editable()"}
-         <div class="col-md-3 col-sm-12">
+         <div class="col-md-2 col-sm-12">
             <div class="form-group">
                Cliente actual:
                <div class="input-group">
@@ -186,13 +186,23 @@
             </div>
          </div>
          {/if}
-         <div class="col-md-2 col-sm-3">
+         <div class="col-md-2 col-sm-2">
             <div class="form-group">
                <span class='text-capitalize'>{#FS_NUMERO2#}:</span>
                <input class="form-control" type="text" name="numero2" value="{$fsc->servicio->numero2}" {if="!$fsc->servicio->editable()"} disabled{/if}/>
             </div>
          </div>
-         <div class="col-sm-2">
+         <div class="col-md-2 col-sm-3">
+            <div class="form-group">
+               <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
+               <select name="estado" class="form-control" onchange="this.form.submit()">
+                  {loop="$fsc->estado->all()"}
+                  <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
+                  {/loop}
+               </select>
+            </div>
+         </div>
+         <div class="col-md-2 col-sm-2">
             <div class="form-group">
                <a href="{$fsc->agente->url()}">Empleado</a>:
                <select name="codagente" class="form-control" {if="!$fsc->servicio->editable()"} readonly{/if}>
@@ -208,16 +218,6 @@
          </div>
          <div class="col-md-2 col-sm-3">
             <div class="form-group">
-               <a href="index.php?page=opciones_servicios#estados" target="_blank">Estado</a>:
-               <select name="estado" class="form-control">
-                  {loop="$fsc->estado->all()"}
-                  <option value="{$value->id}"{if="$value->id==$fsc->servicio->idestado"} selected="selected"{/if}>{$value->descripcion}</option>
-                  {/loop}
-               </select>
-            </div>
-         </div>
-         <div class="col-md-2 col-sm-3">
-            <div class="form-group">
                Fecha:
                {if="$fsc->servicio->editable()"}
                <input class="form-control datepicker" type="text" name="fecha" value="{$fsc->servicio->fecha}" autocomplete="off"/>
@@ -226,7 +226,7 @@
                {/if}
             </div>
          </div>
-         <div class="col-md-1 col-sm-3">
+         <div class="col-md-2 col-sm-2">
             <div class="form-group">
                Hora:
                {if="$fsc->servicio->editable()"}
@@ -707,7 +707,7 @@
          <div class="col-md-12">
             <div class="form-group">
                Observaciones:
-               <textarea class="form-control" name="observaciones" rows="3">{$fsc->servicio->observaciones}</textarea>
+               <textarea class="form-control" name="observaciones" rows="7">{$fsc->servicio->observaciones}</textarea>
             </div>
          </div>
       </div>

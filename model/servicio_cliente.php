@@ -1,9 +1,9 @@
 <?php
 /*
  * This file is part of FacturaSctipts
- * Copyright (C) 2014-2015  Carlos Garcia Gomez  neorazorx@gmail.com
- * Copyright (C) 2014  Francesc Pineda Segarra  shawe.ewahs@gmail.com
- * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014         Francesc Pineda Segarra  shawe.ewahs@gmail.com
+ * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,11 +19,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*Esto es temporal*/
-define('FS_SERVICIOS', 'Servicios');
-define('FS_SERVICIO', 'Servicio');
-
 
 require_model('albaran_cliente.php');
 require_model('cliente.php');
@@ -164,7 +159,7 @@ class servicio_cliente extends fs_model
     * Ni siquiera hace falta rellenarlo, al hacer save() se calcula el valor.
     * @var type 
     */
-   private $totaleuros;
+   public $totaleuros;
    
    /**
     * % de retención IRPF de la factura.
@@ -249,7 +244,7 @@ class servicio_cliente extends fs_model
 
    public function __construct($s = FALSE)
    {
-      parent::__construct('servicioscli', 'plugins/servicios/');
+      parent::__construct('servicioscli');
       if($s)
       {
          $this->idservicio = $this->intval($s['idservicio']);
@@ -276,8 +271,10 @@ class servicio_cliente extends fs_model
          $this->fecha = Date('d-m-Y', strtotime($s['fecha']));
          
          $this->hora = Date('H:i:s', strtotime($s['fecha']));
-         if (!is_null($s['hora']))
+         if( !is_null($s['hora']) )
+         {
             $this->hora = $s['hora'];
+         }
          
          $this->neto = floatval($s['neto']);
          $this->total = floatval($s['total']);
@@ -385,7 +382,7 @@ class servicio_cliente extends fs_model
 
    public function show_hora($s = TRUE)
    {
-      if ($s)
+      if($s)
       {
          return Date('H:i:s', strtotime($this->hora));
       }
@@ -545,8 +542,14 @@ class servicio_cliente extends fs_model
    public function test()
    {
       $this->observaciones = $this->no_html($this->observaciones);
-      $this->totaleuros = $this->total * $this->tasaconv;
-
+      
+      /**
+       * Usamos el euro como divisa puente a la hora de sumar, comparar
+       * o convertir cantidades en varias divisas. Por este motivo necesimos
+       * muchos decimales.
+       */
+      $this->totaleuros = round($this->total / $this->tasaconv, 5);
+      
       if($this->floatcmp($this->total, $this->neto + $this->totaliva - $this->totalirpf + $this->totalrecargo, FS_NF0, TRUE))
       {
          return TRUE;
@@ -648,7 +651,8 @@ class servicio_cliente extends fs_model
                direccion,fecha,hora,idalbaran,irpf,neto,nombrecliente,numero,observaciones,
                porcomision,fechafin,fechainicio,garantia,provincia,recfinanciero,tasaconv,
                total,totaleuros,totalirpf,totaliva,totalrecargo,descripcion,solucion,material,
-               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail,lastmod) VALUES (" . $this->var2str($this->apartado)
+               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail)
+                VALUES (" . $this->var2str($this->apartado)
                     . "," . $this->var2str($this->cifnif)
                     . "," . $this->var2str($this->ciudad)
                     . "," . $this->var2str($this->codagente)
@@ -734,7 +738,7 @@ class servicio_cliente extends fs_model
          return FALSE;
    }
 
-   public function all($offset=0, $order='fecha DESC')
+   public function all($offset = 0, $order = 'fecha DESC')
    {
       $servlist = array();
       $sql = "SELECT * FROM ".$this->table_name." ORDER BY ".$order;
@@ -743,7 +747,9 @@ class servicio_cliente extends fs_model
       if($servicios)
       {
          foreach($servicios as $s)
+         {
             $servlist[] = new servicio_cliente($s);
+         }
       }
       
       return $servlist;
@@ -756,10 +762,12 @@ class servicio_cliente extends fs_model
       $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name .
               " WHERE codcliente = " . $this->var2str($codcliente) .
               " ORDER BY fecha DESC, codigo DESC", FS_ITEM_LIMIT, $offset);
-      if ($servicios)
+      if($servicios)
       {
-         foreach ($servicios as $s)
+         foreach($servicios as $s)
+         {
             $sedilist[] = new servicio_cliente($s);
+         }
       }
       
       return $sedilist;
@@ -775,7 +783,9 @@ class servicio_cliente extends fs_model
       if($servicios)
       {
          foreach($servicios as $s)
+         {
             $sedilist[] = new servicio_cliente($s);
+         }
       }
       
       return $sedilist;
@@ -821,8 +831,10 @@ class servicio_cliente extends fs_model
        * En servicio_cliente::prioridad() nos devuelve un array con todos los prioridades,
        * pero como queremos también el id, pues hay que hacer este bucle para sacarlos.
        */
-      foreach ($this->prioridad() as $i => $value)
+      foreach($this->prioridad() as $i => $value)
+      {
          $prioridad[] = array('id_prioridad' => $i, 'nombre_prioridad' => $value);
+      }
 
       return $prioridad;
    }
