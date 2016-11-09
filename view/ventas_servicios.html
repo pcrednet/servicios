@@ -76,12 +76,7 @@
    });
 </script>
 
-<div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
-   <div class="row">
-      <div class="col-xs-12 text-center visible-xs">
-         <h2 style="margin-top: 0px;">{$fsc->page->title}</h2>
-      </div>
-   </div>
+<div class="container-fluid" style="margin-bottom: 10px;">
    <div class="row">
       <div class="col-sm-8 col-xs-6">
         <div class="btn-group hidden-xs">
@@ -149,17 +144,17 @@
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&order=prioridad_desc">
+                  <a href="{$fsc->url()}&order=prioridad_asc">
                      <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
                      &nbsp; Prioridad &nbsp;
-                     {if="$fsc->order=='prioridad DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
+                     {if="$fsc->order=='prioridad ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>
-                  <a href="{$fsc->url()}&order=prioridad_asc">
+                  <a href="{$fsc->url()}&order=prioridad_desc">
                      <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
                      &nbsp; Prioridad &nbsp;
-                     {if="$fsc->order=='prioridad ASC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
+                     {if="$fsc->order=='prioridad DESC'"}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{/if}
                   </a>
                </li>
                <li>

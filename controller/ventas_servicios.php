@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of FacturaSctipts
+ * This file is part of FacturaScripts
  * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2014-2015    Francesc Pineda Segarra  shawe.ewahs@gmail.com
  * Copyright (C) 2015-2016    Luis Miguel Pérez Romero  luismipr@gmail.com
@@ -215,43 +215,39 @@ class ventas_servicios extends fs_controller
                   $this->cliente = $cli0->get($_REQUEST['codcliente']);
                }
             }
-            
             if( isset($_REQUEST['codagente']) )
             {
                $this->codagente = $_REQUEST['codagente'];
             }
-            
             if( isset($_REQUEST['estado']) )
             {
                $this->estado = $_REQUEST['estado'];
             }
-            
             if( isset($_REQUEST['editable']) )
             {
                $this->editable = TRUE;
             }
-            
             if( isset($_REQUEST['codserie']) )
             {
                $this->codserie = $_REQUEST['codserie'];
             }
-            if (isset($_REQUEST['fechainicio']))
+            if( isset($_REQUEST['fechainicio']) )
             {
                $this->fechainicio = $_REQUEST['fechainicio'];
             }
-            if (isset($_REQUEST['fechainicio']))
+            if( isset($_REQUEST['fechainicio']) )
             {
                $this->fechafin = $_REQUEST['fechafin'];
             }
-            if (isset($_REQUEST['garantia']))
+            if( isset($_REQUEST['garantia']) )
             {
                $this->garantia = TRUE;
             }
-            if (isset($_REQUEST['desde']))
+            if( isset($_REQUEST['desde']) )
             {
                $this->desde = $_REQUEST['desde'];
             }
-            if (isset($_REQUEST['hasta']))
+            if( isset($_REQUEST['hasta']) )
             {
                $this->hasta = $_REQUEST['hasta'];
             }
@@ -371,7 +367,7 @@ class ventas_servicios extends fs_controller
                     . "OR descripcion LIKE '%" . $query . "%'"
                     . "OR solucion LIKE '%" . $query . "%'";
 
-            if ($this->servicios_setup['usar_direccion'])
+            if($this->servicios_setup['usar_direccion'])
             {
                $sql .= " OR direccion LIKE '%" . $query . "%'";
             }
@@ -388,7 +384,7 @@ class ventas_servicios extends fs_controller
                     . "OR lower(descripcion) LIKE '%".$query."%'"
                     . "OR lower(solucion) LIKE '%".$query."%'";
             
-            if ($this->servicios_setup['usar_direccion'])
+            if($this->servicios_setup['usar_direccion'])
             {
                $sql .= " OR lower(direccion) LIKE '%" . $query . "%'";
             }
