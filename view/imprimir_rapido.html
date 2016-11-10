@@ -25,10 +25,12 @@
                 <strong>Nombre:</strong><br/>{$fsc->servicio->nombrecliente}
             </div>
             <div class="col-xs-4">
-                <strong>Teléfono fijo:</strong><br/>{$fsc->cliente->telefono1}
+                <strong>Teléfono fijo:</strong><br/>
+                {if="$fsc->cliente"}{$fsc->cliente->telefono1}{/if}
             </div>
             <div class="col-xs-4">
-                <strong>Teléfono móvil:</strong><br/>{$fsc->cliente->telefono2}
+                <strong>Teléfono móvil:</strong><br/>
+                {if="$fsc->cliente"}{$fsc->cliente->telefono2}{/if}
             </div>
         </div>
         <div class="col-xs-12">
@@ -99,7 +101,7 @@
         </div>
         <div class="col-xs-12">
             <br/>
-            <font size="1"><p align="justify">{$fsc->condiciones()}</p></font>
+            <p align="justify"><font size="1">{$fsc->condiciones()}</font></p>
         </div>
         <p>...............................................................................................................................................................................................</p>
         <div class="col-xs-6">
@@ -117,10 +119,12 @@
                 <strong>Nombre:</strong><br/>{$fsc->servicio->nombrecliente}
             </div>
             <div class="col-xs-6">
-                <strong>Teléfono fijo:</strong><br/>{$fsc->cliente->telefono1}
+                <strong>Teléfono fijo:</strong><br/>
+                {if="$fsc->cliente"}{$fsc->cliente->telefono1}{/if}
             </div>
             <div class="col-xs-6">
-                <strong>Teléfono móvil:</strong><br/>{$fsc->cliente->telefono2}
+                <strong>Teléfono móvil:</strong><br/>
+                {if="$fsc->cliente"}{$fsc->cliente->telefono2}{/if}
             </div>
             {if="$fsc->servicios_setup['servicios_mostrar_material']"}
             <div class="col-xs-12">
