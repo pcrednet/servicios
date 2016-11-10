@@ -178,7 +178,7 @@ class imprimir_servicio extends fs_controller
          /// imprimimos las páginas necesarias
          while( $linea_actual < count($lineas) )
          {
-            $lppag = 35;
+            $lppag = 20;
 
             /// salto de página
             if($linea_actual > 0)
@@ -187,123 +187,7 @@ class imprimir_servicio extends fs_controller
             }
             
             $pdf_doc->generar_pdf_cabecera($this->empresa, $lppag);
-            
-            /*
-             * Esta es la tabla con los datos del cliente:
-             * Servicio:             Fecha:
-             * Cliente:             CIF/NIF:
-             * Dirección:           Teléfonos:
-             */
-            $pdf_doc->new_table();
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>" . $this->st['st_servicio'] . ":</b>",
-                        'dato1' => $this->servicio->codigo,
-                        'campo2' => "<b>Fecha:</b>",
-                        'dato2' => $this->servicio->fecha
-                    )
-            );
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>Cliente:</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->nombrecliente),
-                        'campo2' => "<b>" . FS_CIFNIF . ":</b>",
-                        'dato2' => $this->servicio->cifnif
-                    )
-            );
-            
-            $row = array(
-                'campo1' => "<b>Dirección:</b>",
-                'dato1' => $pdf_doc->fix_html($this->servicio->direccion . ' CP: ' . $this->servicio->codpostal .
-                        ' - ' . $this->servicio->ciudad . ' (' . $this->servicio->provincia . ')'),
-                'campo2' => "<b>Teléfonos:</b>",
-                'dato2' => ''
-            );
-            
-            if(!$this->cliente)
-            {
-               /// nada
-            }
-            else if($this->cliente->telefono1)
-            {
-               $row['dato2'] = $this->cliente->telefono1;
-               if($this->cliente->telefono2)
-               {
-                  $row['dato2'] .= "\n".$this->cliente->telefono2;
-                  $lppag -= 2;
-               }
-            }
-            else if($this->cliente->telefono2)
-            {
-               $row['dato2'] = $this->cliente->telefono2;
-            }
-            $pdf_doc->add_table_row($row);
-            
-            $pdf_doc->save_table(
-                    array(
-                        'cols' => array(
-                            'campo1' => array('justification' => 'right'),
-                            'dato1' => array('justification' => 'left'),
-                            'campo2' => array('justification' => 'right'),
-                            'dato2' => array('justification' => 'left')
-                        ),
-                        'showLines' => 0,
-                        'width' => 520,
-                        'shaded' => 0
-                    )
-            );
-            $pdf_doc->pdf->ezText("\n", 10);
-            
-            
-            /* Esta es la tabla de los datos del servicio y trabajos a realizar */
-            $pdf_doc->pdf->ezText("\n<b>" . $this->st['st_servicio'] . "</b>", 14);
-            $pdf_doc->new_table();
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>" . $this->st['st_material'] . ":</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->material),
-                        'campo2' => "<b>" . $this->st['st_material_estado'] . ":</b>",
-                        'dato2' => $this->servicio->material_estado
-                    )
-            );
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>" . $this->st['st_accesorios'] . ":</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->accesorios),
-                        'campo2' => "",
-                        'dato2' => ""
-                    )
-            );
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>" . $this->st['st_descripcion'] . ":</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->descripcion),
-                        'campo2' => "<b>" . $this->st['st_solucion'] . ": </b>",
-                        'dato2' => $this->servicio->solucion
-                    )
-            );
-            $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>Fecha prevista de inicio:</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
-                        'campo2' => "<b>Fecha prevista de finalización:</b>",
-                        'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
-                    )
-            );
-            $pdf_doc->save_table(
-                    array(
-                        'cols' => array(
-                            'campo1' => array('justification' => 'left'),
-                            'dato1' => array('justification' => 'left'),
-                            'campo2' => array('justification' => 'left'),
-                            'dato2' => array('justification' => 'left')
-                        ),
-                        'showLines' => 0,
-                        'width' => 520,
-                        'shaded' => 0
-                    )
-            );
-            $pdf_doc->pdf->ezText("\n", 10);
+            $this->generar_pdf_datos_cliente($pdf_doc, $lppag);
             
             /*
              * Creamos la tabla con las lineas del servicio:
@@ -311,8 +195,6 @@ class imprimir_servicio extends fs_controller
              * Descripción    PVP   DTO   Cantidad    Importe
              */
             $pdf_doc->new_table();
-            $pdf_doc->pdf->ezText("\n<b>Detalle</b>\n", 14);
-
             if($this->impresion['print_dto'])
             {
                $pdf_doc->add_table_header(
@@ -433,10 +315,20 @@ class imprimir_servicio extends fs_controller
             $pdf_doc->add_table_row($fila);
             $pdf_doc->save_table($opciones);
 
-            $pdf_doc->pdf->addText(10, 10, 8, $pdf_doc->center_text($pdf_doc->fix_html($this->empresa->pie_factura), 153), 0, 1.5);
-
             $pagina++;
          }
+      }
+      else
+      {
+         $lppag = 20;
+         $pdf_doc->generar_pdf_cabecera($this->empresa, $lppag);
+         $this->generar_pdf_datos_cliente($pdf_doc, $lppag);
+         
+         if($this->servicio->observaciones != '')
+         {
+            $pdf_doc->pdf->ezText("\n" . $this->servicio->observaciones, 9);
+         }
+         $pdf_doc->pdf->ezText("\n" . $this->servicios_setup['servicios_condiciones'], 9);
       }
 
       if($archivo)
@@ -452,6 +344,126 @@ class imprimir_servicio extends fs_controller
       {
          $pdf_doc->show(FS_SERVICIO . '_' . $this->servicio->codigo . '.pdf');
       }
+   }
+   
+   private function generar_pdf_datos_cliente(&$pdf_doc, &$lppag)
+   {
+      /*
+       * Esta es la tabla con los datos del cliente:
+       * Servicio:             Fecha:
+       * Cliente:             CIF/NIF:
+       * Dirección:           Teléfonos:
+       */
+      $pdf_doc->new_table();
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>".$this->st['st_servicio'].":</b>",
+                  'dato1' => $this->servicio->codigo,
+                  'campo2' => "<b>Fecha:</b>",
+                  'dato2' => $this->servicio->fecha
+              )
+      );
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>Cliente:</b>",
+                  'dato1' => $pdf_doc->fix_html($this->servicio->nombrecliente),
+                  'campo2' => "<b>".FS_CIFNIF.":</b>",
+                  'dato2' => $this->servicio->cifnif
+              )
+      );
+      
+      $row = array(
+          'campo1' => "<b>Dirección:</b>",
+          'dato1' => $pdf_doc->fix_html($this->servicio->direccion.' CP: '.$this->servicio->codpostal.
+                  ' - '.$this->servicio->ciudad.' ('.$this->servicio->provincia.')'),
+          'campo2' => "<b>Teléfonos:</b>",
+          'dato2' => ''
+      );
+      
+      if(!$this->cliente)
+      {
+         /// nada
+      }
+      else if($this->cliente->telefono1)
+      {
+         $row['dato2'] = $this->cliente->telefono1;
+         if($this->cliente->telefono2)
+         {
+            $row['dato2'] .= "\n".$this->cliente->telefono2;
+            $lppag -= 2;
+         }
+      }
+      else if($this->cliente->telefono2)
+      {
+         $row['dato2'] = $this->cliente->telefono2;
+      }
+      $pdf_doc->add_table_row($row);
+      $pdf_doc->save_table(
+              array(
+                  'cols' => array(
+                      'campo1' => array('justification' => 'right'),
+                      'dato1' => array('justification' => 'left'),
+                      'campo2' => array('justification' => 'right'),
+                      'dato2' => array('justification' => 'left')
+                  ),
+                  'showLines' => 0,
+                  'width' => 520,
+                  'shaded' => 0
+              )
+      );
+      
+      $pdf_doc->pdf->ezText("\n", 10);
+      $pdf_doc->pdf->ezText("\n<b>" . $this->st['st_servicio'] . "</b>", 14);
+      
+      /* Esta es la tabla de los datos del servicio y trabajos a realizar */
+      $pdf_doc->new_table();
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>".$this->st['st_material'].":</b>",
+                  'dato1' => $pdf_doc->fix_html($this->servicio->material),
+                  'campo2' => "<b>".$this->st['st_material_estado'].":</b>",
+                  'dato2' => $this->servicio->material_estado
+              )
+      );
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>".$this->st['st_accesorios'].":</b>",
+                  'dato1' => $pdf_doc->fix_html($this->servicio->accesorios),
+                  'campo2' => "",
+                  'dato2' => ""
+              )
+      );
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>".$this->st['st_descripcion'].":</b>",
+                  'dato1' => $pdf_doc->fix_html($this->servicio->descripcion),
+                  'campo2' => "<b>".$this->st['st_solucion'].": </b>",
+                  'dato2' => $this->servicio->solucion
+              )
+      );
+      $pdf_doc->add_table_row(
+              array(
+                  'campo1' => "<b>Fecha prevista de inicio:</b>",
+                  'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
+                  'campo2' => "<b>Fecha prevista de finalización:</b>",
+                  'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
+              )
+      );
+      $pdf_doc->save_table(
+              array(
+                  'cols' => array(
+                      'campo1' => array('justification' => 'left'),
+                      'dato1' => array('justification' => 'left'),
+                      'campo2' => array('justification' => 'left'),
+                      'dato2' => array('justification' => 'left')
+                  ),
+                  'showLines' => 0,
+                  'width' => 520,
+                  'shaded' => 0
+              )
+      );
+      
+      $pdf_doc->pdf->ezText("\n", 10);
    }
 
    private function enviar_email($doc)
