@@ -1,14 +1,10 @@
 {include="header"}
 
 {if="$fsc->cliente_s"}
+<link rel="stylesheet" href="plugins/servicios/view/css/jquery.datetimepicker.min.css" />
+<script type="text/javascript" src="{$fsc->get_js_location('jquery.datetimepicker.full.min.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/collapse.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/transition.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/Moment.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/bootstrap-datetimepicker.es.js"></script>
-<link rel="stylesheet" href="plugins/servicios/view/css/bootstrap-datetimepicker.css" />
 <script type="text/javascript">
    fs_nf0 = {#FS_NF0#};
    all_impuestos = {function="json_encode($fsc->impuesto->all())"};
@@ -20,6 +16,11 @@
    $(document).ready(function() {
       usar_serie();
       recalcular();
+      
+      jQuery.datetimepicker.setLocale('es');
+      $('#fechainicio, #fechafin').datetimepicker({
+         format: 'd-m-Y H:i'
+      });
    });
 </script>
 
@@ -100,25 +101,25 @@
                <div class="row">
                   {if="$fsc->servicios_setup['servicios_mostrar_material']"}
                   <div class="col-sm-4">
-                     <div class="form-group {if="$fsc->servicios_setup['servicios_material']"}has-error{/if}">
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_material']"} has-error{/if}">
                         {$fsc->st['st_material']}
-                        <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required{/if}></textarea>
+                        <textarea class="form-control" name="material" rows="2"{if="$fsc->servicios_setup['servicios_material']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
                   {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
                   <div class="col-sm-4">
-                     <div class="form-group {if="$fsc->servicios_setup['servicios_material_estado']"}has-error{/if}">
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_material_estado']"} has-error{/if}">
                        {$fsc->st['st_material_estado']}
-                        <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required{/if}></textarea>
+                        <textarea class="form-control" name="material_estado" rows="2"{if="$fsc->servicios_setup['servicios_material_estado']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
                   {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
                   <div class="col-sm-4">
-                    <div class="form-group {if="$fsc->servicios_setup['servicios_accesorios']"}has-error{/if}">
+                    <div class="form-group{if="$fsc->servicios_setup['servicios_accesorios']"} has-error{/if}">
                         {$fsc->st['st_accesorios']}
-                        <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required{/if}></textarea>
+                        <textarea class="form-control" name="accesorios" rows="2"{if="$fsc->servicios_setup['servicios_accesorios']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
@@ -126,119 +127,92 @@
                <div class="row">
                   {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
                   <div class="col-sm-6">
-                     <div class="form-group {if="$fsc->servicios_setup['servicios_descripcion']"}has-error{/if}">
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_descripcion']"} has-error{/if}">
                         {$fsc->st['st_descripcion']}
-                        <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required{/if}></textarea>
+                        <textarea class="form-control" name="descripcion" rows="4"{if="$fsc->servicios_setup['servicios_descripcion']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
                   {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
                   <div class="col-sm-6">
-                     <div class="form-group {if="$fsc->servicios_setup['servicios_solucion']"}has-error{/if}">
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_solucion']"} has-error{/if}">
                         {$fsc->st['st_solucion']}
-                        <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required{/if}></textarea>
-                                 </div>
+                        <textarea class="form-control" name="solucion" rows="4"{if="$fsc->servicios_setup['servicios_solucion']"} required=""{/if}></textarea>
                      </div>
-                     {/if}
                   </div>
-                  <div class="row bg-info">
-                     {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-                     <div class='col-sm-3'>
-                        <div class="form-group {if="$fsc->servicios_setup['servicios_fechainicio']"}has-error{/if}">
-                                       {$fsc->st['st_fechainicio']}
-                                       <div class='input-group date' id='fechainicio'>
-                                          <input type='text' name="fechainicio" data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechainicio']"} required{/if}/>
-                                          <span class="input-group-addon">
-                                             <span class="glyphicon glyphicon-calendar"></span>
-                                          </span>
-                                       </div>
-                                    </div> 
-                        </div>   
-                        {/if}  
-                        <script type="text/javascript">
-                         $(function () {
-                             $('[data-toggle="tooltip"]').tooltip()
-                             var dt = new Date();
-        
-                             $('#fechainicio').datetimepicker({
-                                 language: 'es',
-                                 format: 'DD-MM-YYYY HH:mm',
-                                 extraFormats: [ 'DD-MM-YYYY HH:mm', 'DD-M-YYYY HH:mm' ],
-                                 startDate: new Date(),
-                                 defaultDate: new Date(),
-                        
-                             });
-                             $('#fechafin').datetimepicker({
-                                 language: 'es',
-                                 format: 'DD-MM-YYYY HH:mm',
-                                 startDate: new Date(), 
-                                 defaultDate: dt.setDate(dt.getDate() + {$fsc->servicios_setup['servicios_diasfin']}),    
-                             });
-                             $('#fechainicio input').click(function(event){
-                                 $('#fechainicio ').data("DateTimePicker").show();
-                             });
-                             $('#fechafin input').click(function(event){
-                                 $('#fechafin ').data("DateTimePicker").show();
-                             });
-                         });
-                        </script>
-                        {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-                        <div class='col-sm-3'>
-                           <div class="form-group {if="$fsc->servicios_setup['servicios_fechafin']"}has-error{/if}">
-                                          {$fsc->st['st_fechafin']}
-                                          <div class='input-group date' id='fechafin'>
-                                             <input type='text' data-toggle="tooltip" data-placement="bottom" title="Fecha: : dd-mm-aaaa hh:mm" name="fechafin" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{4} ([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]" class="form-control" {if="$fsc->servicios_setup['servicios_fechafin']"} required{/if}/>
-                                             <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                             </span>
-                                          </div>
-                                       </div>
-                           </div>
-                           {/if}
-                           {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
-                           <div class="col-sm-2">
-                              <div class="checkbox">
-                                 <label>
-                                    <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked="checked"{/if}/>
-                                    {$fsc->st['st_garantia']}
-                                 </label>
-                              </div>
-                           </div>
-                           {/if}
-                           <div class="col-sm-2">
-                              <div class="form-group">
-                                 Prioridad:
-                                 <select name="prioridad" class="form-control">
-                                    {loop="$fsc->servicio->listar_prioridad()"}
-                                    <option value="{$value['id_prioridad']}"{if="$value['id_prioridad'] == 3"} selected=""{/if}>{$value['nombre_prioridad']}</option>
-                                    {/loop}
-                                 </select>
-                              </div>
-                           </div>
+                  {/if}
+               </div>
+               <div class="row">
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+                  <div class='col-sm-3'>
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_fechainicio']"} has-error{/if}">
+                        {$fsc->st['st_fechainicio']}
+                        <div class='input-group'>
+                           <span class="input-group-addon">
+                              <span class="glyphicon glyphicon-calendar"></span>
+                           </span>
+                           <input type='text' name="fechainicio" id="fechainicio" class="form-control"{if="$fsc->servicios_setup['servicios_fechainicio']"} required=""{/if}/>
+                        </div>
+                     </div>
+                  </div>   
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  <div class='col-sm-3'>
+                     <div class="form-group{if="$fsc->servicios_setup['servicios_fechafin']"} has-error{/if}">
+                        {$fsc->st['st_fechafin']}
+                        <div class='input-group'>
+                           <span class="input-group-addon">
+                              <span class="glyphicon glyphicon-calendar"></span>
+                           </span>
+                           <input type='text' name="fechafin" id="fechafin" class="form-control"{if="$fsc->servicios_setup['servicios_fechafin']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>
-                  <div role="tabpanel" class="tab-pane" id="lineas">
-                     <div class="table-responsive">
-                        <table class="table table-condensed">
-                           <thead>
-                              <tr>
-                                 <th class="text-left" width="180">Referencia</th>
-                                 <th class="text-left">Descripción</th>
-                                 <th class="text-right" width="90">Cantidad</th>
-                                 <th width="60"></th>
-                                 <th class="text-right" width="110">Precio</th>
-                                 <th class="text-right" width="90">Dto. %</th>
-                                 <th class="text-right" width="130">Neto</th>
-                                 <th class="text-right" width="115">{#FS_IVA#}</th>
-                                 <th class="text-right recargo">RE %</th>
-                                 <th class="text-right irpf">{#FS_IRPF#} %</th>
-                                 <th class="text-right" width="140">Total</th>
+                  {/if}
+                  {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+                  <div class="col-sm-2">
+                     <div class="checkbox">
+                        <label>
+                           <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked=""{/if}/>
+                           {$fsc->st['st_garantia']}
+                        </label>
+                     </div>
+                  </div>
+                  {/if}
+                  <div class="col-sm-2">
+                     <div class="form-group">
+                        Prioridad:
+                        <select name="prioridad" class="form-control">
+                           {loop="$fsc->servicio->listar_prioridad()"}
+                           <option value="{$value['id_prioridad']}"{if="$value['id_prioridad']==3"} selected=""{/if}>{$value['nombre_prioridad']}</option>
+                           {/loop}
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div role="tabpanel" class="tab-pane" id="lineas">
+            <div class="table-responsive">
+               <table class="table table-condensed">
+                  <thead>
+                     <tr>
+                        <th class="text-left" width="180">Referencia</th>
+                        <th class="text-left">Descripción</th>
+                        <th class="text-right" width="90">Cantidad</th>
+                        <th width="60"></th>
+                        <th class="text-right" width="110">Precio</th>
+                        <th class="text-right" width="90">Dto. %</th>
+                        <th class="text-right" width="130">Neto</th>
+                        <th class="text-right" width="115">{#FS_IVA#}</th>
+                        <th class="text-right recargo">RE %</th>
+                        <th class="text-right irpf">{#FS_IRPF#} %</th>
+                        <th class="text-right" width="140">Total</th>
                      </tr>
                   </thead>
                   <tbody id="lineas_albaran"></tbody>
                   <tbody>
-                     <tr class="bg-info">
+                     <tr class="info">
                         <td><input id="i_new_line" class="form-control" type="text" placeholder="Buscar para añadir/plugins." autocomplete="off"/></td>
                         <td>
                            <a href="#" class="btn btn-sm btn-default" title="Añadir sin buscar" onclick="return add_linea_libre()">
@@ -409,13 +383,13 @@
       <div class="row">
          <div class="col-sm-6">
             <button class="btn btn-sm btn-default" type="button" onclick="window.location.href='{$fsc->url()}';">
-               <span class="glyphicon glyphicon-refresh"></span> &nbsp; Reiniciar
+               <span class="glyphicon glyphicon-refresh"></span>&nbsp; Reiniciar
             </button>
          </div>
          <div class="col-sm-6 text-right">
             <div class="form-group">
                <button class="btn btn-sm btn-primary" type="submit" onclick="$('#tabs_servicio a:first').tab('show');">
-                  <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                  <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar
                </button>
             </div>
          </div>
@@ -482,7 +456,7 @@
             </li>
             <li id="li_nuevo_articulo">
                <a href="#" id="b_nuevo_articulo">
-                  <span class="glyphicon glyphicon-plus"></span> &nbsp; Nuevo
+                  <span class="glyphicon glyphicon-plus"></span>&nbsp; Nuevo
                </a>
             </li>
          </ul>
@@ -670,8 +644,19 @@
                </div>
                <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_cifnif_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">{#FS_CIFNIF#}</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-3">
+                     <select name="nuevo_tipoidfiscal" class="form-control">
+                        {$tiposid=fs_tipos_id_fiscal()}
+                        {loop="$tiposid"}
+                        <option value="{$value}">{$value}</option>
+                        {/loop}
+                     </select>
+                  </div>
+                  <div class="col-sm-7">
                      <input type="text" name="nuevo_cifnif" class="form-control" autocomplete="off"{if="$fsc->nuevocli_setup['nuevocli_cifnif_req']"} required=""{/if}/>
+                     <label class="checkbox-inline">
+                        <input type="checkbox" name="personafisica" value="TRUE" checked=""/> Persona física (no empresa)
+                     </label>
                   </div>
                </div>
                {if="$fsc->grupo->all()"}
@@ -772,7 +757,7 @@
                {/if}
                <div class="text-right">
                   <button class="btn btn-sm btn-primary" type="submit">
-                     <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar y seleccionar
+                     <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar y seleccionar
                   </button>
                </div>
             </form>
@@ -781,15 +766,23 @@
    </div>
 </div>
 
-<div class="container" style="margin-top: 10px; margin-bottom: 100px;">
+<div class="container-fluid">
    <div class="row">
-      <div class="col-lg-12">
-         <h1>Paso 1:</h1>
+      <div class="col-sm-12">
+         <div class="page-header">
+            <h1>Paso 1:</h1>
+         </div>
          <p>Selecciona el cliente del {#FS_SERVICIO#}.</p>
-         <a href="#" class="btn btn-block btn-default" data-toggle="modal" data-target="#modal_cliente">Selecciona el cliente</a>
-         <h2>Paso 2:</h2>
+         <a href="#" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_cliente">
+            <span class="glyphicon glyphicon-search"></span>&nbsp; Selecciona el cliente
+         </a>
+         <div class="page-header">
+            <h2>Paso 2:</h2>
+         </div>
          <p>Introduce los datos requeridos.</p>
-         <h2>Paso 3:</h2>
+         <div class="page-header">
+            <h2>Paso 3:</h2>
+         </div>
          <p>Pulsa el botón guardar.</p>
       </div>
    </div>

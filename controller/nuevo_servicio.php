@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of FacturaSctipts
+ * This file is part of FacturaScripts
  * Copyright (C) 2014-2016    Carlos Garcia Gomez        neorazorx@gmail.com
  * Copyright (C) 2014-2015    Francesc Pineda Segarra    shawe.ewahs@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero   luismipr@gmail.com
@@ -205,8 +205,9 @@ class nuevo_servicio extends fs_controller
                   $this->cliente_s = new cliente();
                   $this->cliente_s->codcliente = $this->cliente_s->get_new_codigo();
                   $this->cliente_s->nombre = $this->cliente_s->razonsocial = $_POST['nuevo_cliente'];
+                  $this->cliente_s->tipoidfiscal = $_POST['nuevo_tipoidfiscal'];
                   $this->cliente_s->cifnif = $_POST['nuevo_cifnif'];
-                  $this->cliente_s->codserie = $this->empresa->codserie;
+                  $this->cliente_s->personafisica = isset($_POST['personafisica']);
                   
                   if( isset($_POST['nuevo_grupo']) )
                   {
@@ -228,12 +229,17 @@ class nuevo_servicio extends fs_controller
                   
                   if( $this->cliente_s->save() )
                   {
+                     if($this->empresa->contintegrada)
+                     {
+                        /// forzamos crear la subcuenta
+                        $this->cliente_s->get_subcuenta($this->empresa->codejercicio);
+                     }
+                     
                      $dircliente = new direccion_cliente();
                      $dircliente->codcliente = $this->cliente_s->codcliente;
                      $dircliente->codpais = $this->empresa->codpais;
                      $dircliente->provincia = $this->empresa->provincia;
                      $dircliente->ciudad = $this->empresa->ciudad;
-                     $dircliente->descripcion = 'Principal';
                      
                      if( isset($_POST['nuevo_pais']) )
                      {

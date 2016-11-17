@@ -5,14 +5,16 @@
    function delete_contrato()
    {
       if( confirm("¿Realmente desea eliminar este contrato?") )
+      {
          window.location.href = 'index.php?page=servicios_contratados&delete={$fsc->contrato->idcontrato}';
+      }
    }
    $(document).ready(function()
    {
       $("#ac_cliente").autocomplete({
          serviceUrl: 'index.php?page=servicios_contratados',
          paramName: 'buscar_cliente',
-         onSelect: function (suggestion) {
+         onSelect: function(suggestion) {
             if(suggestion)
             {
                if(document.f_contrato.codcliente.value != suggestion.data)
@@ -28,7 +30,7 @@
 <form name="f_contrato" action="{$fsc->contrato->url()}" method="post" enctype="multipart/form-data" class="form">
    <input type="hidden" name="id" value="{$fsc->contrato->idcontrato}"/>
    <input type="hidden" name="codcliente" value="{$fsc->contrato->codcliente}"/>
-   <div class="container">
+   <div class="container-fluid">
       <div class="row">
          <div class="col-sm-12">
             <div class="page-header">

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of FacturaSctipts
+ * This file is part of FacturaScripts
  * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2014         Francesc Pineda Segarra  shawe.ewahs@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
@@ -308,7 +308,7 @@ class servicio_cliente extends fs_model
          }
          
          $this->garantia = $s['garantia'];
-         $this->prioridad = $s['prioridad'];
+         $this->prioridad = intval($s['prioridad']);
          $this->editable = $this->str2bool($s['editable']);
          
          $this->femail = NULL;
@@ -512,9 +512,11 @@ class servicio_cliente extends fs_model
 
       if(!$sec OR $this->numero <= 1)
       {
-         $numero = $this->db->select("SELECT MAX(" . $this->db->sql_to_int('numero') . ") as num
-            FROM " . $this->table_name . " WHERE codejercicio = " . $this->var2str($this->codejercicio) .
-                 " AND codserie = " . $this->var2str($this->codserie) . ";");
+         $sql = "SELECT MAX(".$this->db->sql_to_int('numero').") as num FROM ".$this->table_name
+                 ." WHERE codejercicio = ".$this->var2str($this->codejercicio)
+                 ." AND codserie = ".$this->var2str($this->codserie).";";
+         
+         $numero = $this->db->select($sql);
          if($numero)
          {
             $this->numero = 1 + intval($numero[0]['num']);
@@ -542,6 +544,15 @@ class servicio_cliente extends fs_model
    public function test()
    {
       $this->observaciones = $this->no_html($this->observaciones);
+      
+      if($this->prioridad > 4)
+      {
+         $this->prioridad = 4;
+      }
+      else if($this->prioridad < 1 OR !is_numeric($this->prioridad) )
+      {
+         $this->prioridad = 1;
+      }
       
       /**
        * Usamos el euro como divisa puente a la hora de sumar, comparar
