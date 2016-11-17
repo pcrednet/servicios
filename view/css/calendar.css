@@ -578,7 +578,7 @@ hr {
 }
 .cal-year-box .row-fluid [class*="span"]:last-child,
 .cal-month-box .cal-row-fluid [class*="cal-cell"]:last-child,
-.cal-day-box .row-fluid [class*="span"]:last-child {
+.cal-day-box .row-fluid [class*="span"]:last-child, {
   border-right: 0px;
 }
 .cal-year-box .row-fluid,

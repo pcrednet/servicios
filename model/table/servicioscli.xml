@@ -126,7 +126,7 @@
    </columna>
    <columna>
       <nombre>horainicio</nombre>
-      <tipo>time without time zone</tipo>
+       <tipo>time without time zone</tipo>
       <nulo>YES</nulo>
    </columna>
    <columna>
@@ -248,10 +248,6 @@
    <columna>
       <nombre>idestado</nombre>
       <tipo>integer</tipo>
-   </columna>
-   <columna>
-      <nombre>lastmod</nombre>
-      <tipo>time without time zone</tipo>
    </columna>
    <restriccion>
       <nombre>servicioscli_pkey</nombre>

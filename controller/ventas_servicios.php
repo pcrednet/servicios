@@ -54,7 +54,6 @@ class ventas_servicios extends fs_controller
    public $fechainicio;
    public $fechafin;
    public $garantia;
-   public $order2;
 
    public function __construct()
    {
@@ -129,7 +128,7 @@ class ventas_servicios extends fs_controller
       {
          $this->offset = intval($_REQUEST['offset']);
       }
-      $this->order2 = '';
+      
       $this->order = 'fecha DESC';
       if( isset($_GET['order']) )
       {
