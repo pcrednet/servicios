@@ -45,26 +45,20 @@ class nuevo_servicio extends fs_controller
    public $cliente_s;
    public $direccion;
    public $divisa;
+   public $estado;
+   public $fabricante;
    public $familia;
    public $forma_pago;
+   public $grupo;
    public $impuesto;
    public $pais;
+   public $descripcion;
+   public $prioridad;
    public $results;
    public $serie;
-   public $descripcion;
-   public $solucion;
-   public $material;
-   public $material_estado;
-   public $accesorios;
-   public $grupo;
-   public $estado;
-   public $servicios_setup;
-   public $fechafin;
-   public $fechainicio;
-   public $garantia;
-   public $prioridad;
    public $servicio;
-   public $fabricante;
+   public $setup;
+   public $solucion;
    
    public function __construct()
    {
@@ -73,10 +67,29 @@ class nuevo_servicio extends fs_controller
    
    protected function private_core()
    {
-      /// cargamos configuración de servicios
-      $fsvar = new fs_var();
+      $this->agente = FALSE;
+      $this->almacen = new almacen();
+      $this->cliente = new cliente();
+      $this->cliente_s = FALSE;
+      $this->descripcion = NULL;
+      $this->direccion = FALSE;
+      $this->divisa = new divisa();
+      $this->estado = new estado_servicio();
       $this->fabricante = new fabricante();
-      $this->servicios_setup = $fsvar->array_get(
+      $this->familia = new familia();
+      $this->forma_pago = new forma_pago();
+      $this->grupo = new grupo_clientes();
+      $this->impuesto = new impuesto();
+      $this->pais = new pais();
+      $this->prioridad = 3;
+      $this->results = array();
+      $this->serie = new serie();
+      $this->servicio = new servicio_cliente();
+      $this->solucion = NULL;
+      
+      /// cargamos la configuración de servicios
+      $fsvar = new fs_var();
+      $this->setup = $fsvar->array_get(
               array(
                   'servicios_diasfin' => 10,
                   'servicios_material' => 0,
@@ -97,14 +110,7 @@ class nuevo_servicio extends fs_controller
                   'servicios_garantia' => 0,
                   'cal_inicio' => "09:00",
                   'cal_fin' => "20:00",
-                  'cal_intervalo' => "30"
-               ),
-               FALSE
-      );
-      
-      /// cargamos traducciones
-      $this->st = $fsvar->array_get(
-              array(
+                  'cal_intervalo' => "30",
                   'st_servicio' => "Servicio",
                   'st_servicios' => "Servicios",
                   'st_material' => "Material",
@@ -114,50 +120,26 @@ class nuevo_servicio extends fs_controller
                   'st_solucion' => "Solución",
                   'st_fechainicio' => "Fecha de Inicio",
                   'st_fechafin' => "Fecha de finalización",
-                  'st_garantia' => "Garantía"
-               ),
-               FALSE
+                  'st_garantia' => "Garantía",
+                  'nuevocli_cifnif_req' => 0,
+                  'nuevocli_direccion' => 0,
+                  'nuevocli_direccion_req' => 0,
+                  'nuevocli_codpostal' => 0,
+                  'nuevocli_codpostal_req' => 0,
+                  'nuevocli_pais' => 0,
+                  'nuevocli_pais_req' => 0,
+                  'nuevocli_provincia' => 0,
+                  'nuevocli_provincia_req' => 0,
+                  'nuevocli_ciudad' => 0,
+                  'nuevocli_ciudad_req' => 0,
+                  'nuevocli_telefono1' => 0,
+                  'nuevocli_telefono1_req' => 0,
+                  'nuevocli_telefono2' => 0,
+                  'nuevocli_telefono2_req' => 0,
+                  'nuevocli_codgrupo' => '',
+              ),
+              FALSE
       );
-      
-      // cargamos la configuración
-      $this->nuevocli_setup = $fsvar->array_get(
-         array(
-            'nuevocli_cifnif_req' => 0,
-            'nuevocli_direccion' => 0,
-            'nuevocli_direccion_req' => 0,
-            'nuevocli_codpostal' => 0,
-            'nuevocli_codpostal_req' => 0,
-            'nuevocli_pais' => 0,
-            'nuevocli_pais_req' => 0,
-            'nuevocli_provincia' => 0,
-            'nuevocli_provincia_req' => 0,
-            'nuevocli_ciudad' => 0,
-            'nuevocli_ciudad_req' => 0,
-            'nuevocli_telefono1' => 0,
-            'nuevocli_telefono1_req' => 0,
-            'nuevocli_telefono2' => 0,
-            'nuevocli_telefono2_req' => 0,
-            'nuevocli_codgrupo' => '',
-         ),
-         FALSE
-      );
-      
-      $this->servicio = new servicio_cliente(); 
-      $this->cliente = new cliente();
-      $this->cliente_s = FALSE;
-      $this->direccion = FALSE;
-      $this->familia = new familia();
-      $this->impuesto = new impuesto();
-      $this->results = array();
-      $this->descripcion = NULL;
-      $this->solucion = NULL;
-      $this->prioridad = 3;
-      $this->material = NULL;
-      $this->material_estado = NULL;
-      $this->accesorios = NULL;
-      $this->grupo = new grupo_clientes();
-      $this->estado = new estado_servicio();
-      $this->pais = new pais();
       
       if( isset($_REQUEST['buscar_cliente']) )
       {
@@ -296,12 +278,6 @@ class nuevo_servicio extends fs_controller
          }
          else
             $this->agente = $this->user->get_agente();
-         
-         $this->almacen = new almacen();
-         $this->serie = new serie();
-         $this->forma_pago = new forma_pago();
-         $this->divisa = new divisa();
-
          
          if( isset($_POST['numlineas']) )
          {
@@ -540,7 +516,9 @@ class nuevo_servicio extends fs_controller
       
       $forma_pago = $this->forma_pago->get($_POST['forma_pago']);
       if( $forma_pago )
+      {
          $this->save_codpago( $forma_pago->codpago );
+      }
       else
       {
          $this->new_error_msg('Forma de pago no encontrada.');
@@ -627,7 +605,7 @@ class nuevo_servicio extends fs_controller
          }
          else
          {
-            $servicio->fechafin = date('Y-m-d H:i', strtotime($servicio->fechainicio. '+ '.$this->servicios_setup['cal_intervalo'].'minutes'));   
+            $servicio->fechafin = date('Y-m-d H:i', strtotime($servicio->fechainicio. '+ '.$this->setup['cal_intervalo'].'minutes'));   
          }
          if( isset($_POST['garantia']) )
          {

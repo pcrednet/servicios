@@ -32,9 +32,31 @@
       <div class="row">
          <div class="col-sm-5">
             <h1 style="margin-top: 5px;">
-               Nuevo {#FS_SERVICIO#} a: 
+               <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                <a href="{$fsc->cliente_s->url()}">{$fsc->cliente_s->razonsocial}</a>
+               {if="$fsc->cliente_s->razonsocial!=$fsc->cliente_s->nombre"}
+               <small>
+                  <a href="#" onclick="alert('Cliente conocido como: {$fsc->cliente_s->nombre}')">
+                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                  </a>
+               </small>
+               {/if}
             </h1>
+            {loop="$fsc->grupo->all()"}
+               {if="$value->codgrupo==$fsc->cliente_s->codgrupo"}
+               <p class="help-block">
+                  <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp;
+                  <a href="{$value->url()}">{$value->nombre}</a> &nbsp;
+                  {if="$value->codtarifa"}
+                  <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                  tarifa {$value->codtarifa}
+                  {else}
+                  <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                  ninguna tarifa asignada.
+                  {/if}
+               </p>
+               {/if}
+            {/loop}
          </div>
          <div class="col-sm-2">
             <div class="form-group">
@@ -79,7 +101,7 @@
           <li role="presentation" class="active">
             <a href="#servicio" aria-controls="servicios" role="tab" data-toggle="tab">
                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-               <span class="hidden-xs">&nbsp; {$fsc->st['st_servicio']}</span>
+               <span class="hidden-xs">&nbsp; {$fsc->setup['st_servicio']}</span>
             </a>
          </li>
          <li role="presentation">
@@ -99,82 +121,82 @@
          <div role="tabpanel" class="tab-pane active" id="servicio">
             <div class="container-fluid" style="margin-top: 10px;">
                <div class="row">
-                  {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+                  {if="$fsc->setup['servicios_mostrar_material']"}
                   <div class="col-sm-4">
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_material']"} has-error{/if}">
-                        {$fsc->st['st_material']}
-                        <textarea class="form-control" name="material" rows="2"{if="$fsc->servicios_setup['servicios_material']"} required=""{/if}></textarea>
+                     <div class="form-group{if="$fsc->setup['servicios_material']"} has-error{/if}">
+                        {$fsc->setup['st_material']}
+                        <textarea class="form-control" name="material" rows="2"{if="$fsc->setup['servicios_material']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
+                  {if="$fsc->setup['servicios_mostrar_material_estado']"}
                   <div class="col-sm-4">
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_material_estado']"} has-error{/if}">
-                       {$fsc->st['st_material_estado']}
-                        <textarea class="form-control" name="material_estado" rows="2"{if="$fsc->servicios_setup['servicios_material_estado']"} required=""{/if}></textarea>
+                     <div class="form-group{if="$fsc->setup['servicios_material_estado']"} has-error{/if}">
+                       {$fsc->setup['st_material_estado']}
+                        <textarea class="form-control" name="material_estado" rows="2"{if="$fsc->setup['servicios_material_estado']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
+                  {if="$fsc->setup['servicios_mostrar_accesorios']"}
                   <div class="col-sm-4">
-                    <div class="form-group{if="$fsc->servicios_setup['servicios_accesorios']"} has-error{/if}">
-                        {$fsc->st['st_accesorios']}
-                        <textarea class="form-control" name="accesorios" rows="2"{if="$fsc->servicios_setup['servicios_accesorios']"} required=""{/if}></textarea>
+                    <div class="form-group{if="$fsc->setup['servicios_accesorios']"} has-error{/if}">
+                        {$fsc->setup['st_accesorios']}
+                        <textarea class="form-control" name="accesorios" rows="2"{if="$fsc->setup['servicios_accesorios']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
                </div>            
                <div class="row">
-                  {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
+                  {if="$fsc->setup['servicios_mostrar_descripcion']"}
                   <div class="col-sm-6">
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_descripcion']"} has-error{/if}">
-                        {$fsc->st['st_descripcion']}
-                        <textarea class="form-control" name="descripcion" rows="4"{if="$fsc->servicios_setup['servicios_descripcion']"} required=""{/if}></textarea>
+                     <div class="form-group{if="$fsc->setup['servicios_descripcion']"} has-error{/if}">
+                        {$fsc->setup['st_descripcion']}
+                        <textarea class="form-control" name="descripcion" rows="4"{if="$fsc->setup['servicios_descripcion']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
+                  {if="$fsc->setup['servicios_mostrar_solucion']"}
                   <div class="col-sm-6">
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_solucion']"} has-error{/if}">
-                        {$fsc->st['st_solucion']}
-                        <textarea class="form-control" name="solucion" rows="4"{if="$fsc->servicios_setup['servicios_solucion']"} required=""{/if}></textarea>
+                     <div class="form-group{if="$fsc->setup['servicios_solucion']"} has-error{/if}">
+                        {$fsc->setup['st_solucion']}
+                        <textarea class="form-control" name="solucion" rows="4"{if="$fsc->setup['servicios_solucion']"} required=""{/if}></textarea>
                      </div>
                   </div>
                   {/if}
                </div>
                <div class="row">
-                  {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+                  {if="$fsc->setup['servicios_mostrar_fechainicio']"}
                   <div class='col-sm-3'>
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_fechainicio']"} has-error{/if}">
-                        {$fsc->st['st_fechainicio']}
+                     <div class="form-group{if="$fsc->setup['servicios_fechainicio']"} has-error{/if}">
+                        {$fsc->setup['st_fechainicio']}
                         <div class='input-group'>
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechainicio" id="fechainicio" class="form-control"{if="$fsc->servicios_setup['servicios_fechainicio']"} required=""{/if}/>
+                           <input type='text' name="fechainicio" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>   
                   {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+                  {if="$fsc->setup['servicios_mostrar_fechafin']"}
                   <div class='col-sm-3'>
-                     <div class="form-group{if="$fsc->servicios_setup['servicios_fechafin']"} has-error{/if}">
-                        {$fsc->st['st_fechafin']}
+                     <div class="form-group{if="$fsc->setup['servicios_fechafin']"} has-error{/if}">
+                        {$fsc->setup['st_fechafin']}
                         <div class='input-group'>
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechafin" id="fechafin" class="form-control"{if="$fsc->servicios_setup['servicios_fechafin']"} required=""{/if}/>
+                           <input type='text' name="fechafin" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>
                   {/if}
-                  {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+                  {if="$fsc->setup['servicios_mostrar_garantia']"}
                   <div class="col-sm-2">
                      <div class="checkbox">
                         <label>
                            <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked=""{/if}/>
-                           {$fsc->st['st_garantia']}
+                           {$fsc->setup['st_garantia']}
                         </label>
                      </div>
                   </div>
@@ -642,7 +664,7 @@
                      <input type="text" name="nuevo_cliente" class="form-control" autocomplete="off" placeholder="Nuevo cliente" required=""/>
                   </div>
                </div>
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_cifnif_req']"} has-warning{/if}">
+               <div class="form-group{if="$fsc->setup['nuevocli_cifnif_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">{#FS_CIFNIF#}</label>
                   <div class="col-sm-3">
                      <select name="nuevo_tipoidfiscal" class="form-control">
@@ -653,7 +675,7 @@
                      </select>
                   </div>
                   <div class="col-sm-7">
-                     <input type="text" name="nuevo_cifnif" class="form-control" autocomplete="off"{if="$fsc->nuevocli_setup['nuevocli_cifnif_req']"} required=""{/if}/>
+                     <input type="text" name="nuevo_cifnif" class="form-control" autocomplete="off"{if="$fsc->setup['nuevocli_cifnif_req']"} required=""{/if}/>
                      <label class="checkbox-inline">
                         <input type="checkbox" name="personafisica" value="TRUE" checked=""/> Persona física (no empresa)
                      </label>
@@ -667,7 +689,7 @@
                         <option value="">Ninguno</option>
                         <option value="">------</option>
                         {loop="$fsc->grupo->all()"}
-                           {if="$value->codgrupo==$fsc->nuevocli_setup['nuevocli_codgrupo']"}
+                           {if="$value->codgrupo==$fsc->setup['nuevocli_codgrupo']"}
                            <option value="{$value->codgrupo}" selected="">{$value->nombre}</option>
                            {else}
                            <option value="{$value->codgrupo}">{$value->nombre}</option>
@@ -677,24 +699,24 @@
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_telefono1']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_telefono1_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_telefono1']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_telefono1_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">Teléfono 1</label>
                   <div class="col-sm-10">
-                     <input type="text" name="nuevo_telefono1" class="form-control" autocomplete="off"{if="$fsc->nuevocli_setup['nuevocli_telefono1_req']"} required=""{/if}/>
+                     <input type="text" name="nuevo_telefono1" class="form-control" autocomplete="off"{if="$fsc->setup['nuevocli_telefono1_req']"} required=""{/if}/>
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_telefono2']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_telefono2_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_telefono2']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_telefono2_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">Teléfono 2</label>
                   <div class="col-sm-10">
-                     <input type="text" name="nuevo_telefono2" class="form-control" autocomplete="off"{if="$fsc->nuevocli_setup['nuevocli_telefono2_req']"} required=""{/if}/>
+                     <input type="text" name="nuevo_telefono2" class="form-control" autocomplete="off"{if="$fsc->setup['nuevocli_telefono2_req']"} required=""{/if}/>
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_pais']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_pais_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_pais']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_pais_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">
                      <a href="{$fsc->pais->url()}">País</a>
                   </label>
@@ -707,11 +729,11 @@
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_provincia']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_provincia_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_provincia']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_provincia_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label text-capitalize">{#FS_PROVINCIA#}</label>
                   <div class="col-sm-10">
-                     {if="$fsc->nuevocli_setup['nuevocli_provincia_req']"}
+                     {if="$fsc->setup['nuevocli_provincia_req']"}
                      <input type="text" name="nuevo_provincia" id="ac_provincia" class="form-control" autocomplete="off" required=""/>
                      {else}
                      <input type="text" name="nuevo_provincia" value="{$fsc->empresa->provincia}" id="ac_provincia" class="form-control" autocomplete="off"/>
@@ -719,11 +741,11 @@
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_ciudad']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_ciudad_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_ciudad']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_ciudad_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">Ciudad</label>
                   <div class="col-sm-10">
-                     {if="$fsc->nuevocli_setup['nuevocli_ciudad_req']"}
+                     {if="$fsc->setup['nuevocli_ciudad_req']"}
                      <input type="text" name="nuevo_ciudad" class="form-control" required=""/>
                      {else}
                      <input type="text" name="nuevo_ciudad" value="{$fsc->empresa->ciudad}" class="form-control"/>
@@ -731,11 +753,11 @@
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_codpostal']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_codpostal_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_codpostal']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_codpostal_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">Código Postal</label>
                   <div class="col-sm-10">
-                     {if="$fsc->nuevocli_setup['nuevocli_codpostal_req']"}
+                     {if="$fsc->setup['nuevocli_codpostal_req']"}
                      <input type="text" name="nuevo_codpostal" class="form-control" required=""/>
                      {else}
                      <input type="text" name="nuevo_codpostal" value="{$fsc->empresa->codpostal}" class="form-control"/>
@@ -743,11 +765,11 @@
                   </div>
                </div>
                {/if}
-               {if="$fsc->nuevocli_setup['nuevocli_direccion']"}
-               <div class="form-group{if="$fsc->nuevocli_setup['nuevocli_direccion_req']"} has-warning{/if}">
+               {if="$fsc->setup['nuevocli_direccion']"}
+               <div class="form-group{if="$fsc->setup['nuevocli_direccion_req']"} has-warning{/if}">
                   <label class="col-sm-2 control-label">Dirección</label>
                   <div class="col-sm-10">
-                     {if="$fsc->nuevocli_setup['nuevocli_direccion_req']"}
+                     {if="$fsc->setup['nuevocli_direccion_req']"}
                      <input type="text" name="nuevo_direccion" class="form-control" autocomplete="off" required=""/>
                      {else}
                      <input type="text" name="nuevo_direccion" value="C/ " class="form-control" autocomplete="off"/>
