@@ -235,7 +235,7 @@ class ventas_servicios extends fs_controller
             {
                $this->fechainicio = $_REQUEST['fechainicio'];
             }
-            if( isset($_REQUEST['fechainicio']) )
+            if( isset($_REQUEST['fechafin']) )
             {
                $this->fechafin = $_REQUEST['fechafin'];
             }
