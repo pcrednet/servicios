@@ -35,7 +35,7 @@ class imprimir_servicio extends fs_controller
    public $impresion;
    public $impuesto;
    public $servicio;
-   public $st;
+   public $setup;
 
    public function __construct()
    {
@@ -44,9 +44,22 @@ class imprimir_servicio extends fs_controller
 
    protected function private_core()
    {
-      //cargamos configuración de servicios
+      $this->cliente = FALSE;
+      
+      /// obtenemos los datos de configuración de impresión
       $fsvar = new fs_var();
-      $this->servicios_setup = $fsvar->array_get(
+      $this->impresion = array(
+          'print_ref' => '1',
+          'print_dto' => '1',
+          'print_alb' => '0'
+      );
+      $this->impresion = $fsvar->array_get($this->impresion, FALSE);
+      
+      $this->impuesto = new impuesto();
+      $this->servicio = FALSE;
+      
+      /// cargamos la configuración de servicios
+      $this->setup = $fsvar->array_get(
               array(
                   'servicios_diasfin' => 10,
                   'servicios_material' => 0,
@@ -71,13 +84,6 @@ class imprimir_servicio extends fs_controller
                      ." cliente se empezará a cobrar 1 euro al día por gastos de almacenaje.\nLos accesorios y"
                      ." productos externos al equipo no especificados en este documento no podrán ser reclamados en"
                      ." caso de disconformidad con el técnico.",
-              ),
-              FALSE
-      );
-      
-      /// Cargamos traducción
-      $this->st = $fsvar->array_get(
-              array(
                   'st_servicio' => "Servicio",
                   'st_servicios' => "Servicios",
                   'st_material' => "Material",
@@ -88,21 +94,9 @@ class imprimir_servicio extends fs_controller
                   'st_fechainicio' => "Fecha de Inicio",
                   'st_fechafin' => "Fecha de finalización",
                   'st_garantía' => "Garantía"
-              ), FALSE
+              ),
+              FALSE
       );
-      
-      $this->cliente = FALSE;
-      $this->impuesto = new impuesto();
-      $this->servicio = FALSE;
-      
-      /// obtenemos los datos de configuración de impresión
-      $this->impresion = array(
-          'print_ref' => '1',
-          'print_dto' => '1',
-          'print_alb' => '0'
-      );
-      $fsvar = new fs_var();
-      $this->impresion = $fsvar->array_get($this->impresion, FALSE);
       
       if( isset($_REQUEST['id']) )
       {
@@ -258,7 +252,7 @@ class imprimir_servicio extends fs_controller
                {
                   $pdf_doc->pdf->ezText("\n" . $this->servicio->observaciones, 9);
                }
-               $pdf_doc->pdf->ezText("\n" . $this->servicios_setup['servicios_condiciones'], 9);
+               $pdf_doc->pdf->ezText("\n" . $this->setup['servicios_condiciones'], 9);
             }
 
             $pdf_doc->set_y(80);
@@ -328,7 +322,7 @@ class imprimir_servicio extends fs_controller
          {
             $pdf_doc->pdf->ezText("\n" . $this->servicio->observaciones, 9);
          }
-         $pdf_doc->pdf->ezText("\n" . $this->servicios_setup['servicios_condiciones'], 9);
+         $pdf_doc->pdf->ezText("\n" . $this->setup['servicios_condiciones'], 9);
       }
 
       if($archivo)
@@ -357,7 +351,7 @@ class imprimir_servicio extends fs_controller
       $pdf_doc->new_table();
       $pdf_doc->add_table_row(
               array(
-                  'campo1' => "<b>".$this->st['st_servicio'].":</b>",
+                  'campo1' => "<b>".$this->setup['st_servicio'].":</b>",
                   'dato1' => $this->servicio->codigo,
                   'campo2' => "<b>Fecha:</b>",
                   'dato2' => $this->servicio->fecha
@@ -413,21 +407,21 @@ class imprimir_servicio extends fs_controller
       );
       
       $pdf_doc->pdf->ezText("\n", 10);
-      $pdf_doc->pdf->ezText("\n<b>" . $this->st['st_servicio'] . "</b>", 14);
+      $pdf_doc->pdf->ezText("\n<b>" . $this->setup['st_servicio'] . "</b>", 14);
       
       /* Esta es la tabla de los datos del servicio y trabajos a realizar */
       $pdf_doc->new_table();
       $pdf_doc->add_table_row(
               array(
-                  'campo1' => "<b>".$this->st['st_material'].":</b>",
+                  'campo1' => "<b>".$this->setup['st_material'].":</b>",
                   'dato1' => $pdf_doc->fix_html($this->servicio->material),
-                  'campo2' => "<b>".$this->st['st_material_estado'].":</b>",
+                  'campo2' => "<b>".$this->setup['st_material_estado'].":</b>",
                   'dato2' => $this->servicio->material_estado
               )
       );
       $pdf_doc->add_table_row(
               array(
-                  'campo1' => "<b>".$this->st['st_accesorios'].":</b>",
+                  'campo1' => "<b>".$this->setup['st_accesorios'].":</b>",
                   'dato1' => $pdf_doc->fix_html($this->servicio->accesorios),
                   'campo2' => "",
                   'dato2' => ""
@@ -435,9 +429,9 @@ class imprimir_servicio extends fs_controller
       );
       $pdf_doc->add_table_row(
               array(
-                  'campo1' => "<b>".$this->st['st_descripcion'].":</b>",
+                  'campo1' => "<b>".$this->setup['st_descripcion'].":</b>",
                   'dato1' => $pdf_doc->fix_html($this->servicio->descripcion),
-                  'campo2' => "<b>".$this->st['st_solucion'].": </b>",
+                  'campo2' => "<b>".$this->setup['st_solucion'].": </b>",
                   'dato2' => $this->servicio->solucion
               )
       );

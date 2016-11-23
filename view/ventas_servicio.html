@@ -244,7 +244,7 @@
          <li role="presentation" class="active">
             <a href="#servicio" aria-controls="servicio" role="tab" data-toggle="tab">
                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-               <span class="hidden-xs">&nbsp; {$fsc->st['st_servicios']}</span>
+               <span class="hidden-xs">&nbsp; {$fsc->setup['st_servicios']}</span>
             </a>
          </li>
          {loop="$fsc->extensions"}
@@ -279,82 +279,82 @@
       <div role="tabpanel" class="tab-pane active" id="servicio">
          <div class="container-fluid" style="margin-top: 10px;">   
             <div class="row">
-               {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+               {if="$fsc->setup['servicios_mostrar_material']"}
                <div class="col-sm-4">
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_material']"} has-error{/if}">
-                     {$fsc->st['st_material']}
-                     <textarea class="form-control" name="material" rows="2" {if="$fsc->servicios_setup['servicios_material']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material}</textarea>
+                  <div class="form-group{if="$fsc->setup['servicios_material']"} has-error{/if}">
+                     {$fsc->setup['st_material']}
+                     <textarea class="form-control" name="material" rows="2" {if="$fsc->setup['servicios_material']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material}</textarea>
                   </div>
                </div>
                {/if}
-               {if="$fsc->servicios_setup['servicios_mostrar_material_estado']"}
+               {if="$fsc->setup['servicios_mostrar_material_estado']"}
                <div class="col-sm-4">
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_material_estado']"} has-error{/if}">
-                     {$fsc->st['st_material_estado']}
-                     <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->servicios_setup['servicios_material_estado']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material_estado}</textarea>
+                  <div class="form-group{if="$fsc->setup['servicios_material_estado']"} has-error{/if}">
+                     {$fsc->setup['st_material_estado']}
+                     <textarea class="form-control" name="material_estado" rows="2" {if="$fsc->setup['servicios_material_estado']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->material_estado}</textarea>
                   </div>
                </div>
                {/if}
-               {if="$fsc->servicios_setup['servicios_mostrar_accesorios']"}
+               {if="$fsc->setup['servicios_mostrar_accesorios']"}
                <div class="col-sm-4">
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_accesorios']"} has-error{/if}">
-                     {$fsc->st['st_accesorios']}
-                     <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->servicios_setup['servicios_accesorios']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->accesorios}</textarea>
+                  <div class="form-group{if="$fsc->setup['servicios_accesorios']"} has-error{/if}">
+                     {$fsc->setup['st_accesorios']}
+                     <textarea class="form-control" name="accesorios" rows="2" {if="$fsc->setup['servicios_accesorios']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->accesorios}</textarea>
                   </div>
                </div>
                {/if}
             </div>            
             <div class="row">
-               {if="$fsc->servicios_setup['servicios_mostrar_descripcion']"}
+               {if="$fsc->setup['servicios_mostrar_descripcion']"}
                <div class="col-sm-6">
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_descripcion']"} has-error{/if}">
-                     {$fsc->st['st_descripcion']}
-                     <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->servicios_setup['servicios_descripcion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->descripcion}</textarea>
+                  <div class="form-group{if="$fsc->setup['servicios_descripcion']"} has-error{/if}">
+                     {$fsc->setup['st_descripcion']}
+                     <textarea class="form-control" name="descripcion" rows="4" {if="$fsc->setup['servicios_descripcion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->descripcion}</textarea>
                   </div>
                </div>
                {/if}
-               {if="$fsc->servicios_setup['servicios_mostrar_solucion']"}
+               {if="$fsc->setup['servicios_mostrar_solucion']"}
                <div class="col-sm-6">
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_solucion']"} has-error{/if}">
-                     {$fsc->st['st_solucion']}
-                     <textarea class="form-control" name="solucion" rows="4" {if="$fsc->servicios_setup['servicios_solucion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->solucion}</textarea>
+                  <div class="form-group{if="$fsc->setup['servicios_solucion']"} has-error{/if}">
+                     {$fsc->setup['st_solucion']}
+                     <textarea class="form-control" name="solucion" rows="4" {if="$fsc->setup['servicios_solucion']"} required=""{/if}{if="!$fsc->servicio->editable()"} readonly=""{/if}>{$fsc->servicio->solucion}</textarea>
                   </div>
                </div>
                {/if}
             </div>    
             <div class="row">
-               {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
+               {if="$fsc->setup['servicios_mostrar_fechainicio']"}
                <div class='col-sm-3'>
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_fechainicio']"} has-error{/if}">
-                     {$fsc->st['st_fechainicio']}
+                  <div class="form-group{if="$fsc->setup['servicios_fechainicio']"} has-error{/if}">
+                     {$fsc->setup['st_fechainicio']}
                      <div class='input-group'>
                         <span class="input-group-addon">
                            <span class="glyphicon glyphicon-calendar"></span>
                         </span>
-                        <input type='text' name="fechainicio" value="{$fsc->servicio->fechainicio}" id="fechainicio" class="form-control"{if="$fsc->servicios_setup['servicios_fechainicio']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+                        <input type='text' name="fechainicio" value="{$fsc->servicio->fechainicio}" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
                      </div>
                   </div>
                </div>   
                {/if}  
-               {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
+               {if="$fsc->setup['servicios_mostrar_fechafin']"}
                <div class='col-sm-3'>
-                  <div class="form-group{if="$fsc->servicios_setup['servicios_fechafin']"} has-error{/if}">
-                     {$fsc->st['st_fechafin']}
+                  <div class="form-group{if="$fsc->setup['servicios_fechafin']"} has-error{/if}">
+                     {$fsc->setup['st_fechafin']}
                      <div class='input-group'>
                         <span class="input-group-addon">
                            <span class="glyphicon glyphicon-calendar"></span>
                         </span>
-                        <input type="text" name="fechafin" value="{$fsc->servicio->fechafin}" id="fechafin" class="form-control"{if="$fsc->servicios_setup['servicios_fechafin']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
+                        <input type="text" name="fechafin" value="{$fsc->servicio->fechafin}" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
                      </div>
                   </div>
                </div>
                {/if}
-               {if="$fsc->servicios_setup['servicios_mostrar_garantia']"}
+               {if="$fsc->setup['servicios_mostrar_garantia']"}
                <div class="col-sm-2">
                   <div class="checkbox">
                      <label>
                         <input type="checkbox" name="garantia" value="TRUE"{if="$fsc->servicio->garantia"} checked=""{/if}{if="!$fsc->servicio->editable()"} disabled=""{/if}/>
-                        {$fsc->st['st_garantia']}
+                        {$fsc->setup['st_garantia']}
                      </label>
                   </div>
                </div>
@@ -868,12 +868,21 @@
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Imprimir {#FS_SERVICIO#}</h4>
+            {if="mt_rand(0,1)==0"}
+            <p class="help-block">
+               Más formatos disponibles <a href="https://www.facturascripts.com/buscar?query=imprimir" target="_blank">en la web</a>.
+            </p>
+            {else}
+            <p class="help-block">
+               Más formatos disponibles en el plugin <a href="https://www.facturascripts.com/plugin/plantillas_pdf" target="_blank">Plantillas PDF</a>.
+            </p>
+            {/if}
          </div>
          <div class="modal-body">
          {loop="$fsc->extensions"}
             {if="$value->type=='pdf'"}
             <a href="index.php?page={$value->from}{$value->params}&id={$fsc->servicio->idservicio}" target="_blank" class="btn btn-block btn-default">
-               <span class="glyphicon glyphicon-print"></span> &nbsp; {$value->text}
+               <span class="glyphicon glyphicon-print"></span>&nbsp; {$value->text}
             </a>
             {/if}
          {/loop}
@@ -898,7 +907,7 @@
                </h4>
                {if="$fsc->servicio->femail"}
                <p class="help-block">
-                  <span class="glyphicon glyphicon-send"></span> &nbsp;
+                  <span class="glyphicon glyphicon-send"></span>&nbsp;
                   Este {#FS_SERVICIO#} fue enviado el {$fsc->servicio->femail}.
                </p>
                {else}
@@ -961,7 +970,7 @@
                {loop="$fsc->extensions"}
                   {if="$value->type=='email'"}
                   <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true;this.form.action='index.php?page={$value->from}{$value->params}&id={$fsc->servicio->idservicio}';this.form.submit();">
-                     <span class="glyphicon glyphicon-send"></span> &nbsp; {$value->text}
+                     <span class="glyphicon glyphicon-send"></span>&nbsp; {$value->text}
                   </button>
                   {/if}
                {/loop}
@@ -1017,7 +1026,7 @@
 </div>
 {else}
 <div class="text-center">
-   <img src="view/img/fuuu_face.png" alt="fuuuuu"/>
+   <img src="{#FS_PATH#}view/img/fuuu_face.png" alt="fuuuuu"/>
 </div>
 {/if}
 

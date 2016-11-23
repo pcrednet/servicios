@@ -2,7 +2,7 @@
 
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2015    Carlos Garcia Gomez         neorazorx@gmail.com
+ * Copyright (C) 2015-2016    Carlos Garcia Gomez         neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_model('cliente.php');
 require_model('servicio_cliente.php');
 
 /**
@@ -28,11 +29,10 @@ require_model('servicio_cliente.php');
 class imprimir_rapido_horizontal extends fs_controller
 {
    public $agente;
-   public $servicio;
-   public $servicios_setup;
-   public $st;
    public $cliente;
-
+   public $servicio;
+   public $setup;
+   
    public function __construct()
    {
       parent::__construct(__CLASS__, 'Imprimir Rápido Horizontal', 'Servicio', FALSE, FALSE);
@@ -40,9 +40,13 @@ class imprimir_rapido_horizontal extends fs_controller
 
    protected function private_core()
    {
-      //cargamos configuración de servicios
+      $this->agente = FALSE;
+      $this->cliente = FALSE;
+      $this->servicio = FALSE;
+      
+      /// cargamos la configuración de servicios
       $fsvar = new fs_var();
-      $this->servicios_setup = $fsvar->array_get(
+      $this->setup = $fsvar->array_get(
          array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
@@ -67,13 +71,6 @@ class imprimir_rapido_horizontal extends fs_controller
                " cliente se empezará a cobrar 1 euro al día por gastos de almacenaje.\nLos accesorios y".
                " productos externos al equipo no especificados en este documento no podrán ser reclamados en".
                " caso de disconformidad con el técnico.",
-         ),
-         FALSE
-      );
-
-      /*Cargamos traduccion*/
-      $this->st = $fsvar->array_get(
-         array(
             'st_servicio' => "Servicio",
             'st_servicios' => "Servicios",
             'st_material' => "Material",
@@ -87,23 +84,21 @@ class imprimir_rapido_horizontal extends fs_controller
          ),
          FALSE
       );
-      $this->cliente = FALSE;
-      $this->servicio = FALSE;
+      
       if( isset($_REQUEST['id']) )
       {
          $serv = new servicio_cliente();
          $this->servicio = $serv->get($_REQUEST['id']);
-         if($this->servicio)
-         {
-            $cliente = new cliente();
-            $this->cliente = $cliente->get($this->servicio->codcliente);
-         }
       }
-
+      
       if($this->servicio)
       {
          $this->agente = $this->user->get_agente();
+         
+         $cliente = new cliente();
+         $this->cliente = $cliente->get($this->servicio->codcliente);
       }
+      
       $this->share_extensions();
    }
 
@@ -115,18 +110,21 @@ class imprimir_rapido_horizontal extends fs_controller
        * En servicio_servicio::prioridad() nos devuelve un array con todos los prioridades,
        * pero como queremos también el id, pues hay que hacer este bucle para sacarlos.
        */
-      foreach ($this->servicio->prioridad() as $i => $value)
+      foreach($this->servicio->prioridad() as $i => $value)
+      {
          $prioridad[] = array('id_prioridad' => $i, 'nombre_prioridad' => $value);
+      }
 
       return $prioridad;
    }
 
    public function condiciones()
    {
-      return nl2br($this->servicios_setup['servicios_condiciones']);
+      return nl2br($this->setup['servicios_condiciones']);
    }
-     private function share_extensions()
-  {
+   
+   private function share_extensions()
+   {
       $extensiones = array(
         array(
               'name' => 'imprimir_servicio_sin_detalles_horizontal',
@@ -136,7 +134,7 @@ class imprimir_rapido_horizontal extends fs_controller
               'text' => '2 '.ucfirst(FS_SERVICIO).' sin líneas en 1 página',
               'params' => ''
           ),
-     );
+      );
       foreach($extensiones as $ext)
       {
          $fsext = new fs_extension($ext);

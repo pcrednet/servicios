@@ -2,7 +2,7 @@
 <?php
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2014-2015    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2014-2015    Francesc Pineda Segarra  shawe.ewahs@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
  *
@@ -44,6 +44,8 @@ class ventas_servicio extends fs_controller
    public $cliente_s;
    public $divisa;
    public $ejercicio;
+   public $estado;
+   public $fabricante;
    public $familia;
    public $forma_pago;
    public $impuesto;
@@ -51,11 +53,8 @@ class ventas_servicio extends fs_controller
    public $pais;
    public $servicio;
    public $serie;
-   public $estado;
-   public $servicios_setup;
-   public $garantia;
-   public $fabricante;
-
+   public $setup;
+   
    public function __construct()
    {
       parent::__construct(__CLASS__, ucfirst(FS_SERVICIO), 'ventas', FALSE, FALSE);
@@ -67,25 +66,23 @@ class ventas_servicio extends fs_controller
       $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
       
       $this->ppage = $this->page->get('ventas_servicios');
+      
       $this->agente = new agente();
-      $this->estado = new estado_servicio();
-      $servicio = new servicio_cliente();
-      $this->servicio = FALSE;
       $this->cliente = new cliente();
       $this->cliente_s = FALSE;
       $this->divisa = new divisa();
       $this->ejercicio = new ejercicio();
+      $this->estado = new estado_servicio();
+      $this->fabricante = new fabricante();
       $this->familia = new familia();
       $this->forma_pago = new forma_pago();
       $this->impuesto = new impuesto();
-      $this->nuevo_servicio_url = FALSE;
       $this->pais = new pais();
       $this->serie = new serie();
-      $this->fabricante = new fabricante();
       
-      //cargamos configuración de servicios
+      /// cargamos la configuración de servicios
       $fsvar = new fs_var();
-      $this->servicios_setup = $fsvar->array_get(
+      $this->setup = $fsvar->array_get(
          array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
@@ -116,14 +113,7 @@ class ventas_servicio extends fs_controller
             'servicios_solucion_linea' => 0, 
             'servicios_fechainicio_linea' => 0,
             'servicios_fechafin_linea' => 0,
-            'servicios_garantia_linea' => 0
-         ),
-         FALSE
-      );
-      
-      /*Cargamos traduccion*/
-      $this->st = $fsvar->array_get(
-         array(
+            'servicios_garantia_linea' => 0,
             'st_servicio' => "Servicio",
             'st_servicios' => "Servicios",
             'st_material' => "Material",
@@ -137,67 +127,50 @@ class ventas_servicio extends fs_controller
          ),
          FALSE
       );
-       
+      
       /**
        * Comprobamos si el usuario tiene acceso a nueva_venta,
        * necesario para poder añadir líneas.
        */
-      if( isset($_GET['delete_detalle']) )
-      {
-         $det0 = new detalle_servicio();
-         $detalle = $det0->get($_GET['delete_detalle']);
-         if($detalle)
-         {
-            if( $detalle->delete() )
-            {
-               $this->new_message('Detalle eliminado correctamente.');
-            }
-            else
-               $this->new_error_msg('Error al eliminar el detalle.');
-         }
-         else
-            $this->new_error_msg('Detalle no encontrado.');
-      }
-      
+      $this->nuevo_servicio_url = FALSE;
       if( $this->user->have_access_to('nueva_venta', FALSE) )
       {
          $nuevopedp = $this->page->get('nueva_venta');
          if($nuevopedp)
+         {
             $this->nuevo_servicio_url = $nuevopedp->url();
+         }
       }
-
+      
+      $this->servicio = FALSE;
+      $servicio = new servicio_cliente();
       if( isset($_POST['idservicio']) )
       {
          $this->servicio = $servicio->get($_POST['idservicio']);
          $this->modificar();
       }
-      else if (isset($_GET['id']))
+      else if( isset($_GET['id']) )
       {
          $this->servicio = $servicio->get($_GET['id']);
       }
-
-      if ($this->servicio)
+      
+      if($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
-
-         if (isset($_POST['detalle']))
-         {
-            $this->agrega_detalle();
-         }
-
+         
          /// cargamos el agente
-         if( !is_null($this->servicio->codagente) )
+         if($this->servicio->codagente)
          {
             $age0 = new agente();
             $this->agente = $age0->get($this->servicio->codagente);
-            if (!$this->agente)
+            if(!$this->agente)
             {
                $this->agente = new agente();
             }
          }
          else
             $this->agente = $this->user->get_agente();
-
+         
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
       }
@@ -207,11 +180,11 @@ class ventas_servicio extends fs_controller
 
    public function url()
    {
-      if (!isset($this->servicio))
+      if( !isset($this->servicio) )
       {
          return parent::url();
       }
-      else if ($this->servicio)
+      else if($this->servicio)
       {
          return $this->servicio->url();
       }
@@ -264,18 +237,10 @@ class ventas_servicio extends fs_controller
       }
       else
       {
-         $this->servicio->fechafin = date('Y-m-d H:i', strtotime($this->servicio->fechainicio. '+ '.$this->servicios_setup['cal_intervalo'].'minutes'));   
+         $this->servicio->fechafin = date('Y-m-d H:i', strtotime($this->servicio->fechainicio. '+ '.$this->setup['cal_intervalo'].'minutes'));   
       }
       
-      if( isset($_POST['garantia']) )
-      {
-         $this->servicio->garantia = $_POST['garantia'];
-      }
-      else
-      {
-         $this->servicio->garantia = FALSE;
-      }
-      
+      $this->servicio->garantia = isset($_POST['garantia']);
       $this->servicio->prioridad = $_POST['prioridad'];
       
       if( $this->servicio->editable() )
@@ -301,7 +266,7 @@ class ventas_servicio extends fs_controller
             $this->new_error_msg('No se encuentra el ejercicio asociado al ' . FS_SERVICIO);
          
          /// ¿cambiamos el cliente?
-         if ($_POST['cliente'] != $this->servicio->codcliente OR $this->servicio->cifnif == '')
+         if($_POST['cliente'] != $this->servicio->codcliente OR $this->servicio->cifnif == '')
          {
             if(isset($_POST['cliente']))
             {
@@ -310,11 +275,11 @@ class ventas_servicio extends fs_controller
             else
                $cliente = $this->servicio->codcliente;
             
-            if ($cliente)
+            if($cliente)
             {
-               foreach ($cliente->get_direcciones() as $d)
+               foreach($cliente->get_direcciones() as $d)
                {
-                  if ($d->domfacturacion)
+                  if($d->domfacturacion)
                   {
                      $this->servicio->codcliente = $cliente->codcliente;
                      $this->servicio->cifnif = $cliente->cifnif;
@@ -349,10 +314,10 @@ class ventas_servicio extends fs_controller
          $serie = $this->serie->get($this->servicio->codserie);
 
          /// ¿cambiamos la serie?
-         if ($_POST['serie'] != $this->servicio->codserie)
+         if($_POST['serie'] != $this->servicio->codserie)
          {
             $serie2 = $this->serie->get($_POST['serie']);
-            if ($serie2)
+            if($serie2)
             {
                $this->servicio->codserie = $serie2->codserie;
                $this->servicio->new_codigo();
@@ -376,7 +341,7 @@ class ventas_servicio extends fs_controller
             $this->servicio->tasaconv = floatval($_POST['tasaconv']);
          }
          
-         if (isset($_POST['numlineas']))
+         if( isset($_POST['numlineas']) )
          {
             $numlineas = intval($_POST['numlineas']);
 
@@ -390,21 +355,21 @@ class ventas_servicio extends fs_controller
             $articulo = new articulo();
 
             /// eliminamos las líneas que no encontremos en el $_POST
-            foreach ($lineas as $l)
+            foreach($lineas as $l)
             {
                $encontrada = FALSE;
-               for ($num = 0; $num <= $numlineas; $num++)
+               for($num = 0; $num <= $numlineas; $num++)
                {
-                  if (isset($_POST['idlinea_' . $num]))
+                  if( isset($_POST['idlinea_' . $num]) )
                   {
-                     if ($l->idlinea == intval($_POST['idlinea_' . $num]))
+                     if($l->idlinea == intval($_POST['idlinea_' . $num]))
                      {
                         $encontrada = TRUE;
                         break;
                      }
                   }
                }
-               if (!$encontrada)
+               if(!$encontrada)
                {
                   if( !$l->delete() )
                   {
@@ -414,15 +379,15 @@ class ventas_servicio extends fs_controller
             }
 
             /// modificamos y/o añadimos las demás líneas
-            for ($num = 0; $num <= $numlineas; $num++)
+            for($num = 0; $num <= $numlineas; $num++)
             {
                $encontrada = FALSE;
-               if (isset($_POST['idlinea_' . $num]))
+               if( isset($_POST['idlinea_' . $num]) )
                {
-                  foreach ($lineas as $k => $value)
+                  foreach($lineas as $k => $value)
                   {
                      /// modificamos la línea
-                     if ($value->idlinea == intval($_POST['idlinea_' . $num]))
+                     if($value->idlinea == intval($_POST['idlinea_' . $num]))
                      {
                         $encontrada = TRUE;
                         $lineas[$k]->cantidad = floatval($_POST['cantidad_' . $num]);
@@ -436,7 +401,7 @@ class ventas_servicio extends fs_controller
                         $lineas[$k]->iva = 0;
                         $lineas[$k]->recargo = 0;
                         $lineas[$k]->irpf = floatval($_POST['irpf_'.$num]);
-                        if (!$serie->siniva AND $cliente->regimeniva != 'Exento')
+                        if(!$serie->siniva AND $cliente->regimeniva != 'Exento')
                         {
                            $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                            if ($imp0)
@@ -448,7 +413,7 @@ class ventas_servicio extends fs_controller
                            $lineas[$k]->recargo = floatval($_POST['recargo_' . $num]);
                         }
 
-                        if ($lineas[$k]->save())
+                        if($lineas[$k]->save())
                         {
                            $this->servicio->neto += $value->pvptotal;
                            $this->servicio->totaliva += $value->pvptotal * $value->iva / 100;
@@ -467,13 +432,13 @@ class ventas_servicio extends fs_controller
                   }
 
                   /// añadimos la línea
-                  if (!$encontrada AND intval($_POST['idlinea_' . $num]) == -1 AND isset($_POST['referencia_' . $num]))
+                  if(!$encontrada AND intval($_POST['idlinea_' . $num]) == -1 AND isset($_POST['referencia_' . $num]))
                   {
                      $linea = new linea_servicio_cliente();
                      $linea->idservicio = $this->servicio->idservicio;
                      $linea->descripcion = $_POST['desc_' . $num];
                      
-                     if (!$serie->siniva AND $cliente->regimeniva != 'Exento')
+                     if(!$serie->siniva AND $cliente->regimeniva != 'Exento')
                      {
                         $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                         if($imp0)
@@ -523,7 +488,7 @@ class ventas_servicio extends fs_controller
             $this->servicio->totalrecargo = round($this->servicio->totalrecargo, FS_NF0);
             $this->servicio->total = $this->servicio->neto + $this->servicio->totaliva - $this->servicio->totalirpf + $this->servicio->totalrecargo;
 
-            if (abs(floatval($_POST['atotal']) - $this->servicio->total) >= .02)
+            if( abs(floatval($_POST['atotal']) - $this->servicio->total) >= .02 )
             {
                $this->new_error_msg("El total difiere entre el controlador y la vista (" . $this->servicio->total .
                        " frente a " . $_POST['atotal'] . "). Debes informar del error.");
@@ -531,7 +496,7 @@ class ventas_servicio extends fs_controller
          }
       }
 
-      if ($this->servicio->save())
+      if( $this->servicio->save() )
       {
          $this->new_message(ucfirst(FS_SERVICIO) . " modificado correctamente.");
          $this->new_change(ucfirst(FS_SERVICIO) . ' Cliente ' . $this->servicio->codigo, $this->servicio->url());
@@ -559,6 +524,27 @@ class ventas_servicio extends fs_controller
          
          $this->servicio->save();
       }
+      
+      if( isset($_POST['detalle']) )
+      {
+         $this->agrega_detalle();
+      }
+      else if( isset($_GET['delete_detalle']) )
+      {
+         $det0 = new detalle_servicio();
+         $detalle = $det0->get($_GET['delete_detalle']);
+         if($detalle)
+         {
+            if( $detalle->delete() )
+            {
+               $this->new_message('Detalle eliminado correctamente.');
+            }
+            else
+               $this->new_error_msg('Error al eliminar el detalle.');
+         }
+         else
+            $this->new_error_msg('Detalle no encontrado.');
+      }
    }
 
    private function generar_albaran()
@@ -569,7 +555,7 @@ class ventas_servicio extends fs_controller
       $albaran->ciudad = $this->servicio->ciudad;
       $albaran->codagente = $this->servicio->codagente;
       
-      if($this->servicio->codalmacen !='')
+      if($this->servicio->codalmacen)
       {
          $albaran->codalmacen = $this->servicio->codalmacen;
       }
@@ -609,64 +595,64 @@ class ventas_servicio extends fs_controller
       $eje0 = $this->ejercicio->get_by_fecha($albaran->fecha);
       $albaran->codejercicio = $eje0->codejercicio;
       
-      if (!$eje0)
+      if(!$eje0)
       {
          $this->new_error_msg("Ejercicio no encontrado.");
       }
-      else if (!$eje0->abierto())
+      else if( !$eje0->abierto() )
       {
          $this->new_error_msg("El ejercicio está cerrado.");
       }
-      else if ($albaran->save())
+      else if( $albaran->save() )
       {
          $this->new_message("El ".FS_ALBARAN." ".$albaran->codigo." ha sido creado correctamente.");
          $continuar = TRUE;
          $art0 = new articulo();
          $i = 0;
-         foreach ($this->servicio->get_lineas() as $l)
+         foreach($this->servicio->get_lineas() as $l)
          {
             $n = new linea_albaran_cliente();
             $n->idalbaran = $albaran->idalbaran;
             $n->cantidad = $l->cantidad;
             $n->codimpuesto = $l->codimpuesto;
             $n->descripcion = $l->descripcion;
-            if ($i == 0)
+            if($i == 0)
             {
-               if ($this->servicios_setup['servicios_linea'] && $this->servicios_setup['servicios_linea1'])
+               if($this->setup['servicios_linea'] && $this->setup['servicios_linea1'])
                {
                   $n->descripcion .= "\n";
 
-                  if ($this->servicios_setup['servicios_material_linea'])
+                  if($this->setup['servicios_material_linea'])
                   {
-                     $n->descripcion .= $this->st['st_material'] . ": " . $this->servicio->material . "\n";
+                     $n->descripcion .= $this->setup['st_material'] . ": " . $this->servicio->material . "\n";
                   }
-                  if ($this->servicios_setup['servicios_material_estado_linea'])
+                  if($this->setup['servicios_material_estado_linea'])
                   {
-                     $n->descripcion .= $this->st['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
+                     $n->descripcion .= $this->setup['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
                   }
-                  if ($this->servicios_setup['servicios_accesorios_linea'])
+                  if($this->setup['servicios_accesorios_linea'])
                   {
-                     $n->descripcion.= $this->st['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
+                     $n->descripcion.= $this->setup['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
                   }
-                  if ($this->servicios_setup['servicios_descripcion_linea'])
+                  if($this->setup['servicios_descripcion_linea'])
                   {
-                     $n->descripcion .= $this->st['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
+                     $n->descripcion .= $this->setup['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
                   }
-                  if ($this->servicios_setup['servicios_solucion_linea'])
+                  if($this->setup['servicios_solucion_linea'])
                   {
-                     $n->descripcion .= $this->st['st_solucion'] . ": " . $this->servicio->solucion . "\n";
+                     $n->descripcion .= $this->setup['st_solucion'] . ": " . $this->servicio->solucion . "\n";
                   }
-                  if ($this->servicios_setup['servicios_fechainicio_linea'])
+                  if($this->setup['servicios_fechainicio_linea'])
                   {
-                     $n->descripcion .= $this->st['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
+                     $n->descripcion .= $this->setup['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
                   }
-                  if ($this->servicios_setup['servicios_fechafin_linea'])
+                  if($this->setup['servicios_fechafin_linea'])
                   {
-                     $n->descripcion .= $this->st['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
+                     $n->descripcion .= $this->setup['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
                   }
-                  if ($this->servicios_setup['servicios_garantia_linea'])
+                  if($this->setup['servicios_garantia_linea'])
                   {
-                     $n->descripcion .= $this->st['st_garantia'] . ": " . $this->servicio->garantia . "\n";
+                     $n->descripcion .= $this->setup['st_garantia'] . ": " . $this->servicio->garantia . "\n";
                   }
                }
             }
@@ -682,13 +668,13 @@ class ventas_servicio extends fs_controller
             
             $i++;
 
-            if ($n->save())
+            if( $n->save() )
             {
                /// descontamos del stock
-               if (!is_null($n->referencia))
+               if( !is_null($n->referencia) )
                {
                   $articulo = $art0->get($n->referencia);
-                  if ($articulo)
+                  if($articulo)
                   {
                      $articulo->sum_stock($albaran->codalmacen, 0 - $l->cantidad);
                   }
@@ -702,21 +688,21 @@ class ventas_servicio extends fs_controller
             }
          }
 
-         if ($this->servicios_setup['servicios_linea'] && !$this->servicios_setup['servicios_linea1'])
+         if($this->setup['servicios_linea'] && !$this->setup['servicios_linea1'])
          {
-            //generamos la linea con detalles del servicio
-            if ($this->servicios_setup['servicios_linea'])
+            /// generamos la linea con detalles del servicio
+            if($this->setup['servicios_linea'])
             {
 
                $ns = new linea_albaran_cliente();
                $ns->idalbaran = $albaran->idalbaran;
                $ns->cantidad = '0';
                
-               //usamos el impuestos por defecto
+               /// usamos el impuestos por defecto
                $imp0 = new impuesto();          
                foreach ($imp0->all() as $imp)
                {
-                  if($imp->is_default())
+                  if( $imp->is_default() )
                   {
                      $ns->codimpuesto = $imp->codimpuesto;
                      $ns->iva = $imp->iva;
@@ -724,37 +710,37 @@ class ventas_servicio extends fs_controller
                }
 
                $ns->descripcion = FS_SERVICIO . ": " . $this->servicio->codigo . " Fecha: " . $this->servicio->fecha . "\n";
-               if ($this->servicios_setup['servicios_material_linea'])
+               if($this->setup['servicios_material_linea'])
                {
-                  $ns->descripcion .= $this->st['st_material'] . ": " . $this->servicio->material . "\n";
+                  $ns->descripcion .= $this->setup['st_material'] . ": " . $this->servicio->material . "\n";
                }
-               if ($this->servicios_setup['servicios_material_estado_linea'])
+               if($this->setup['servicios_material_estado_linea'])
                {
-                  $ns->descripcion .= $this->st['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
+                  $ns->descripcion .= $this->setup['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
                }
-               if ($this->servicios_setup['servicios_accesorios_linea'])
+               if($this->setup['servicios_accesorios_linea'])
                {
-                  $ns->descripcion .= $this->st['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
+                  $ns->descripcion .= $this->setup['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
                }
-               if ($this->servicios_setup['servicios_descripcion_linea'])
+               if($this->setup['servicios_descripcion_linea'])
                {
-                  $ns->descripcion .= $this->st['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
+                  $ns->descripcion .= $this->setup['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
                }
-               if ($this->servicios_setup['servicios_solucion_linea'])
+               if($this->setup['servicios_solucion_linea'])
                {
-                  $ns->descripcion .= $this->st['st_solucion'] . ": " . $this->servicio->solucion . "\n";
+                  $ns->descripcion .= $this->setup['st_solucion'] . ": " . $this->servicio->solucion . "\n";
                }
-               if ($this->servicios_setup['servicios_fechainicio_linea'])
+               if($this->setup['servicios_fechainicio_linea'])
                {
-                  $ns->descripcion .= $this->st['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
+                  $ns->descripcion .= $this->setup['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
                }
-               if ($this->servicios_setup['servicios_fechafin_linea'])
+               if($this->setup['servicios_fechafin_linea'])
                {
-                  $ns->descripcion .= $this->st['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
+                  $ns->descripcion .= $this->setup['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
                }
-               if ($this->servicios_setup['servicios_garantia_linea'])
+               if($this->setup['servicios_garantia_linea'])
                {
-                  $ns->descripcion .= $this->st['st_garantia'] . ": " . $this->servicio->garantia . "\n";
+                  $ns->descripcion .= $this->setup['st_garantia'] . ": " . $this->servicio->garantia . "\n";
                }
 
                $ns->dtopor = '0';
@@ -767,7 +753,7 @@ class ventas_servicio extends fs_controller
                $ns->save();
             }
          }
-         if ($continuar)
+         if($continuar)
          {
             $this->servicio->idalbaran = $albaran->idalbaran;
          }
