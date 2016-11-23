@@ -2,13 +2,14 @@
 
 {if="$fsc->servicio"}
 {if="$fsc->servicio->editable()"}
-<link rel="stylesheet" href="plugins/servicios/view/css/jquery.datetimepicker.min.css" />
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/jquery.datetimepicker.min.css" />
 <script type="text/javascript" src="{$fsc->get_js_location('jquery.datetimepicker.full.min.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
    numlineas = {function="count($fsc->servicio->get_lineas())"};
    fs_nf0 = {#FS_NF0#};
+   fs_nf0_art = {#FS_NF0_ART#};
    all_impuestos = {function="json_encode($fsc->impuesto->all())"};
    all_series = {function="json_encode($fsc->serie->all())"};
    cliente = {function="json_encode($fsc->cliente_s)"};
@@ -434,11 +435,11 @@
                      <td>
                         <select class="form-control" id="iva_{$counter}" name="iva_{$counter}" onchange="ajustar_iva('{$counter}')">
                            {loop="$fsc->impuesto->all()"}
-                           {if="$value1->codimpuesto==$value2->codimpuesto"}
-                           <option value="{$value2->iva}" selected="">{$value2->descripcion}</option>
-                           {else}
-                           <option value="{$value2->iva}">{$value2->descripcion}</option>
-                           {/if}
+                              {if="$value1->codimpuesto==$value2->codimpuesto OR $value1->iva==$value2->iva"}
+                              <option value="{$value2->iva}" selected="">{$value2->descripcion}</option>
+                              {else}
+                              <option value="{$value2->iva}">{$value2->descripcion}</option>
+                              {/if}
                            {/loop}
                         </select>
                      </td>

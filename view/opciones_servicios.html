@@ -1,6 +1,6 @@
 {include="header"}
 
-<script type="text/javascript" src="plugins/servicios/view/jscolor/jscolor.js"></script>
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/jscolor/jscolor.js"></script>
 <script type="text/javascript">
    function eliminar_estado(id)
    {
@@ -10,7 +10,7 @@
       }
    }
    function check(id) {
-      if ($("#" + id).is(":checked"))
+      if( $("#" + id).is(":checked") )
       {
          $("#checked_" + id).prop("disabled", false);
          $("#checked_" + id).prop("checked", true);
@@ -23,7 +23,7 @@
    }
    function mostrar_estados(mostrar)
    {
-      if (mostrar)
+      if(mostrar)
       {
          $("#div_estados").show();
       }
@@ -33,7 +33,7 @@
       }
    }
    $(document).ready( function() {
-      if (window.location.hash.substring(1) == 'estados')
+      if(window.location.hash.substring(1) == 'estados')
       {
          $('#tab_opciones a[href="#estados"]').tab('show');
          mostrar_estados(true);

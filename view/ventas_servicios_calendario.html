@@ -1,10 +1,10 @@
 {include="header"}
 
 {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-<link rel="stylesheet" href="plugins/servicios/view/css/calendar.css" />
-<script type="text/javascript" src="plugins/servicios/view/js/underscore-min.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/calendar.js"></script>
-<script type="text/javascript" src="plugins/servicios/view/js/es-ES.js"></script>
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/calendar.css" />
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/underscore-min.js"></script>
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/calendar.js"></script>
+<script type="text/javascript" src="{#FS_PATH#}plugins/servicios/view/js/es-ES.js"></script>
 <script type="text/javascript">
    function clean_cliente()
    {
@@ -169,7 +169,7 @@
    	var options = {
                events_source: {$fsc->get_datos()},
                view: 'week',
-               tmpl_path: 'plugins/servicios/view/tmpls/',
+               tmpl_path: '{#FS_PATH#}plugins/servicios/view/tmpls/',
                tmpl_cache: false,
                language: 'es-ES',
                time_start: '{$fsc->servicios_setup['cal_inicio']}',

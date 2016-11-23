@@ -240,11 +240,11 @@ class ventas_servicio extends fs_controller
          $this->servicio->fechafin = date('Y-m-d H:i', strtotime($this->servicio->fechainicio. '+ '.$this->setup['cal_intervalo'].'minutes'));   
       }
       
-      $this->servicio->garantia = isset($_POST['garantia']);
-      $this->servicio->prioridad = $_POST['prioridad'];
-      
       if( $this->servicio->editable() )
       {
+         $this->servicio->garantia = isset($_POST['garantia']);
+         $this->servicio->prioridad = $_POST['prioridad'];
+         
          /// si no hay codejercicio; lo buscamos:
          if(!$this->servicio->codejercicio)
          {
@@ -377,7 +377,13 @@ class ventas_servicio extends fs_controller
                   }
                }
             }
-
+            
+            $regimeniva = 'general';
+            if($cliente)
+            {
+               $regimeniva = $cliente->regimeniva;
+            }
+            
             /// modificamos y/o añadimos las demás líneas
             for($num = 0; $num <= $numlineas; $num++)
             {
@@ -401,7 +407,7 @@ class ventas_servicio extends fs_controller
                         $lineas[$k]->iva = 0;
                         $lineas[$k]->recargo = 0;
                         $lineas[$k]->irpf = floatval($_POST['irpf_'.$num]);
-                        if(!$serie->siniva AND $cliente->regimeniva != 'Exento')
+                        if(!$serie->siniva AND $regimeniva != 'Exento')
                         {
                            $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                            if ($imp0)
@@ -412,7 +418,7 @@ class ventas_servicio extends fs_controller
                            $lineas[$k]->iva = floatval($_POST['iva_' . $num]);
                            $lineas[$k]->recargo = floatval($_POST['recargo_' . $num]);
                         }
-
+                        
                         if($lineas[$k]->save())
                         {
                            $this->servicio->neto += $value->pvptotal;
@@ -427,6 +433,7 @@ class ventas_servicio extends fs_controller
                         }
                         else
                            $this->new_error_msg("¡Imposible modificar la línea del artículo " . $value->referencia . "!");
+                        
                         break;
                      }
                   }
@@ -438,7 +445,7 @@ class ventas_servicio extends fs_controller
                      $linea->idservicio = $this->servicio->idservicio;
                      $linea->descripcion = $_POST['desc_' . $num];
                      
-                     if(!$serie->siniva AND $cliente->regimeniva != 'Exento')
+                     if(!$serie->siniva AND $regimeniva != 'Exento')
                      {
                         $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $num]);
                         if($imp0)
