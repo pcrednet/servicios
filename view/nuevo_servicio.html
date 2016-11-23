@@ -1,7 +1,7 @@
 {include="header"}
 
 {if="$fsc->cliente_s"}
-<link rel="stylesheet" href="plugins/servicios/view/css/jquery.datetimepicker.min.css" />
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/jquery.datetimepicker.min.css" />
 <script type="text/javascript" src="{$fsc->get_js_location('jquery.datetimepicker.full.min.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
@@ -20,7 +20,8 @@
       
       jQuery.datetimepicker.setLocale('es');
       $('#fechainicio, #fechafin').datetimepicker({
-         format: 'd-m-Y H:i'
+         format: 'd-m-Y H:i',
+         step: 30
       });
    });
 </script>
