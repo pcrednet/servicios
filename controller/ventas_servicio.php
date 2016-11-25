@@ -173,6 +173,8 @@ class ventas_servicio extends fs_controller
          
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
+         
+         $this->modificar_detalles();
       }
       else
          $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " de cliente no encontrado!");
@@ -531,7 +533,10 @@ class ventas_servicio extends fs_controller
          
          $this->servicio->save();
       }
-      
+   }
+   
+   private function modificar_detalles()
+   {
       if( isset($_POST['detalle']) )
       {
          $this->agrega_detalle();
