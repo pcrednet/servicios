@@ -78,6 +78,11 @@
          format: 'd-m-Y H:i',
          step: 30,
       });
+      
+      if(window.location.hash.substring(1) == 'detalles')
+      {
+         $('#tabs_servicio a[href="#detalles"]').tab('show');
+      }
    });
 </script>
 
