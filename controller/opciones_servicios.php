@@ -200,7 +200,7 @@ class opciones_servicios extends fs_controller
       $fsext->from = __CLASS__;
       $fsext->to = 'ventas_servicios';
       $fsext->type = 'button';
-      $fsext->text = '<span class="glyphicon glyphicon-cog" aria-hidden="true">'
+      $fsext->text = '<span class="glyphicon glyphicon-wrench" aria-hidden="true">'
               . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
       $fsext->save();
    }

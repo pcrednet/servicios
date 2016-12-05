@@ -164,9 +164,19 @@ class imprimir_servicio_ticket extends fs_controller
       $this->terminal->add_linea("Cliente: " . $this->terminal->sanitize($this->servicio->nombrecliente) . "\n");
       $this->terminal->add_linea("Empleado: " . $this->servicio->codagente . "\n\n");
       
+      if($this->servicio->material)
+      {
+         $this->terminal->add_linea($this->setup['st_material'].": " . $this->servicio->material . "\n\n");
+      }
+      
+      if($this->servicio->accesorios)
+      {
+         $this->terminal->add_linea($this->setup['st_accesorios'].": " . $this->servicio->accesorios . "\n\n");
+      }
+      
       if($this->servicio->descripcion)
       {
-         $this->terminal->add_linea("Averia: " . $this->terminal->sanitize($this->servicio->descripcion) . "\n");
+         $this->terminal->add_linea($this->setup['st_descripcion'].": " . $this->terminal->sanitize($this->servicio->descripcion) . "\n");
       }
       
       $lineas = $this->servicio->get_lineas();
