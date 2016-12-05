@@ -2,7 +2,7 @@
 
 /*
  * @author Carlos García Gómez      neorazorx@gmail.com
- * @copyright 2015, Carlos García Gómez. All Rights Reserved. 
+ * @copyright 2015-2016, Carlos García Gómez. All Rights Reserved. 
  */
 
 require_model('cliente.php');
@@ -58,9 +58,7 @@ class servicios_contratados extends fs_controller
              'nuevocli_telefono1_req' => 0,
              'nuevocli_telefono2' => 0,
              'nuevocli_telefono2_req' => 0,
-             'nuevocli_grupo' => 0,
-             'nuevocli_grupo_req' => 0,
-             'nuevocli_grupo_pred' => 0,
+             'nuevocli_codgrupo' => '',
              'cal_inicio' => "09:00",
          ),
          FALSE

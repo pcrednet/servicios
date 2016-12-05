@@ -708,4 +708,9 @@ class nuevo_servicio extends fs_controller
             $this->new_error_msg("¡Imposible guardar el ".FS_SERVICIO."!");
       }
    }
+   
+   public function fechafin()
+   {
+      return date('d-m-Y', strtotime('+'.$this->setup['servicios_diasfin'].' days') );
+   }
 }

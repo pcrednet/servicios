@@ -175,7 +175,7 @@
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechainicio" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}/>
+                           <input type='text' name="fechainicio" value="{$fsc->today()}" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>   
@@ -188,7 +188,7 @@
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechafin" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}/>
+                           <input type='text' name="fechafin" value="{$fsc->fechafin()}" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>
