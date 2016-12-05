@@ -758,7 +758,7 @@ class servicio_cliente extends fs_model
 
    public function all_from_cliente($codcliente, $offset = 0)
    {
-      $sedilist = array();
+      $servlist = array();
       
       $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name .
               " WHERE codcliente = " . $this->var2str($codcliente) .
@@ -767,16 +767,16 @@ class servicio_cliente extends fs_model
       {
          foreach($servicios as $s)
          {
-            $sedilist[] = new servicio_cliente($s);
+            $servlist[] = new servicio_cliente($s);
          }
       }
       
-      return $sedilist;
+      return $servlist;
    }
    
    public function all_from_agente($codagente, $offset = 0)
    {
-      $sedilist = array();
+      $servlist = array();
       
       $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name
               ." WHERE codagente = " . $this->var2str($codagente)
@@ -785,11 +785,34 @@ class servicio_cliente extends fs_model
       {
          foreach($servicios as $s)
          {
-            $sedilist[] = new servicio_cliente($s);
+            $servlist[] = new servicio_cliente($s);
          }
       }
       
-      return $sedilist;
+      return $servlist;
+   }
+   
+   /**
+    * Devuelve todos los servicios relacionados con el albarán.
+    * @param type $id
+    * @return \servicio_cliente
+    */
+   public function all_from_albaran($id)
+   {
+      $servlist = array();
+      $sql = "SELECT * FROM ".$this->table_name." WHERE idalbaran = ".$this->var2str($id)
+              ." ORDER BY fecha DESC, codigo DESC;";
+     
+      $data = $this->db->select($sql);
+      if($data)
+      {
+         foreach($data as $p)
+         {
+            $servlist[] = new \servicio_cliente($p);
+         }
+      }
+     
+      return $servlist;
    }
 
    public function color_estado()

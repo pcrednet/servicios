@@ -30,19 +30,44 @@
 <form name="f_contrato" action="{$fsc->contrato->url()}" method="post" enctype="multipart/form-data" class="form">
    <input type="hidden" name="id" value="{$fsc->contrato->idcontrato}"/>
    <input type="hidden" name="codcliente" value="{$fsc->contrato->codcliente}"/>
-   <div class="container-fluid">
+   <div class="container-fluid hidden-print">
+      <div class="row">
+         <div class="col-sm-6">
+            <div class="btn-group">
+               <a href="index.php?page=servicios_contratados" class="btn btn-sm btn-default">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+                  <span class="hidden-xs">&nbsp; Todos</span>
+               </a>
+               <a href="{$fsc->contrato->url()}" class="btn btn-sm btn-default" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
+               </a>
+            </div>
+            <a href="#" onclick="window.print();" class="btn btn-sm btn-default">
+               <span class="glyphicon glyphicon-print"></span>
+               <span class="hidden-xs">&nbsp; Imprimir</span>
+            </a>
+         </div>
+         <div class="col-sm-6 text-right">
+            <div class="btn-group">
+               {if="$fsc->allow_delete"}
+               <a class="btn btn-sm btn-danger" href="#" onclick="delete_contrato()">
+                  <span class="glyphicon glyphicon-trash"></span>
+                  <span class="hidden-xs hidden-sm">&nbsp; Eliminar</span>
+               </a>
+               {/if}
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-floppy-disk"></span>
+                  <span class="hidden-xs">&nbsp; Guardar</span>
+               </button>
+            </div>
+         </div>
+      </div>
       <div class="row">
          <div class="col-sm-12">
             <div class="page-header">
                <h1>
-                  <a href="index.php?page=servicios_contratados" class="btn btn-xs btn-default">
-                     <span class="glyphicon glyphicon-arrow-left"></span>
-                  </a>
-                  Contrato #{$fsc->contrato->idcontrato}
+                  <span class="glyphicon glyphicon-file"></span> Contrato #{$fsc->contrato->idcontrato}
                   <small class="hidden-xs">{$fsc->contrato->fecha_alta}</small>
-                  <a href="{$fsc->contrato->url()}" class="btn btn-xs btn-default" title="Recargar la página">
-                     <span class="glyphicon glyphicon-refresh"></span>
-                  </a>
                </h1>
                <p class="help-block">
                   Si a un contrato le asignas un periodo o una fecha para el siguiente servicio,
@@ -119,23 +144,6 @@
                </select>
             </div>
          </div>
-         <div class="col-sm-6 text-right">
-            <br/>
-            <div class="btn-group">
-               {if="$fsc->allow_delete"}
-               <a class="btn btn-sm btn-danger" href="#" onclick="delete_contrato()">
-                  <span class="glyphicon glyphicon-trash"></span>
-                  <span class="hidden-xs hidden-sm"> &nbsp; Eliminar</span>
-               </a>
-               {/if}
-               <button class="btn btn-sm btn-primary" type="submit">
-                  <span class="glyphicon glyphicon-floppy-disk"></span>
-                  <span class="hidden-xs"> &nbsp; Guardar</span>
-               </button>
-            </div>
-         </div>
-      </div>
-      <div class="row">
          <div class="col-sm-3">
             <div class="form-group">
                Servicio cada:
@@ -162,6 +170,7 @@
       <div class="row">
          <div class="col-sm-12">
             <div class="form-group">
+               Observaciones:
                <textarea name="observaciones" rows="4" class="form-control">{$fsc->contrato->observaciones}</textarea>
             </div>
          </div>
@@ -195,6 +204,52 @@
       </div>
    </div>
 </form>
+
+<div class="container-fluid visible-print">
+   <div class="row">
+      <div class="col-xs-12">
+         <div class="page-header">
+            <h1>
+               <span class="glyphicon glyphicon-file"></span> Contrato #{$fsc->contrato->idcontrato}
+            </h1>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-6">
+         <b>Cliente</b>: {$fsc->cliente_s->nombre}
+         <br/>
+         <b>Importe anual</b>: {$fsc->show_precio($fsc->contrato->importe_anual)}
+         <br/>
+         <b>Forma de pago</b>:
+         {loop="$fsc->forma_pago->all()"}
+            {if="$value->codpago==$fsc->contrato->codpago"}{$value->descripcion}{/if}
+         {/loop}
+         <br/>
+      </div>
+      <div class="col-xs-6 text-right">
+         <b>Fecha alta</b>: {$fsc->contrato->fecha_alta}
+         <br/>
+         <b>Renovación</b>: {$fsc->contrato->fecha_renovacion}
+         <br/>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-12">
+         <br/>
+         <b>Servicio cada</b>:
+         {loop="$fsc->periodos()"}
+            {if="$key==$fsc->contrato->periodo"}{$value}{/if}
+         {/loop}
+         <br/>
+         <b>Siguiente servicio</b>: {$fsc->contrato->fsiguiente_servicio}
+         <br/><br/>
+         {if="$fsc->contrato->observaciones"}
+         <b>Observaciones:</b> {$fsc->contrato->observaciones}
+         {/if}
+      </div>
+   </div>
+</div>
 {else}
 <div class="text-center">
    <img src="view/img/fuuu_face.png" alt="fuuuuu"/>
