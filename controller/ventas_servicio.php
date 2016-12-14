@@ -153,11 +153,11 @@ class ventas_servicio extends fs_controller
       {
          $this->servicio = $servicio->get($_GET['id']);
       }
-      
+
       if($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
-         
+
          /// cargamos el agente
          if($this->servicio->codagente)
          {
@@ -525,12 +525,17 @@ class ventas_servicio extends fs_controller
             {
                if($est->albaran)
                {
-                  $this->generar_albaran();
+                  if(!$this->servicio->idalbaran)
+                  {
+                     $this->generar_albaran();
+                  }
+                  else
+                     $this->new_error_msg('Este ' . FS_SERVICIO . ' ya tiene este albaran generado:  <a href=" ' . $this->servicio->url() . '"> ' . $this->servicio->codigo . '</a>');
                }
                break;
             }
          }
-         
+
          $this->servicio->save();
       }
    }
