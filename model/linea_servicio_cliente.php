@@ -39,7 +39,7 @@ class linea_servicio_cliente extends fs_model
    
    public function __construct($l = FALSE)
    {
-      parent::__construct('lineasservicioscli', 'plugins/servicios/');
+      parent::__construct('lineasservicioscli');
       
       if( !isset(self::$servicios) )
          self::$servicios = array();

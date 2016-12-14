@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_model('cliente.php');
 require_model('servicio_cliente.php');
 require_model('terminal_caja.php');
 
@@ -28,6 +29,7 @@ require_model('terminal_caja.php');
  */
 class imprimir_servicio_ticket extends fs_controller
 {
+   public $cliente;
    public $servicio;
    public $setup;
    public $terminal;
@@ -102,6 +104,9 @@ class imprimir_servicio_ticket extends fs_controller
       
       if($this->servicio AND $this->terminal)
       {
+         $cli0 = new cliente();
+         $this->cliente = $cli0->get($this->servicio->codcliente);
+         
          $numt = $this->terminal->num_tickets;
          while($numt > 0)
          {
@@ -161,8 +166,20 @@ class imprimir_servicio_ticket extends fs_controller
       $linea = "\n".ucfirst(FS_SERVICIO).": " . $this->servicio->codigo . "\n";
       $linea .= $this->servicio->fecha. " " . Date('H:i', strtotime($this->servicio->hora)) . "\n";
       $this->terminal->add_linea($linea);
-      $this->terminal->add_linea("Cliente: " . $this->terminal->sanitize($this->servicio->nombrecliente) . "\n");
       $this->terminal->add_linea("Empleado: " . $this->servicio->codagente . "\n\n");
+      $this->terminal->add_linea("Cliente: " . $this->terminal->sanitize($this->servicio->nombrecliente) . "\n");
+      
+      if($this->cliente)
+      {
+         if($this->cliente->telefono1)
+         {
+            $this->terminal->add_linea("Tlf: " . $this->terminal->sanitize($this->cliente->telefono1) . "\n");
+         }
+         if($this->cliente->telefono2)
+         {
+            $this->terminal->add_linea("Tlf 2: " . $this->terminal->sanitize($this->cliente->telefono2) . "\n");
+         }
+      }
       
       if($this->servicio->material)
       {

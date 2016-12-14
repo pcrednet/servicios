@@ -594,86 +594,87 @@
       <div id="div_estados" class="col-sm-12" style="display: none;">
          <div class="table-responsive">
             <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="text-left">Estado</th>
-                            <th class="text-left">Descripción</th>
-                            <th class="text-left">Color</th>
-                            <th class="text-center">¿{#FS_SERVICIO#} Activo?</th>
-                            <th class="text-center">¿Generar {#FS_ALBARAN#}?</th>
-                            <th class="text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    {loop="$fsc->estado->all()"}
-                    <form action="{$fsc->url()}#estados" method="post" class="form">
-                        <input type="hidden" name="id_estado" value="{$value->id}"/>
-                        <tr>
-                            <td><div class="form-control">{$value->id}</div></td>
-                            <td><input type="text" name="descripcion" value="{$value->descripcion}" class="form-control" autocomplete="off"/></td>
-                            <td><input type="text" name="color" value="{$value->color}" class="form-control color" autocomplete="off" maxlength="6"/></td>
-                            <td class="text-center">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="activo" value="TRUE"{if="$value->activo"} checked=""{/if}/>
-                                    </label>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="albaran" value="TRUE"{if="$value->albaran"} checked=""{/if}/>
-                                    </label>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <div class="btn-group">
-                                    {if="$fsc->allow_delete"}
-                                    {if="$fsc->estado->tiene_servicios($value->id)"}
-                                    <a class="btn btn-sm btn-warning" href="index.php?page=ventas_servicios&estado={$value->id}" title="No lo puedes eliminar porque tiene servicios asociados">
-                                        <span class="glyphicon glyphicon-lock"></span>
-                                    </a>
-                                    {else}
-                                    <a class="btn btn-sm btn-danger" href="#" onclick="eliminar_estado('{$value->id}')" title="Eliminar">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                    {/if}
-                                    {/if}
-                                    <button type="submit" class="btn btn-sm btn-primary" onclick="this.disabled = true;this.form.submit();" title="Guardar">
-                                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </form>
-                    {/loop}
-                    <form action="{$fsc->url()}#estados" method="post" class="form">
-                        <tr class="bg-info">
-                            <td><input type="text" name="id_estado" value="{$fsc->estado->get_nuevo_id()}" class="form-control" autocomplete="off"/></td>
-                            <td><input type="text" name="descripcion" value="" class="form-control" autocomplete="off"/></td>
-                            <td><input type="text" name="color" value="FFFFFF" class="form-control color" autocomplete="off" maxlength="6"/></td>
-                            <td class="text-center">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="activo" value="TRUE" checked=""/>
-                                    </label>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="albaran" value="TRUE"/>
-                                    </label>
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-sm btn-primary" onclick="this.disabled = true;this.form.submit();" title="Guardar">
-                                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </form>
+               <thead>
+                  <tr>
+                     <th class="text-left">Estado</th>
+                     <th class="text-left">Descripción</th>
+                     <th class="text-left">Color</th>
+                     <th class="text-center">¿{#FS_SERVICIO#} Activo?</th>
+                     <th class="text-center">¿Generar {#FS_ALBARAN#}?</th>
+                     <th class="text-right">Acciones</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->estado->all()"}
+                  <form action="{$fsc->url()}#estados" method="post" class="form">
+                     <input type="hidden" name="id_estado" value="{$value->id}"/>
+                     <tr>
+                        <td><div class="form-control">{$value->id}</div></td>
+                        <td><input type="text" name="descripcion" value="{$value->descripcion}" class="form-control" autocomplete="off"/></td>
+                        <td><input type="text" name="color" value="{$value->color}" class="form-control color" autocomplete="off" maxlength="6"/></td>
+                        <td class="text-center">
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="activo" value="TRUE"{if="$value->activo"} checked=""{/if}/>
+                              </label>
+                           </div>
+                        </td>
+                        <td class="text-center">
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="albaran" value="TRUE"{if="$value->albaran"} checked=""{/if}/>
+                              </label>
+                           </div>
+                        </td>
+                        <td class="text-right">
+                           <div class="btn-group">
+                              {if="$fsc->allow_delete"}
+                                 {if="$fsc->estado->tiene_servicios($value->id)"}
+                                 <a class="btn btn-sm btn-warning" href="index.php?page=ventas_servicios&estado={$value->id}" title="No lo puedes eliminar porque tiene servicios asociados">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                 </a>
+                                 {else}
+                                 <a class="btn btn-sm btn-danger" href="#" onclick="eliminar_estado('{$value->id}')" title="Eliminar">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                 </a>
+                                 {/if}
+                              {/if}
+                              <button type="submit" class="btn btn-sm btn-primary" onclick="this.disabled = true;this.form.submit();" title="Guardar">
+                                 <span class="glyphicon glyphicon-floppy-disk"></span>
+                              </button>
+                           </div>
+                        </td>
+                     </tr>
+                  </form>
+               {/loop}
+               <form action="{$fsc->url()}#estados" method="post" class="form">
+                  <tr class="info">
+                     <td><input type="text" name="id_estado" value="{$fsc->estado->get_nuevo_id()}" class="form-control" autocomplete="off"/></td>
+                     <td><input type="text" name="descripcion" value="" class="form-control" autocomplete="off"/></td>
+                     <td><input type="text" name="color" value="FFFFFF" class="form-control color" autocomplete="off" maxlength="6"/></td>
+                     <td class="text-center">
+                        <div class="checkbox">
+                           <label>
+                              <input type="checkbox" name="activo" value="TRUE" checked=""/>
+                           </label>
+                        </div>
+                     </td>
+                     <td class="text-center">
+                        <div class="checkbox">
+                           <label>
+                              <input type="checkbox" name="albaran" value="TRUE"/>
+                           </label>
+                        </div>
+                     </td>
+                     <td class="text-right">
+                        <div class="btn-group">
+                           <button type="submit" class="btn btn-sm btn-primary">
+                              <span class="glyphicon glyphicon-plus-sign"></span>
+                              <span class="hidden-xs">&nbsp; Nuevo</span>
+                           </button>
+                        </div>
+                     </td>
+                  </tr>
+               </form>
             </table>
          </div>
       </div>

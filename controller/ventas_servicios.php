@@ -57,7 +57,7 @@ class ventas_servicios extends fs_controller
 
    public function __construct()
    {
-      parent::__construct(__CLASS__, FS_SERVICIOS. ' a clientes', 'ventas');
+      parent::__construct(__CLASS__, ucfirst(FS_SERVICIOS).' a clientes', 'ventas');
    }
    
    protected function private_core()

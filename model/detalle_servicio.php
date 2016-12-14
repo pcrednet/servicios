@@ -30,7 +30,7 @@ class detalle_servicio extends fs_model
    
    public function __construct($s = FALSE)
    {
-      parent::__construct('detalles_servicios', 'plugins/servicios/');
+      parent::__construct('detalles_servicios');
       if($s)
       {
          $this->id = intval($s['id']);

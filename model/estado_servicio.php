@@ -2,8 +2,8 @@
 
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2015  Carlos Garcia Gomez         neorazorx@gmail.com
- * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2015-2016    Carlos Garcia Gomez         neorazorx@gmail.com
+ * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -59,7 +59,7 @@ class estado_servicio extends fs_model
    
    public function __construct($e = FALSE)
    {
-      parent::__construct('estados_servicios', 'plugins/servicios/');
+      parent::__construct('estados_servicios');
       if($e)
       {
          $this->id = $this->intval($e['id']);
@@ -108,10 +108,6 @@ class estado_servicio extends fs_model
             if($d['id'] == $num)
             {
                $num++;
-            }
-            else
-            {
-               break;
             }
          }
       }
