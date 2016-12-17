@@ -587,6 +587,9 @@ class ventas_servicios extends fs_controller
                  ."&desde=".$this->desde
                  ."&hasta=".$this->hasta
                  ."&editable=".$this->editable
+                 ."&fechainicio=".$this->fechainicio
+                 ."&fechafin=".$this->fechafin
+                 ."&garantia=".$this->garantia
                  ."&offset=".($this->offset-FS_ITEM_LIMIT);
       
       $paginas = array();
@@ -635,5 +638,25 @@ class ventas_servicios extends fs_controller
       {
          return array();
       }
+   }
+   
+   public function lineasservicios($idservicio)
+   {
+      $lineas = array();
+      
+      $sql = "SELECT descripcion,cantidad FROM lineasservicioscli where idservicio = " . $this->agente->var2str($idservicio);
+         
+      $data = $this->db->select($sql);
+      
+      if($data)
+      {
+         foreach($data as $ls)
+         {
+            $lineas[] = array('descripcion' => $ls['descripcion'], 'cantidad' => $ls['cantidad']);
+         }
+      }
+      
+      return $lineas;
+      
    }
 }

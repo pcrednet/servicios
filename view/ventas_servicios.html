@@ -46,7 +46,7 @@
    
    $(document).ready(function() {
       document.f_custom_search.query.focus();
-      
+      $("[data-toggle=tooltip]").tooltip();
       $('#b_buscar_lineas').click(function(event) {
          event.preventDefault();
          $('#modal_buscar_lineas').modal('show');
@@ -75,6 +75,14 @@
       });
    });
 </script>
+<style type="text/css">
+    .tooltip {
+        max-width: 850px;
+    }
+    .tooltip-inner {
+        max-width: 850px;
+    }
+</style>
 
 <div class="container-fluid" style="margin-bottom: 10px;">
    <div class="row">
@@ -253,15 +261,15 @@
                            {/if}
                         {/loop}
                      </select>
-                     <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} sin {#FS_ALBARAN#}">
+                  </div>
+                  <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} sin {#FS_ALBARAN#}">
                         {if="$fsc->editable"}
                         <input type="checkbox" name="editable" value="TRUE" checked="" onchange="this.form.submit()"/>
                         {else}
                         <input type="checkbox" name="editable" value="TRUE" onchange="this.form.submit()"/>
                         {/if}
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> incluir los terminados
-                     </label>
-                  </div>
+                  </label>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
@@ -304,20 +312,28 @@
                         </span>
                      </div>
                   </div>
+                  <label title="Mostrar servicios con {$fsc->st['st_garantia']}">
+                        {if="$fsc->garantia"}
+                        <input type="checkbox" name="garantia" value="TRUE" checked="" onchange="this.form.submit()"/>
+                        {else}
+                        <input type="checkbox" name="garantia" value="TRUE" onchange="this.form.submit()"/>
+                        {/if}
+                        <span class="fa fa-circle-o-notch" aria-hidden="true"></span> {$fsc->st['st_garantia']}
+                  </label>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
-                     <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="desde" autocomplete="off" onchange="this.form.submit()"/>
+                     <input type="text" name="desde" value="{$fsc->desde}" class="form-control datepicker" placeholder="Desde" autocomplete="off" onchange="this.form.submit()"/>
                      {if="$fsc->servicios_setup['servicios_mostrar_fechainicio']"}
-                     <input type="text" name="fechainicio" value="{$fsc->fechainicio}" class="form-control datepicker" placeholder="inicio" autocomplete="off" onchange="this.form.submit()"/>
+                     <input type="text" name="fechainicio" value="{$fsc->fechainicio}" class="form-control datepicker" placeholder="{$fsc->st['st_fechainicio']}" autocomplete="off" onchange="this.form.submit()"/>
                      {/if}
                   </div>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
-                     <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="hasta" autocomplete="off" onchange="this.form.submit()"/>
+                     <input type="text" name="hasta" value="{$fsc->hasta}" class="form-control datepicker" placeholder="Hasta" autocomplete="off" onchange="this.form.submit()"/>
                      {if="$fsc->servicios_setup['servicios_mostrar_fechafin']"}
-                     <input type="text" name="fechafin" value="{$fsc->fechafin}" class="form-control datepicker" placeholder="fin" autocomplete="off" onchange="this.form.submit()"/>
+                     <input type="text" name="fechafin" value="{$fsc->fechafin}" class="form-control datepicker" placeholder="{$fsc->st['st_fechafin']}" autocomplete="off" onchan'ge="this.form.submit()"/>
                      {/if}
                   </div>
                </div>
@@ -360,7 +376,16 @@
                </tr>
             </thead>
             {loop="$fsc->resultados"}
-            <tr class="clickableRow" href="{$value->url()}" style="background-color: #{$value->color_estado()}">
+            <tr class="clickableRow" 
+                data-container="body" 
+                data-toggle="tooltip" 
+                data-placement="bottom" 
+                data-html="true" 
+                 title="
+                {loop="$fsc->lineasservicios($value->idservicio)"}
+                   {$value2['cantidad']}-> {$value2['descripcion']} <br>
+                {/loop}"
+                href="{$value->url()}" style="background-color: #{$value->color_estado()}">
                <td class="text-center">
                   {if="$value->idalbaran"}
                   <span class="glyphicon glyphicon-paperclip" title="El {#FS_SERVICIO#} tiene vinculado un {#FS_ALBARAN#}"></span>
