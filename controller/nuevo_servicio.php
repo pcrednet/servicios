@@ -692,7 +692,7 @@ class nuevo_servicio extends fs_controller
                {
                   $this->new_message("<a href='".$servicio->url()."'>".ucfirst(FS_SERVICIO)."</a> guardado correctamente.");
                   $this->new_change(ucfirst(FS_SERVICIO)." a Cliente ".$servicio->codigo, $servicio->url(), TRUE);
-                  header('Location: '.$servicio->url());
+                  header('Location: '.$servicio->url($nuevo=TRUE));
                }
                else
                   $this->new_error_msg("¡Imposible actualizar el <a href='".$servicio->url()."'>".FS_SERVICIO."</a>!");

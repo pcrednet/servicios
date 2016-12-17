@@ -422,14 +422,21 @@ class servicio_cliente extends fs_model
       return $editable;
    }
    
-   public function url()
+   public function url($nuevo = FALSE)
    {
-      if( is_null($this->idservicio) )
+      if(is_null($this->idservicio))
       {
          return 'index.php?page=ventas_servicios';
       }
       else
-         return 'index.php?page=ventas_servicio&id=' . $this->idservicio;
+      {
+         if($nuevo)
+         {
+            return 'index.php?page=ventas_servicio&id=' . $this->idservicio . '&nuevo=TRUE';
+         }
+         else
+            return 'index.php?page=ventas_servicio&id=' . $this->idservicio;
+      }
    }
 
    public function albaran_url()

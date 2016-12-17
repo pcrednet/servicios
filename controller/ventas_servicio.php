@@ -135,11 +135,17 @@ class ventas_servicio extends fs_controller
       $this->nuevo_servicio_url = FALSE;
       if( $this->user->have_access_to('nueva_venta', FALSE) )
       {
-         $nuevopedp = $this->page->get('nueva_venta');
-         if($nuevopedp)
+         $nuevoserv = $this->page->get('nueva_venta');
+         if($nuevoserv)
          {
-            $this->nuevo_servicio_url = $nuevopedp->url();
+            $this->nuevo_servicio_url = $nuevoserv->url();
          }
+      }
+      
+      //NUEVO?
+      if(isset($_REQUEST['nuevo']))
+      {
+         $this->new_message('Nuevo servicio creado correctamente');
       }
       
       $this->servicio = FALSE;
