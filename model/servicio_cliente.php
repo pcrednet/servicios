@@ -535,6 +535,16 @@ class servicio_cliente extends fs_model
 
    public function test()
    {
+      $this->nombrecliente = $this->no_html($this->nombrecliente);
+      if($this->nombrecliente == '')
+      {
+         $this->nombrecliente = '-';
+      }
+      
+      $this->direccion = $this->no_html($this->direccion);
+      $this->ciudad = $this->no_html($this->ciudad);
+      $this->provincia = $this->no_html($this->provincia);
+      $this->numero2 = $this->no_html($this->numero2);
       $this->observaciones = $this->no_html($this->observaciones);
       
       if($this->prioridad > 4)
