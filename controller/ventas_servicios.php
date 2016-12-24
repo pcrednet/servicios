@@ -586,11 +586,16 @@ class ventas_servicios extends fs_controller
                  ."&codcliente=".$codcliente
                  ."&desde=".$this->desde
                  ."&hasta=".$this->hasta
-                 ."&editable=".$this->editable
                  ."&fechainicio=".$this->fechainicio
-                 ."&fechafin=".$this->fechafin
-                 ."&garantia=".$this->garantia
-                 ."&offset=".($this->offset-FS_ITEM_LIMIT);
+                 ."&fechafin=".$this->fechafin;
+      if ($this->garantia)
+      {
+         $url .= "&garantia=TRUE";
+      }
+      if ($this->editable)
+      {
+         $url .= "&editable=TRUE";
+      }
       
       $paginas = array();
       $i = 0;
