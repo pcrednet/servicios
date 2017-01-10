@@ -1,8 +1,10 @@
 {include="header"}
 
 {if="$fsc->cliente_s"}
-<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/jquery.datetimepicker.min.css" />
-<script type="text/javascript" src="{$fsc->get_js_location('jquery.datetimepicker.full.min.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('moment.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('/locale/es.js')}"></script>
+<script type="text/javascript" src="{$fsc->get_js_location('bootstrap-datetimepicker.min.js')}"></script>
+<link rel="stylesheet" href="{#FS_PATH#}plugins/servicios/view/css/bootstrap-datetimepicker.min.css" />
 <script type="text/javascript" src="{$fsc->get_js_location('provincias.js')}"></script>
 <script type="text/javascript" src="{$fsc->get_js_location('nueva_venta.js')}"></script>
 <script type="text/javascript">
@@ -17,12 +19,24 @@
    $(document).ready(function() {
       usar_serie();
       recalcular();
-      
-      jQuery.datetimepicker.setLocale('es');
-      $('#fechainicio, #fechafin').datetimepicker({
-         format: 'd-m-Y H:i',
-         step: 30
+      moment.locale('es');
+      $('#fechainicio').datetimepicker({
+         locale: 'es',
+         format: 'DD-MM-YYYY HH:mm',
+         defaultDate: new Date(),
       });
+      $('#fechafin').datetimepicker({
+         locale: 'es',
+         format: 'DD-MM-YYYY HH:mm',
+         defaultDate: moment().add({$fsc->setup['servicios_diasfin']}, 'days').toDate(),
+      });
+      $('#fechainicio').change(
+              function(){
+                 var fecha = moment(this.value,'DD-MM-YYYY HH:mm');
+                 fecha.add({$fsc->setup['servicios_diasfin']}, 'days').calendar();
+                 $('#fechafin').val(fecha.format('DD-MM-YYYY HH:mm'));
+         }
+      );
    });
 </script>
 
@@ -175,7 +189,7 @@
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechainicio" value="{function="Date('d-m-Y H:i')"}" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}/>
+                           <input type='text' name="fechainicio" id="fechainicio" class="form-control"{if="$fsc->setup['servicios_fechainicio']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>   
@@ -188,7 +202,7 @@
                            <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                            </span>
-                           <input type='text' name="fechafin" value="{function="date('d-m-Y H:i', strtotime(Date('d-m-Y H:i'). '+ '.$fsc->setup['servicios_diasfin'].'days'))"}" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}/>
+                           <input type='text' name="fechafin" id="fechafin" class="form-control"{if="$fsc->setup['servicios_fechafin']"} required=""{/if}/>
                         </div>
                      </div>
                   </div>
