@@ -2,9 +2,9 @@
 <?php
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014-2017    Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2014-2015    Francesc Pineda Segarra  shawe.ewahs@gmail.com
- * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
+ * Copyright (C) 2015-2017    Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -203,7 +203,12 @@ class ventas_servicio extends fs_controller
    private function modificar()
    {
       $this->servicio->observaciones = $_POST['observaciones'];
-      $this->servicio->numero2 = $_POST['numero2'];
+      
+      if( isset($_POST['numero2']) )
+      {
+         $this->servicio->numero2 = $_POST['numero2'];
+      }
+      
       $this->servicio->codagente = $_POST['codagente'];
       $this->servicio->estado = $_POST['estado'];
       $this->servicio->codpago = $_POST['codpago'];
