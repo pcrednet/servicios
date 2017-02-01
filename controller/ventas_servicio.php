@@ -180,6 +180,16 @@ class ventas_servicio extends fs_controller
          /// cargamos el cliente
          $this->cliente_s = $this->cliente->get($this->servicio->codcliente);
          
+         if(isset($_GET['genalbaran']))
+         {
+            if (!$this->servicio->idalbaran)
+            {
+               $this->generar_albaran();
+               
+            }
+            
+         }
+         
          $this->modificar_detalles();
       }
       else
@@ -779,6 +789,7 @@ class ventas_servicio extends fs_controller
          if($continuar)
          {
             $this->servicio->idalbaran = $albaran->idalbaran;
+            $this->servicio->save();
          }
          else
          {

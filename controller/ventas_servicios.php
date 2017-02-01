@@ -54,6 +54,7 @@ class ventas_servicios extends fs_controller
    public $fechainicio;
    public $fechafin;
    public $garantia;
+   public $activos;
 
    public function __construct()
    {
@@ -197,9 +198,9 @@ class ventas_servicios extends fs_controller
          $this->num_resultados = '';
          $this->total_resultados = '';
          $this->total_resultados_txt = '';
-         $this->editable = FALSE;
          $this->fechainicio = '';
          $this->fechafin = '';
+         
          
          if( isset($_POST['delete']) )
          {
@@ -223,15 +224,26 @@ class ventas_servicios extends fs_controller
             {
                $this->estado = $_REQUEST['estado'];
             }
+            // Filtro estados albaranes
+            $this->editable = FALSE;
+            
             if( isset($_REQUEST['editable']) )
             {
                $this->editable = TRUE;
             }
-            if( isset($_REQUEST['codserie']) )
+
+            //filtro estado no activos
+            $this->activos = FALSE;
+            if( isset($_REQUEST['activos']) )
+            {
+               $this->activos = TRUE;
+            }
+            
+            if(isset($_REQUEST['codserie']))
             {
                $this->codserie = $_REQUEST['codserie'];
             }
-            if( isset($_REQUEST['fechainicio']) )
+            if(isset($_REQUEST['fechainicio']))
             {
                $this->fechainicio = $_REQUEST['fechainicio'];
             }
@@ -453,6 +465,11 @@ class ventas_servicios extends fs_controller
          $sql .= $where."idalbaran IS NULL";
          $where = ' AND ';
       }
+      if(!$this->activos)
+      {
+         $sql .= $where." idestado IN (SELECT id FROM estados_servicios WHERE activo=TRUE) ";
+         $where = ' AND ';
+      }
       
       $data = $this->db->select("SELECT COUNT(idservicio) as total".$sql);
       if($data)
@@ -595,6 +612,10 @@ class ventas_servicios extends fs_controller
       if ($this->editable)
       {
          $url .= "&editable=TRUE";
+      }
+      if ($this->activos)
+      {
+         $url .= "&activos=TRUE";
       }
       
       $paginas = array();

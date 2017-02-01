@@ -247,6 +247,14 @@
                         </span>
                      </div>
                   </div>
+                  <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} activos">
+                        {if="$fsc->activos"}
+                        <input type="checkbox" name="activos" value="TRUE" checked="" onchange="this.form.submit()"/>
+                        {else}
+                        <input type="checkbox" name="activos" value="TRUE" onchange="this.form.submit()"/>
+                        {/if}
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Incluir no activos
+                  </label>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
@@ -268,7 +276,7 @@
                         {else}
                         <input type="checkbox" name="editable" value="TRUE" onchange="this.form.submit()"/>
                         {/if}
-                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> incluir los terminados
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Incluir albaranados
                   </label>
                </div>
                <div class="col-sm-2">

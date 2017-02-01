@@ -143,6 +143,13 @@
                   <span class="hidden-xs"> &nbsp; Ver {#FS_ALBARAN#}</span>
                </a>
             </div>
+            {else}
+            <div class="btn-group">
+               <a class="btn btn-sm btn-success text-capitalize" href="{$fsc->servicio->url()}&genalbaran=TRUE">
+                  <span class="glyphicon glyphicon glyphicon-new-window"></span>
+                  <span class="hidden-xs"> &nbsp; Generar {#FS_ALBARAN#}</span>
+               </a>
+            </div>
             {/if}
          </div>
          <div class="col-md-4 col-sm-4 col-xs-4 text-right">
