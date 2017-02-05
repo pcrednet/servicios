@@ -55,6 +55,7 @@ class ventas_servicios extends fs_controller
    public $fechafin;
    public $garantia;
    public $activos;
+   public $filtros;
 
    public function __construct()
    {
@@ -224,21 +225,38 @@ class ventas_servicios extends fs_controller
             {
                $this->estado = $_REQUEST['estado'];
             }
-            // Filtro estados albaranes
+            //estados de los filtros:
+            $fsvar0 = new fs_var();
+            $this->filtros = $fsvar0->array_get(
+                    array(
+                'filtro_editables' => 0,
+                'filtro_activos' => 0
+                    ), FALSE
+            );
+            if(isset($_POST['filtros']))
+            {
+               $this->filtros['filtro_editables'] = ( isset($_POST['filtro_editables']) ? 1 : 0 );
+               $this->filtros['filtro_activos'] = ( isset($_POST['filtro_activos']) ? 1 : 0 );
+               
+               $fsvar0->array_save($this->filtros);
+            }
             $this->editable = FALSE;
-            
-            if( isset($_REQUEST['editable']) )
+            if ($this->filtros['filtro_editables'])
             {
                $this->editable = TRUE;
             }
-
-            //filtro estado no activos
+            
             $this->activos = FALSE;
-            if( isset($_REQUEST['activos']) )
+            if ($this->filtros['filtro_activos'])
             {
                $this->activos = TRUE;
             }
-            
+
+            if(isset($_COOKIE['ventas_serv_activos']))
+            {
+               $this->activos = $_COOKIE['ventas_serv_activos'];
+            }
+
             if(isset($_REQUEST['codserie']))
             {
                $this->codserie = $_REQUEST['codserie'];

@@ -229,6 +229,7 @@
 <div class="tab-content">
    <div role="tabpanel" class="tab-pane active" id="servicios">
       <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+         <input type="hidden" name="filtros" value="TRUE"/>
          {if="$fsc->cliente"}
          <input type="hidden" name="codcliente" value="{$fsc->cliente->codcliente}"/>
          {else}
@@ -248,11 +249,7 @@
                      </div>
                   </div>
                   <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} activos">
-                        {if="$fsc->activos"}
-                        <input type="checkbox" name="activos" value="TRUE" checked="" onchange="this.form.submit()"/>
-                        {else}
-                        <input type="checkbox" name="activos" value="TRUE" onchange="this.form.submit()"/>
-                        {/if}
+                        <input type="checkbox" name="filtro_activos" value="TRUE"{if="$fsc->filtros['filtro_activos']"} checked=""{/if} onchange="this.form.submit()"/>
                         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Incluir no activos
                   </label>
                </div>
@@ -271,11 +268,7 @@
                      </select>
                   </div>
                   <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} sin {#FS_ALBARAN#}">
-                        {if="$fsc->editable"}
-                        <input type="checkbox" name="editable" value="TRUE" checked="" onchange="this.form.submit()"/>
-                        {else}
-                        <input type="checkbox" name="editable" value="TRUE" onchange="this.form.submit()"/>
-                        {/if}
+                        <input type="checkbox" name="filtro_editables" value="TRUE"{if="$fsc->filtros['filtro_editables']"} checked=""{/if} onchange="this.form.submit()"/>
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Incluir albaranados
                   </label>
                </div>
@@ -347,11 +340,19 @@
                </div>
             </div>
             <div class="row">
-               <div class="col-sm-12">
+               <div class="col-sm-2">
+                  {if="!$fsc->activos"}
+                  <span class="label label-info">
+                     <span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;
+                     Solamente {#FS_SERVICIOS#} activos.
+                  </span>
+                  {/if}
+               </div>
+               <div class="col-sm-10">
                   {if="!$fsc->editable"}
                   <span class="label label-warning">
                      <span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;
-                     Solamente {#FS_SERVICIOS#} activos.
+                     Solamente {#FS_SERVICIOS#} sin albarán.
                   </span>
                   {/if}
                </div>
