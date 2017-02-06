@@ -54,7 +54,7 @@ class ventas_servicios extends fs_controller
    public $fechainicio;
    public $fechafin;
    public $garantia;
-   public $activos;
+   public $activo;
    public $filtros;
 
    public function __construct()
@@ -226,35 +226,34 @@ class ventas_servicios extends fs_controller
                $this->estado = $_REQUEST['estado'];
             }
             //estados de los filtros:
-            $fsvar0 = new fs_var();
-            $this->filtros = $fsvar0->array_get(
-                    array(
-                'filtro_editables' => 0,
-                'filtro_activos' => 0
-                    ), FALSE
-            );
-            if(isset($_POST['filtros']))
+            if(isset($_POST['editable']))
             {
-               $this->filtros['filtro_editables'] = ( isset($_POST['filtro_editables']) ? 1 : 0 );
-               $this->filtros['filtro_activos'] = ( isset($_POST['filtro_activos']) ? 1 : 0 );
-               
-               $fsvar0->array_save($this->filtros);
+               $this->editable = TRUE;
+               setcookie('serv_editable', $this->editable, time()+FS_COOKIES_EXPIRE);
             }
-            $this->editable = FALSE;
-            if ($this->filtros['filtro_editables'])
+            else if(isset($_COOKIE['serv_editable']) AND !isset($_POST['filtros']))
             {
                $this->editable = TRUE;
             }
-            
-            $this->activos = FALSE;
-            if ($this->filtros['filtro_activos'])
+            else
             {
-               $this->activos = TRUE;
+               $this->editable = FALSE;
+               setcookie('serv_editable', $this->editable, time()-FS_COOKIES_EXPIRE);
             }
-
-            if(isset($_COOKIE['ventas_serv_activos']))
+            
+            if(isset($_POST['activo']))
             {
-               $this->activos = $_COOKIE['ventas_serv_activos'];
+               $this->activo = TRUE;
+               setcookie('serv_activo', $this->activo, time()+FS_COOKIES_EXPIRE);
+            }
+            else if(isset($_COOKIE['serv_activo']) AND !isset($_POST['filtros']))
+            {
+               $this->activo = TRUE;
+            }
+            else
+            {
+               $this->activo = FALSE;
+               setcookie('serv_activo', $this->activo, time()-FS_COOKIES_EXPIRE);
             }
 
             if(isset($_REQUEST['codserie']))

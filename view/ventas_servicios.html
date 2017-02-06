@@ -249,7 +249,7 @@
                      </div>
                   </div>
                   <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} activos">
-                        <input type="checkbox" name="filtro_activos" value="TRUE"{if="$fsc->filtros['filtro_activos']"} checked=""{/if} onchange="this.form.submit()"/>
+                        <input type="checkbox" name="activo" value="TRUE"{if="$fsc->activo"} checked=""{/if} onchange="this.form.submit()"/>
                         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Incluir no activos
                   </label>
                </div>
@@ -268,7 +268,7 @@
                      </select>
                   </div>
                   <label title="Por defecto sólo se muestran los {#FS_SERVICIOS#} sin {#FS_ALBARAN#}">
-                        <input type="checkbox" name="filtro_editables" value="TRUE"{if="$fsc->filtros['filtro_editables']"} checked=""{/if} onchange="this.form.submit()"/>
+                        <input type="checkbox" name="editable" value="TRUE"{if="$fsc->editable"} checked=""{/if} onchange="this.form.submit()"/>
                         <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Incluir albaranados
                   </label>
                </div>
