@@ -482,7 +482,7 @@ class ventas_servicios extends fs_controller
          $sql .= $where."idalbaran IS NULL";
          $where = ' AND ';
       }
-      if(!$this->activos)
+      if(!$this->activo)
       {
          $sql .= $where." idestado IN (SELECT id FROM estados_servicios WHERE activo=TRUE) ";
          $where = ' AND ';
@@ -630,9 +630,9 @@ class ventas_servicios extends fs_controller
       {
          $url .= "&editable=TRUE";
       }
-      if ($this->activos)
+      if ($this->activo)
       {
-         $url .= "&activos=TRUE";
+         $url .= "&activo=TRUE";
       }
       
       $paginas = array();
