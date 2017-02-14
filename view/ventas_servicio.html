@@ -267,42 +267,42 @@
             </div>
          </div>
       </div>
-      <div role="tabpanel">
-         <ul id="tabs_servicio" class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-               <a href="#servicio" aria-controls="servicio" role="tab" data-toggle="tab">
-                  <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-                  <span class="hidden-xs">&nbsp; {$fsc->setup['st_servicios']}</span>
-               </a>
-            </li>
-            {loop="$fsc->extensions"}
-               {if="$value->type=='tab'"}
-               <li role="presentation">
-                  <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
-               </li>
-               {/if}
-            {/loop}
+   </div>
+   <div role="tabpanel">
+      <ul id="tabs_servicio" class="nav nav-tabs" role="tablist">
+         <li role="presentation" class="active">
+            <a href="#servicio" aria-controls="servicio" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; {$fsc->setup['st_servicios']}</span>
+            </a>
+         </li>
+         {loop="$fsc->extensions"}
+            {if="$value->type=='tab'"}
             <li role="presentation">
-               <a href="#lineas_p" aria-controls="lineas_p" role="tab" data-toggle="tab">
-                  <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                  <span class="hidden-xs">&nbsp; Líneas</span>
-               </a>
+               <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
             </li>
-            <li role="presentation">
-               <a href="#datos" aria-controls="datos" role="tab" data-toggle="tab">
-                  <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
-                  <span class="hidden-xs">&nbsp; Datos</span>
-               </a>
-            </li>
-            <li>
-               <a href="#detalles" aria-controls="detalles" role="tab" data-toggle="tab">
-                  <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
-                  <span class="hidden-xs">&nbsp; Detalles</span>
-                  <span class="hidden-sm badge">{$fsc->servicio->num_detalles()}</span>
-               </a>
-           </li>
-         </ul>
-      </div>
+            {/if}
+         {/loop}
+         <li role="presentation">
+            <a href="#lineas_p" aria-controls="lineas_p" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Líneas</span>
+            </a>
+         </li>
+         <li role="presentation">
+            <a href="#datos" aria-controls="datos" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Datos</span>
+            </a>
+         </li>
+         <li>
+            <a href="#detalles" aria-controls="detalles" role="tab" data-toggle="tab">
+               <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+               <span class="hidden-xs">&nbsp; Detalles</span>
+               <span class="hidden-sm badge">{$fsc->servicio->num_detalles()}</span>
+            </a>
+        </li>
+      </ul>
    </div>
    <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="servicio">
@@ -411,7 +411,7 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="lineas_p">
          <div class="table-responsive">
-            {if="$fsc->servicio->editable() AND !$fsc->servicio->idalbaran"}
+            {if="$fsc->servicio->editable()"}
             <table class="table table-condensed">
                <thead>
                   <tr>
@@ -562,19 +562,19 @@
                <div class="col-sm-3">
                   <div class="form-group">
                      Nombre del cliente:
-                     <input class="form-control" type="text" name="nombrecliente" value="{$fsc->servicio->nombrecliente}" autocomplete="off" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input class="form-control" type="text" name="nombrecliente" value="{$fsc->servicio->nombrecliente}" autocomplete="off"/>
                   </div>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
                      {#FS_CIFNIF#}:
-                     <input class="form-control" type="text" name="cifnif" value="{$fsc->servicio->cifnif}" autocomplete="off" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input class="form-control" type="text" name="cifnif" value="{$fsc->servicio->cifnif}" autocomplete="off"/>
                   </div>
                </div>
                <div class="col-sm-2">
                   <div class="form-group">
                      <a href="{$fsc->serie->url()}">Serie</a>:
-                     <select class="form-control" name="serie" id="codserie" onchange="usar_serie();recalcular();" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}>
+                     <select class="form-control" name="serie" id="codserie" onchange="usar_serie();recalcular();">
                         {loop="$fsc->serie->all()"}
                         {if="$value->codserie==$fsc->servicio->codserie"}
                         <option value="{$value->codserie}" selected="">{$value->descripcion}</option>
@@ -588,7 +588,7 @@
                <div class="col-sm-2">
                   <div class="form-group">
                      <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
-                     <select name="codpago" class="form-control" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}>
+                     <select name="codpago" class="form-control">
                         {loop="$fsc->forma_pago->all()"}
                         {if="!$fsc->servicio->codpago"}
                         <option value="{$value->codpago}"{if="$fsc->cliente_s->codpago == $value->codpago"} selected=""{/if}>{$value->descripcion}</option>
@@ -604,7 +604,7 @@
                <div class="col-sm-1">
                   <div class="form-group">
                      <a href="{$fsc->divisa->url()}">Divisa</a>:
-                     <select name="divisa" class="form-control" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}>
+                     <select name="divisa" class="form-control">
                         {loop="$fsc->divisa->all()"}
                         {if="$fsc->servicio->coddivisa==''"}
                         <option value="{$value->coddivisa}"{if="$value->is_default()"} selected=""{/if}>{$value->descripcion}</option>
@@ -620,7 +620,7 @@
                <div class="col-sm-2">
                   <div class="form-group">
                      Tasa de conversión a €
-                     <input type="text" name="tasaconv" class="form-control" placeholder="{$fsc->servicio->tasaconv}" autocomplete="off" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input type="text" name="tasaconv" class="form-control" placeholder="{$fsc->servicio->tasaconv}" autocomplete="off"/>
                   </div>
                </div>
             </div>
@@ -636,7 +636,7 @@
                <div class="col-sm-3">
                   <div class="form-group">
                      <a href="{$fsc->pais->url()}">País</a>:
-                     <select class="form-control" name="codpais" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}>
+                     <select class="form-control" name="codpais">
                         {loop="$fsc->pais->all()"}
                         <option value="{$value->codpais}"{if="$value->codpais==$fsc->servicio->codpais"} selected=""{/if}>{$value->nombre}</option>
                         {/loop}
@@ -646,25 +646,25 @@
                <div class="col-sm-3">
                   <div class="form-group">
                      <span class="text-capitalize">{#FS_PROVINCIA#}</span>:
-                     <input id="ac_provincia" class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->servicio->provincia}" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input id="ac_provincia" class="form-control" type="text" name="provincia" autocomplete="off" value="{$fsc->servicio->provincia}"/>
                   </div>
                </div>
                <div class="col-sm-3">
                   <div class="form-group">
                      Ciudad:
-                     <input class="form-control" type="text" name="ciudad" autocomplete="off" value="{$fsc->servicio->ciudad}" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input class="form-control" type="text" name="ciudad" autocomplete="off" value="{$fsc->servicio->ciudad}"/>
                   </div>
                </div>
                <div class="col-sm-3">
                   <div class="form-group">
                      Código Postal:
-                     <input class="form-control" type="text" name="codpostal" autocomplete="off" value="{$fsc->servicio->codpostal}" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input class="form-control" type="text" name="codpostal" autocomplete="off" value="{$fsc->servicio->codpostal}"/>
                   </div>
                </div>
                <div class="col-sm-6">
                   <div class="form-group">
                      Dirección:
-                     <input class="form-control" type="text" name="direccion" value="{$fsc->servicio->direccion}" autocomplete="off" {if="!$fsc->servicio->editable() OR $fsc->servicio->idalbaran"} disabled=""{/if}/>
+                     <input class="form-control" type="text" name="direccion" value="{$fsc->servicio->direccion}" autocomplete="off"/>
                   </div>
                </div>
             </div>
