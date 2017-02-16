@@ -467,7 +467,7 @@ class ventas_servicios extends fs_controller
       
       if($this->fechafin != '')
       {
-         $sql .= $where."fechafin >= ".$this->agente->var2str($this->fechafin);
+         $sql .= $where."fechafin <= ".$this->agente->var2str($this->fechafin);
          $where = ' AND ';
       }
       
