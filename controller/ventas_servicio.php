@@ -362,7 +362,8 @@ class ventas_servicio extends fs_controller
          {
             $this->servicio->tasaconv = floatval($_POST['tasaconv']);
          }
-         
+         if (!$this->servicio->idalbaran)
+         {
          if( isset($_POST['numlineas']) )
          {
             $numlineas = intval($_POST['numlineas']);
@@ -399,6 +400,8 @@ class ventas_servicio extends fs_controller
                   }
                }
             }
+                     }
+
             
             $regimeniva = 'general';
             if($cliente)
@@ -550,7 +553,7 @@ class ventas_servicio extends fs_controller
                      $this->generar_albaran();
                   }
                   else
-                     $this->new_error_msg('Este ' . FS_SERVICIO . ' ya tiene este albaran generado:  <a href=" ' . $this->servicio->url() . '"> ' . $this->servicio->codigo . '</a>');
+                     $this->new_error_msg('Este ' . FS_SERVICIO . ' ya tiene <a href="index.php?page=ventas_albaran&id='.$this->servicio->idalbaran.'">' . FS_ALBARAN . ' </a> generado'  );
                }
                break;
             }
