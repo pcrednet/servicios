@@ -36,6 +36,7 @@ require_model('serie.php');
 require_model('estado_servicio.php');
 require_model('detalle_servicio.php');
 require_model('fabricante.php');
+require_model('factura_cliente.php');
 
 class ventas_servicio extends fs_controller
 {
@@ -54,6 +55,8 @@ class ventas_servicio extends fs_controller
    public $servicio;
    public $serie;
    public $setup;
+   public $facturaserv;
+   public $albaranserv;
    
    public function __construct()
    {
@@ -79,6 +82,9 @@ class ventas_servicio extends fs_controller
       $this->impuesto = new impuesto();
       $this->pais = new pais();
       $this->serie = new serie();
+      $this->facturaserv = FALSE;
+      $this->albaranserv = FALSE;
+      
       
       /// cargamos la configuración de servicios
       $fsvar = new fs_var();
@@ -163,6 +169,21 @@ class ventas_servicio extends fs_controller
       if($this->servicio)
       {
          $this->page->title = $this->servicio->codigo;
+         
+         //comprobamos si tiene albarán y factura asociada
+         if($this->servicio->idalbaran)
+         {
+            $alb0 = new albaran_cliente();
+            $this->albaranserv = $alb0->get($this->servicio->idalbaran);
+            if ($this->albaranserv)
+            {
+               if($this->albaranserv->idfactura)
+               {
+                  $fac0 = new factura_cliente();
+                  $this->facturaserv = $fac0->get($this->albaranserv->idfactura);
+               }
+            }
+         }
 
          /// cargamos el agente
          if($this->servicio->codagente)
@@ -647,6 +668,11 @@ class ventas_servicio extends fs_controller
       else if( $albaran->save() )
       {
          $this->new_message("El ".FS_ALBARAN." ".$albaran->codigo." ha sido creado correctamente.");
+         
+         //cogemos el albaran asociado
+         $alb0 = new albaran_cliente();
+         $this->albaranserv = $alb0->get($albaran->idalbaran);
+         
          $continuar = TRUE;
          $art0 = new articulo();
          $i = 0;
@@ -803,7 +829,7 @@ class ventas_servicio extends fs_controller
          {
             if( $albaran->delete() )
             {
-               $this->new_error_msg("El " . FS_ALBARAN . " se ha borrado.");
+               $this->new_error_msg("El " . FS_ALBARAN . $albaran->codigo. " se ha borrado.",TRUE);
             }
             else
                $this->new_error_msg("¡Imposible borrar el " . FS_ALBARAN . "!");

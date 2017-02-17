@@ -136,11 +136,11 @@
                   {/if}
                {/loop}
             </div>
-            {if="$fsc->servicio->idalbaran"}
+            {if="$fsc->albaranserv"}
             <div class="btn-group">
-               <a class="btn btn-sm btn-info text-capitalize" href="{$fsc->servicio->albaran_url()}">
+               <a class="btn btn-sm btn-info text-capitalize" href="{$fsc->albaranserv->url()}" target="_blank"/>
                   <span class="glyphicon glyphicon-eye-open"></span>
-                  <span class="hidden-xs"> &nbsp; Ver {#FS_ALBARAN#}</span>
+                  <span class="hidden-xs"> &nbsp; Ver {#FS_ALBARAN#} {$fsc->albaranserv->codigo}</span>
                </a>
             </div>
             {else}
@@ -148,6 +148,14 @@
                <a class="btn btn-sm btn-success text-capitalize" href="{$fsc->servicio->url()}&genalbaran=TRUE">
                   <span class="glyphicon glyphicon glyphicon-new-window"></span>
                   <span class="hidden-xs"> &nbsp; Generar {#FS_ALBARAN#}</span>
+               </a>
+            </div>
+            {/if}
+            {if="$fsc->facturaserv"}
+            <div class="btn-group">
+               <a class="btn btn-sm btn-success text-capitalize" href="{$fsc->facturaserv->url()}" target="_blank"/>
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                  <span class="hidden-xs"> &nbsp; Ver {#FS_FACTURA#} {$fsc->facturaserv->codigo}</span>
                </a>
             </div>
             {/if}
@@ -171,7 +179,7 @@
          </div>
       </div>
       <div class="row">
-         <div class="col-md-12">
+         <div class="col-md-9">
             <br/>
             <ol class="breadcrumb" style="margin-bottom: 5px;">
                <li><a href="{$fsc->ppage->url()}">Ventas</a></li>
@@ -198,6 +206,14 @@
                Sin datos de qué empleado ha creado este {#FS_SERVICIO#}.
                {/if}
             </p>
+         </div>
+         <br/>
+         <div class='col-md-3'>
+            <ol class="breadcrumb" style="margin-bottom: 5px;">
+               <li class="active"><b>Teléfonos:</b></li>
+               <li>{$fsc->cliente_s->telefono1}</li>
+               <li>{$fsc->cliente_s->telefono2}</li>
+            </ol>
          </div>
       </div>
       <div class="row">
@@ -524,6 +540,12 @@
                </tbody>
             </table>
             {else}
+            <div class="row">
+               <div class="col-sm-12">
+                  <div class="alert alert-warning">Ya no puedes añadir líneas</div>
+                  <br/>
+               </div>
+            </div>
             <table class="table table-hover">
                <thead>
                   <tr>
@@ -567,6 +589,14 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="datos">
          <div class="container-fluid" style="margin-top: 10px;">
+            {if="$fsc->albaranserv"}
+            <div class="row">
+               <div class="col-sm-12">
+                  <div class="alert alert-warning">Estos datos ya no pueden ser modificados.</div>
+                  <br/>
+               </div>
+            </div>
+            {/if}
             <div class="row">
                <div class="col-sm-3">
                   <div class="form-group">
@@ -1027,16 +1057,22 @@
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                <h4 class="modal-title">¿Realmente desea eliminar este {#FS_SERVICIO#}?</h4>
             </div>
+            {if="$fsc->servicio->idalbaran"}
+            <div class="alert alert-info">
+               Hay un {#FS_ALBARAN#} asociado que será eliminada junto con este {#FS_SERVICIO#}.
+            </div>
+            {/if}
+            {if="$fsc->facturaserv"}
+            <div class="alert alert-success">
+               Hay una {#FS_FACTURA#} asociada que será eliminada junto con este {#FS_SERVICIO#}.
+            </div>
+            {/if}
             <div class="modal-footer">
                <button class="btn btn-sm btn-danger" onclick="this.disabled = true;this.form.submit();">
                   <span class="glyphicon glyphicon-trash"></span>&nbsp; Eliminar
                </button>
             </div>
-            {if="$fsc->servicio->idalbaran"}
-            <div class="alert alert-info">
-               Hay un {#FS_SERVICIO#} asociado que será eliminada junto con este {#FS_SERVICIO#}.
-            </div>
-            {/if}
+
          </div>
       </div>
    </div>

@@ -749,7 +749,7 @@ class servicio_cliente extends fs_model
                $alb0->delete();
             }
          }
-         
+         $this->new_error_msg(FS_SERVICIO ." ". $this->codigo. " eliminado correctamente", TRUE);
          return TRUE;
       }
       else

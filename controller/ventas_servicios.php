@@ -326,12 +326,16 @@ class ventas_servicios extends fs_controller
       $serv1 = $serv->get($_POST['delete']);
       if ($serv1)
       {
-         if ($serv1->delete())
+         if($serv1->idalbaran)
+            {
+               $alb0 = new albaran_cliente();
+               $alb = $alb0->get($serv1->idalbaran);
+               
+            }
+         if (!$serv1->delete())
          {
-            $this->new_message(ucfirst(FS_SERVICIO) . ' ' . $serv1->codigo . " borrado correctamente.");
-         }
-         else
             $this->new_error_msg("¡Imposible borrar el " . FS_SERVICIO . "!");
+         }
       }
       else
          $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " no encontrado!");
