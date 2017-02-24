@@ -153,9 +153,9 @@
             {/if}
             {if="$fsc->facturaserv"}
             <div class="btn-group">
-               <a class="btn btn-sm btn-success text-capitalize" href="{$fsc->facturaserv->url()}" target="_blank"/>
+               <a class="btn btn-sm btn-warning text-capitalize" href="{$fsc->facturaserv->url()}" target="_blank"/>
                   <span class="glyphicon glyphicon-eye-open"></span>
-                  <span class="hidden-xs"> &nbsp; Ver {#FS_FACTURA#} {$fsc->facturaserv->codigo}</span>
+                  <span class="hidden-xs"> <b>&nbsp; Ver {#FS_FACTURA#} {$fsc->facturaserv->codigo}</b></span>
                </a>
             </div>
             {/if}
@@ -1063,8 +1063,8 @@
             </div>
             {/if}
             {if="$fsc->facturaserv"}
-            <div class="alert alert-success">
-               Hay una {#FS_FACTURA#} asociada que será eliminada junto con este {#FS_SERVICIO#}.
+            <div class="alert alert-warning">
+               <b>Hay una {#FS_FACTURA#} asociada que será eliminada junto con este {#FS_SERVICIO#}.</b>
             </div>
             {/if}
             <div class="modal-footer">
