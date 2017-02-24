@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
@@ -31,100 +32,99 @@ require_model('estado_servicio.php');
  */
 class servicio_cliente extends fs_model
 {
+
    /**
     * Clave primaria.
     * @var type 
     */
    public $idservicio;
-   
+
    /**
     * ID del albarán relacionado, si lo hay.
     * @var type 
     */
    public $idalbaran;
-   
+
    /**
     * Código único del documento. Para humanos.
     * @var type 
     */
    public $codigo;
-   
+
    /**
     * Serie relacionada.
     * @var type 
     */
    public $codserie;
-   
+
    /**
     * Ejercicio relacionado. El que corresponde a la fecha.
     * @var type 
     */
    public $codejercicio;
-   
+
    /**
     * Código del cliente al que se presta el servicio.
     * @var type 
     */
    public $codcliente;
-   
+
    /**
     * Empleado que se encarga del servicio.
     * @var type 
     */
    public $codagente;
-   
+
    /**
     * Forma de pago.
     * @var type 
     */
    public $codpago;
-   
+
    /**
     * Divisa del documento.
     * @var type 
     */
    public $coddivisa;
-   
+
    /**
     * Almacén del que saldría la mercancía.
     * @var type 
     */
    public $codalmacen;
-   
+
    /**
     * País del cliente.
     * @var type 
     */
    public $codpais;
-   
+
    /**
     * ID de la dirección del cliente.
     * Modelo direccion_cliente.
     * @var type 
     */
    public $coddir;
-   
    public $codpostal;
-   
+
    /**
     * Número de servicio.
     * Único dentro de la serie+ejercicio.
     * @var type 
     */
    public $numero;
-   
+
    /**
     * Prioridad del servicio.
     * @var type 
     */
-   public $prioridad;  
-   
+   public $prioridad;
+
    /**
     * Número opcional a disposición del usuario.
     * @var type 
     */
    public $numero2;
-   
    public $nombrecliente;
    public $cifnif;
    public $direccion;
@@ -133,26 +133,26 @@ class servicio_cliente extends fs_model
    public $apartado;
    public $fecha;
    public $hora;
-   
+
    /**
     * Importe total antes de impuestos.
     * Es la suma del pvptotal de las líneas.
     * @var type 
     */
    public $neto;
-   
+
    /**
     * Importe total del servicio, con impuesto.
     * @var type 
     */
    public $total;
-   
+
    /**
     * Suma total del IVA de las líneas.
     * @var type 
     */
    public $totaliva;
-   
+
    /**
     * totaleuros = total*tasaconv
     * Esto es para dar compatibilidad a Eneboo. Fuera de eso, no tiene sentido.
@@ -160,80 +160,76 @@ class servicio_cliente extends fs_model
     * @var type 
     */
    public $totaleuros;
-   
+
    /**
     * % de retención IRPF de la factura.
     * Puede variar en cada línea.
     * @var type 
     */
    public $irpf;
-   
+
    /**
     * Suma total de retenciones IRPF de las líneas.
     * @var type 
     */
    public $totalirpf;
-   
+
    /**
     * % de comisión del empleado.
     * @var type 
     */
    public $porcomision;
-   
+
    /**
     * Tasa de conversión a Euros de la divisa de la factura.
     * @var type 
     */
    public $tasaconv;
-   
+
    /**
     * Todavía sin uso.
     * @var type 
     */
    private $recfinanciero;
-   
+
    /**
     * Suma del recargo de equivalencia de las líneas.
     * @var type 
     */
    public $totalrecargo;
-   
    public $observaciones;
-   
    public $descripcion;
-   
    public $solucion;
-   
    public $material;
-   
    public $material_estado;
-   
    public $accesorios;
-   
+
    /**
     * ID del estado asociado.
     * @var type 
     */
    public $idestado;
-   
    public $fechafin;
-   
    public $fechainicio;
-   
    public $garantia;
-   
+
    /**
     * Fecha en la que se envió el servicio por email.
     * @var type 
     */
    public $femail;
-   
+
    /**
     * Todavía sin uso.
     * @var type 
     */
    public $editable;
-   
+
+   /**
+    * Número de documentos que tiene adjuntos
+    * @var type 
+    */
+   public $numdocs;
    private static $estados;
 
    public function __construct($s = FALSE)
@@ -263,13 +259,13 @@ class servicio_cliente extends fs_model
          $this->provincia = $s['provincia'];
          $this->apartado = $s['apartado'];
          $this->fecha = Date('d-m-Y', strtotime($s['fecha']));
-         
+
          $this->hora = Date('H:i:s', strtotime($s['fecha']));
-         if( !is_null($s['hora']) )
+         if(!is_null($s['hora']))
          {
             $this->hora = $s['hora'];
          }
-         
+
          $this->neto = floatval($s['neto']);
          $this->total = floatval($s['total']);
          $this->totaliva = floatval($s['totaliva']);
@@ -287,28 +283,30 @@ class servicio_cliente extends fs_model
          $this->material_estado = $s['material_estado'];
          $this->accesorios = $s['accesorios'];
          $this->idestado = $s['idestado'];
-         
+
          $this->fechafin = NULL;
-         if( isset($s['fechafin']) )
+         if(isset($s['fechafin']))
          {
-            $this->fechafin = date('d-m-Y H:i', strtotime($s['fechafin'].' '.$s['horafin']));
+            $this->fechafin = date('d-m-Y H:i', strtotime($s['fechafin'] . ' ' . $s['horafin']));
          }
-         
+
          $this->fechainicio = NULL;
-         if( isset($s['fechainicio']) )
+         if(isset($s['fechainicio']))
          {
-            $this->fechainicio = date('d-m-Y H:i', strtotime($s['fechainicio'].' '.$s['horainicio']));
+            $this->fechainicio = date('d-m-Y H:i', strtotime($s['fechainicio'] . ' ' . $s['horainicio']));
          }
-         
+
          $this->garantia = $s['garantia'];
          $this->prioridad = intval($s['prioridad']);
          $this->editable = $this->str2bool($s['editable']);
-         
+
          $this->femail = NULL;
-         if( !is_null($s['femail']) )
+         if(!is_null($s['femail']))
          {
             $this->femail = Date('d-m-Y', strtotime($s['femail']));
          }
+
+         $this->numdocs = intval($s['numdocs']);
       }
       else
       {
@@ -358,13 +356,16 @@ class servicio_cliente extends fs_model
          $this->garantia = FALSE;
          $this->editable = TRUE;
          $this->femail = NULL;
+         $this->numdocs = 0;
       }
-      
-      if( !isset(self::$estados) )
+
+      if(!isset(self::$estados))
       {
          $estado = new estado_servicio();
          self::$estados = $estado->all();
       }
+
+      
    }
 
    protected function install()
@@ -381,17 +382,17 @@ class servicio_cliente extends fs_model
       else
          return Date('H:i', strtotime($this->hora));
    }
-   
+
    public function horainicio()
    {
       return Date('H:i:s', strtotime($this->fechainicio));
    }
-   
+
    public function horafin()
    {
       return Date('H:i:s', strtotime($this->fechafin));
    }
-   
+
    public function observaciones_resume()
    {
       if($this->observaciones == '')
@@ -405,11 +406,11 @@ class servicio_cliente extends fs_model
       else
          return substr($this->observaciones, 0, 50) . '...';
    }
-   
+
    public function editable()
    {
       $editable = $this->editable;
-      
+
       foreach(self::$estados as $est)
       {
          if($est->id == $this->idestado)
@@ -418,10 +419,10 @@ class servicio_cliente extends fs_model
             break;
          }
       }
-      
+
       return $editable;
    }
-   
+
    public function url($nuevo = FALSE)
    {
       if(is_null($this->idservicio))
@@ -441,7 +442,7 @@ class servicio_cliente extends fs_model
 
    public function albaran_url()
    {
-      if( is_null($this->idalbaran) )
+      if(is_null($this->idalbaran))
       {
          return 'index.php?page=ventas_albaran';
       }
@@ -451,7 +452,7 @@ class servicio_cliente extends fs_model
 
    public function agente_url()
    {
-      if( is_null($this->codagente) )
+      if(is_null($this->codagente))
       {
          return "index.php?page=admin_agentes";
       }
@@ -461,7 +462,7 @@ class servicio_cliente extends fs_model
 
    public function cliente_url()
    {
-      if( is_null($this->codcliente) )
+      if(is_null($this->codcliente))
       {
          return "index.php?page=ventas_clientes";
       }
@@ -488,7 +489,7 @@ class servicio_cliente extends fs_model
 
    public function exists()
    {
-      if( is_null($this->idservicio) )
+      if(is_null($this->idservicio))
       {
          return FALSE;
       }
@@ -511,10 +512,10 @@ class servicio_cliente extends fs_model
 
       if(!$sec OR $this->numero <= 1)
       {
-         $sql = "SELECT MAX(".$this->db->sql_to_int('numero').") as num FROM ".$this->table_name
-                 ." WHERE codejercicio = ".$this->var2str($this->codejercicio)
-                 ." AND codserie = ".$this->var2str($this->codserie).";";
-         
+         $sql = "SELECT MAX(" . $this->db->sql_to_int('numero') . ") as num FROM " . $this->table_name
+                 . " WHERE codejercicio = " . $this->var2str($this->codejercicio)
+                 . " AND codserie = " . $this->var2str($this->codserie) . ";";
+
          $numero = $this->db->select($sql);
          if($numero)
          {
@@ -529,14 +530,14 @@ class servicio_cliente extends fs_model
             $sec->save();
          }
       }
-      
+
       if(FS_NEW_CODIGO == 'eneboo')
       {
-         $this->codigo = $this->codejercicio.sprintf('%02s', $this->codserie).sprintf('%06s', $this->numero);
+         $this->codigo = $this->codejercicio . sprintf('%02s', $this->codserie) . sprintf('%06s', $this->numero);
       }
       else
       {
-         $this->codigo = strtoupper(substr(FS_SERVICIO, 0, 3)).$this->codejercicio.$this->codserie.$this->numero;
+         $this->codigo = strtoupper(substr(FS_SERVICIO, 0, 3)) . $this->codejercicio . $this->codserie . $this->numero;
       }
    }
 
@@ -547,29 +548,29 @@ class servicio_cliente extends fs_model
       {
          $this->nombrecliente = '-';
       }
-      
+
       $this->direccion = $this->no_html($this->direccion);
       $this->ciudad = $this->no_html($this->ciudad);
       $this->provincia = $this->no_html($this->provincia);
       $this->numero2 = $this->no_html($this->numero2);
       $this->observaciones = $this->no_html($this->observaciones);
-      
+
       if($this->prioridad > 4)
       {
          $this->prioridad = 4;
       }
-      else if($this->prioridad < 1 OR !is_numeric($this->prioridad) )
+      else if($this->prioridad < 1 OR ! is_numeric($this->prioridad))
       {
          $this->prioridad = 1;
       }
-      
+
       /**
        * Usamos el euro como divisa puente a la hora de sumar, comparar
        * o convertir cantidades en varias divisas. Por este motivo necesimos
        * muchos decimales.
        */
       $this->totaleuros = round($this->total / $this->tasaconv, 5);
-      
+
       if($this->floatcmp($this->total, $this->neto + $this->totaliva - $this->totalirpf + $this->totalrecargo, FS_NF0, TRUE))
       {
          return TRUE;
@@ -580,86 +581,87 @@ class servicio_cliente extends fs_model
          return FALSE;
       }
    }
-   
+
    public function save()
    {
-      if( $this->test() )
+      if($this->test())
       {
          $fechafin = NULL;
          if($this->fechafin)
          {
             $fechafin = substr($this->fechafin, 0, 10);
          }
-         
+
          $horafin = NULL;
          if($this->fechafin)
          {
             $horafin = substr($this->fechafin, 10, 6);
          }
-         
+
          $fechaini = NULL;
          if($this->fechainicio)
          {
             $fechaini = substr($this->fechainicio, 0, 10);
          }
-         
+
          $horaini = NULL;
          if($this->fechainicio)
          {
             $horaini = substr($this->fechainicio, 10, 6);
          }
-         
-         if( $this->exists() )
+
+         if($this->exists())
          {
             $sql = "UPDATE " . $this->table_name . " SET apartado = " . $this->var2str($this->apartado)
-                    .", cifnif = " . $this->var2str($this->cifnif)
-                    .", ciudad = " . $this->var2str($this->ciudad)
-                    .", codagente = " . $this->var2str($this->codagente)
-                    .", codalmacen = " . $this->var2str($this->codalmacen)
-                    .", codcliente = " . $this->var2str($this->codcliente)
-                    .", coddir = " . $this->var2str($this->coddir)
-                    .", coddivisa = " . $this->var2str($this->coddivisa)
-                    .", codejercicio = " . $this->var2str($this->codejercicio)
-                    .", codigo = " . $this->var2str($this->codigo)
-                    .", codpago = " . $this->var2str($this->codpago)
-                    .", codpais = " . $this->var2str($this->codpais)
-                    .", codpostal = " . $this->var2str($this->codpostal)
-                    .", codserie = " . $this->var2str($this->codserie)
-                    .", direccion = " . $this->var2str($this->direccion)
-                    .", fecha = " . $this->var2str($this->fecha)
-                    .", hora = " . $this->var2str($this->hora)
-                    .", fechafin = " . $this->var2str($fechafin)
-                    .", horafin = " . $this->var2str($horafin)
-                    .", horainicio = " . $this->var2str($horaini)
-                    .", idalbaran = " . $this->var2str($this->idalbaran)
-                    .", irpf = " . $this->var2str($this->irpf)
-                    .", neto = " . $this->var2str($this->neto)
-                    .", fechainicio = " . $this->var2str($fechaini)
-                    .", nombrecliente = " . $this->var2str($this->nombrecliente)
-                    .", numero = " . $this->var2str($this->numero)
-                    .", numero2 = " . $this->var2str($this->numero2)
-                    .", observaciones = " . $this->var2str($this->observaciones)
-                    .", porcomision = " . $this->var2str($this->porcomision)
-                    .", provincia = " . $this->var2str($this->provincia)
-                    .", recfinanciero = " . $this->var2str($this->recfinanciero)
-                    .", tasaconv = " . $this->var2str($this->tasaconv)
-                    .", prioridad = " . $this->var2str($this->prioridad)
-                    .", descripcion = " . $this->var2str($this->descripcion)
-                    .", solucion = " . $this->var2str($this->solucion)
-                    .", material = " . $this->var2str($this->material)
-                    .", material_estado = " . $this->var2str($this->material_estado)
-                    .", accesorios = " . $this->var2str($this->accesorios)
-                    .", idestado = " . $this->var2str($this->idestado)
-                    .", garantia = " . $this->var2str($this->garantia)
-                    .", total = " . $this->var2str($this->total)
-                    .", totaleuros = " . $this->var2str($this->totaleuros)
-                    .", totalirpf = " . $this->var2str($this->totalirpf)
-                    .", totaliva = " . $this->var2str($this->totaliva)
-                    .", totalrecargo = " . $this->var2str($this->totalrecargo)
-                    .", editable = " . $this->var2str($this->editable)
-                    .", femail = ".$this->var2str($this->femail)
-                    ."  WHERE idservicio = " . $this->var2str($this->idservicio).";";
-            
+                    . ", cifnif = " . $this->var2str($this->cifnif)
+                    . ", ciudad = " . $this->var2str($this->ciudad)
+                    . ", codagente = " . $this->var2str($this->codagente)
+                    . ", codalmacen = " . $this->var2str($this->codalmacen)
+                    . ", codcliente = " . $this->var2str($this->codcliente)
+                    . ", coddir = " . $this->var2str($this->coddir)
+                    . ", coddivisa = " . $this->var2str($this->coddivisa)
+                    . ", codejercicio = " . $this->var2str($this->codejercicio)
+                    . ", codigo = " . $this->var2str($this->codigo)
+                    . ", codpago = " . $this->var2str($this->codpago)
+                    . ", codpais = " . $this->var2str($this->codpais)
+                    . ", codpostal = " . $this->var2str($this->codpostal)
+                    . ", codserie = " . $this->var2str($this->codserie)
+                    . ", direccion = " . $this->var2str($this->direccion)
+                    . ", fecha = " . $this->var2str($this->fecha)
+                    . ", hora = " . $this->var2str($this->hora)
+                    . ", fechafin = " . $this->var2str($fechafin)
+                    . ", horafin = " . $this->var2str($horafin)
+                    . ", horainicio = " . $this->var2str($horaini)
+                    . ", idalbaran = " . $this->var2str($this->idalbaran)
+                    . ", irpf = " . $this->var2str($this->irpf)
+                    . ", neto = " . $this->var2str($this->neto)
+                    . ", fechainicio = " . $this->var2str($fechaini)
+                    . ", nombrecliente = " . $this->var2str($this->nombrecliente)
+                    . ", numero = " . $this->var2str($this->numero)
+                    . ", numero2 = " . $this->var2str($this->numero2)
+                    . ", observaciones = " . $this->var2str($this->observaciones)
+                    . ", porcomision = " . $this->var2str($this->porcomision)
+                    . ", provincia = " . $this->var2str($this->provincia)
+                    . ", recfinanciero = " . $this->var2str($this->recfinanciero)
+                    . ", tasaconv = " . $this->var2str($this->tasaconv)
+                    . ", prioridad = " . $this->var2str($this->prioridad)
+                    . ", descripcion = " . $this->var2str($this->descripcion)
+                    . ", solucion = " . $this->var2str($this->solucion)
+                    . ", material = " . $this->var2str($this->material)
+                    . ", material_estado = " . $this->var2str($this->material_estado)
+                    . ", accesorios = " . $this->var2str($this->accesorios)
+                    . ", idestado = " . $this->var2str($this->idestado)
+                    . ", garantia = " . $this->var2str($this->garantia)
+                    . ", total = " . $this->var2str($this->total)
+                    . ", totaleuros = " . $this->var2str($this->totaleuros)
+                    . ", totalirpf = " . $this->var2str($this->totalirpf)
+                    . ", totaliva = " . $this->var2str($this->totaliva)
+                    . ", totalrecargo = " . $this->var2str($this->totalrecargo)
+                    . ", editable = " . $this->var2str($this->editable)
+                    . ", femail = " . $this->var2str($this->femail)
+                    . ", numdocs = ".$this->var2str($this->numdocs)
+                    . "  WHERE idservicio = " . $this->var2str($this->idservicio) . ";";
+
             return $this->db->exec($sql);
          }
          else
@@ -670,7 +672,7 @@ class servicio_cliente extends fs_model
                direccion,fecha,hora,idalbaran,irpf,neto,nombrecliente,numero,observaciones,
                porcomision,fechafin,fechainicio,garantia,provincia,recfinanciero,tasaconv,
                total,totaleuros,totalirpf,totaliva,totalrecargo,descripcion,solucion,material,
-               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail)
+               material_estado,accesorios,prioridad,numero2,idestado,editable,horainicio,horafin,femail,numdocs)
                 VALUES (" . $this->var2str($this->apartado)
                     . "," . $this->var2str($this->cifnif)
                     . "," . $this->var2str($this->ciudad)
@@ -717,9 +719,10 @@ class servicio_cliente extends fs_model
                     . "," . $this->var2str($this->editable)
                     . "," . $this->var2str($horaini)
                     . "," . $this->var2str($horafin)
-                    . "," . $this->var2str($this->femail).");";
-            
-            if( $this->db->exec($sql) )
+                    . "," . $this->var2str($this->femail)
+                    . "," . $this->var2str($this->numdocs).");";
+
+            if($this->db->exec($sql))
             {
                $this->idservicio = $this->db->lastval();
                return TRUE;
@@ -734,7 +737,7 @@ class servicio_cliente extends fs_model
 
    public function delete()
    {
-      if( $this->db->exec("DELETE FROM " . $this->table_name . " WHERE idservicio = " . $this->var2str($this->idservicio) . ";") )
+      if($this->db->exec("DELETE FROM " . $this->table_name . " WHERE idservicio = " . $this->var2str($this->idservicio) . ";"))
       {
          if($this->idalbaran)
          {
@@ -749,7 +752,7 @@ class servicio_cliente extends fs_model
                $alb0->delete();
             }
          }
-         $this->new_message(ucfirst(FS_SERVICIO) ." ". $this->codigo. " eliminado correctamente", TRUE);
+         $this->new_message(ucfirst(FS_SERVICIO) . " " . $this->codigo . " eliminado correctamente", TRUE);
          return TRUE;
       }
       else
@@ -759,8 +762,8 @@ class servicio_cliente extends fs_model
    public function all($offset = 0, $order = 'fecha DESC')
    {
       $servlist = array();
-      $sql = "SELECT * FROM ".$this->table_name." ORDER BY ".$order;
-      
+      $sql = "SELECT * FROM " . $this->table_name . " ORDER BY " . $order;
+
       $servicios = $this->db->select_limit($sql, FS_ITEM_LIMIT, $offset);
       if($servicios)
       {
@@ -769,14 +772,14 @@ class servicio_cliente extends fs_model
             $servlist[] = new servicio_cliente($s);
          }
       }
-      
+
       return $servlist;
    }
 
    public function all_from_cliente($codcliente, $offset = 0)
    {
       $servlist = array();
-      
+
       $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name .
               " WHERE codcliente = " . $this->var2str($codcliente) .
               " ORDER BY fecha DESC, codigo DESC", FS_ITEM_LIMIT, $offset);
@@ -787,17 +790,17 @@ class servicio_cliente extends fs_model
             $servlist[] = new servicio_cliente($s);
          }
       }
-      
+
       return $servlist;
    }
-   
+
    public function all_from_agente($codagente, $offset = 0)
    {
       $servlist = array();
-      
+
       $servicios = $this->db->select_limit("SELECT * FROM " . $this->table_name
-              ." WHERE codagente = " . $this->var2str($codagente)
-              ." ORDER BY fecha DESC, codigo DESC", FS_ITEM_LIMIT, $offset);
+              . " WHERE codagente = " . $this->var2str($codagente)
+              . " ORDER BY fecha DESC, codigo DESC", FS_ITEM_LIMIT, $offset);
       if($servicios)
       {
          foreach($servicios as $s)
@@ -805,10 +808,10 @@ class servicio_cliente extends fs_model
             $servlist[] = new servicio_cliente($s);
          }
       }
-      
+
       return $servlist;
    }
-   
+
    /**
     * Devuelve todos los servicios relacionados con el albarán.
     * @param type $id
@@ -817,9 +820,9 @@ class servicio_cliente extends fs_model
    public function all_from_albaran($id)
    {
       $servlist = array();
-      $sql = "SELECT * FROM ".$this->table_name." WHERE idalbaran = ".$this->var2str($id)
-              ." ORDER BY fecha DESC, codigo DESC;";
-     
+      $sql = "SELECT * FROM " . $this->table_name . " WHERE idalbaran = " . $this->var2str($id)
+              . " ORDER BY fecha DESC, codigo DESC;";
+
       $data = $this->db->select($sql);
       if($data)
       {
@@ -828,14 +831,14 @@ class servicio_cliente extends fs_model
             $servlist[] = new \servicio_cliente($p);
          }
       }
-     
+
       return $servlist;
    }
 
    public function color_estado()
    {
       $color = 'FFFFFF';
-      
+
       foreach(self::$estados as $est)
       {
          if($est->id == $this->idestado)
@@ -844,14 +847,14 @@ class servicio_cliente extends fs_model
             break;
          }
       }
-      
+
       return $color;
    }
-   
-    public function nombre_estado()
+
+   public function nombre_estado()
    {
       $nombre = '';
-      
+
       foreach(self::$estados as $est)
       {
          if($est->id == $this->idestado)
@@ -860,10 +863,10 @@ class servicio_cliente extends fs_model
             break;
          }
       }
-      
+
       return $nombre;
    }
-   
+
    public function listar_prioridad()
    {
       $prioridad = array();
@@ -879,7 +882,7 @@ class servicio_cliente extends fs_model
 
       return $prioridad;
    }
-   
+
    public function prioridad()
    {
       $prioridad = array(
@@ -888,44 +891,44 @@ class servicio_cliente extends fs_model
           3 => 'Prioridad media',
           4 => 'Prioridad baja',
       );
-      
+
       return $prioridad;
    }
-   
+
    public function nombre_prioridad()
    {
       $prioridades = $this->prioridad();
       return $prioridades[$this->prioridad];
    }
-   
+
    public function estrellas_prioridad()
    {
       $retorno = '';
       $estrella = '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>';
       $no_estrella = '<span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>';
-      
+
       $i = 0;
-      for(;$i < 5-$this->prioridad; $i++)
+      for(; $i < 5 - $this->prioridad; $i++)
       {
          $retorno .= $estrella;
       }
-      
+
       while($i < 4)
       {
          $retorno .= $no_estrella;
          $i++;
       }
-      
+
       return $retorno;
    }
-   
+
    public function num_detalles()
    {
       $num = 0;
       $sql = "SELECT count(*) as num FROM detalles_servicios "
-              . "WHERE idservicio = ".$this->var2str($this->idservicio).";";
-      
-      if( $this->db->table_exists('detalles_servicios') )
+              . "WHERE idservicio = " . $this->var2str($this->idservicio) . ";";
+
+      if($this->db->table_exists('detalles_servicios'))
       {
          $result = $this->db->select($sql);
          if($result)
@@ -933,10 +936,10 @@ class servicio_cliente extends fs_model
             $num = intval($result[0]['num']);
          }
       }
-      
+
       return $num;
    }
-   
+
    /**
     * Devuelve un array con los servicios comprendidos entre $desde y $hasta
     * @param type $desde
@@ -946,9 +949,9 @@ class servicio_cliente extends fs_model
    public function all_desde($desde, $hasta)
    {
       $servlist = array();
-      $sql = "SELECT * FROM ".$this->table_name." WHERE fecha >= ".$this->var2str($desde)
-              ." AND fecha <= ".$this->var2str($hasta)." ORDER BY codigo ASC;";
-      
+      $sql = "SELECT * FROM " . $this->table_name . " WHERE fecha >= " . $this->var2str($desde)
+              . " AND fecha <= " . $this->var2str($hasta) . " ORDER BY codigo ASC;";
+
       $data = $this->db->select($sql);
       if($data)
       {
@@ -957,7 +960,8 @@ class servicio_cliente extends fs_model
             $servlist[] = new servicio_cliente($s);
          }
       }
-      
+
       return $servlist;
    }
+
 }

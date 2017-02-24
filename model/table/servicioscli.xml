@@ -249,6 +249,11 @@
       <nombre>idestado</nombre>
       <tipo>integer</tipo>
    </columna>
+   <columna>
+      <nombre>numdocs</nombre>
+      <tipo>integer</tipo>
+      <defecto>0</defecto>
+   </columna>
    <restriccion>
       <nombre>servicioscli_pkey</nombre>
       <consulta>PRIMARY KEY (idservicio)</consulta>

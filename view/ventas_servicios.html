@@ -367,9 +367,10 @@
                   <th class="text-left">Código + {#FS_NUMERO2#}</th>
                   <th class="text-left">Prioridad</th>
                   <th class="text-left">Cliente</th>
+                  <th class="hidden-sm"></th>
                   <th class="text-left">Estado</th>
                   {if="$fsc->servicios_setup['servicios_mostrar_material']"}
-                  <th class="text-left">{$fsc->st['st_material']}</th>
+                  <th width="30%" class="text-left">{$fsc->st['st_material']}</th>
                   {/if}
                   {if="$fsc->servicios_setup['usar_direccion']"}
                   <th class="text-left">Dirección</th>
@@ -412,6 +413,15 @@
                   {else}
                   <span class="label label-danger" title="Cliente desconocido">???</span>
                   {/if}
+               </td>
+               <td class="text-right hidden-sm">
+                  <span title="{$value->numdocs} documentos adjuntos">
+                     {if="$value->numdocs==1"}
+                     <i class="fa fa-file" aria-hidden="true"></i>
+                     {elseif="$value->numdocs>1"}
+                     {$value->numdocs} <i class="fa fa-file" aria-hidden="true"></i>
+                     {/if}
+                  </span>
                </td>
                <td>{$value->nombre_estado()}</td>
                {if="$fsc->servicios_setup['servicios_mostrar_material']"}
