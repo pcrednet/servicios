@@ -2,7 +2,7 @@
 
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2015-2016    Carlos Garcia Gomez        neorazorx@gmail.com
+ * Copyright (C) 2015-2017    Carlos Garcia Gomez        neorazorx@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero   luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -214,7 +214,7 @@ class opciones_servicios extends fs_controller
             /// activamos las páginas del plugin
             foreach( scandir(__DIR__) as $f)
             {
-               if( is_string($f) AND strlen($f) > 0 AND !is_dir($f) AND $f != __CLASS__.'.php' )
+               if( $f != '.' AND $f != '..' AND is_string($f) AND strlen($f) > 4 AND !is_dir($f) AND $f != __CLASS__.'.php' )
                {
                   $page_name = substr($f, 0, -4);
                   
