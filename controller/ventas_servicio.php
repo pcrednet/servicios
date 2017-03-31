@@ -54,8 +54,8 @@ class ventas_servicio extends fs_controller
    public $servicio;
    public $serie;
    public $setup;
-   public $facturaserv;
-   public $albaranserv;
+   public $historico;
+   public $factura;
    
    public function __construct()
    {
@@ -81,8 +81,6 @@ class ventas_servicio extends fs_controller
       $this->impuesto = new impuesto();
       $this->pais = new pais();
       $this->serie = new serie();
-      $this->facturaserv = FALSE;
-      $this->albaranserv = FALSE;
       
       
       /// cargamos la configuración de servicios
@@ -169,21 +167,6 @@ class ventas_servicio extends fs_controller
       {
          $this->page->title = $this->servicio->codigo;
          
-         //comprobamos si tiene albarán y factura asociada
-         if($this->servicio->idalbaran)
-         {
-            $alb0 = new albaran_cliente();
-            $this->albaranserv = $alb0->get($this->servicio->idalbaran);
-            if ($this->albaranserv)
-            {
-               if($this->albaranserv->idfactura)
-               {
-                  $fac0 = new factura_cliente();
-                  $this->facturaserv = $fac0->get($this->albaranserv->idfactura);
-               }
-            }
-         }
-
          /// cargamos el agente
          if($this->servicio->codagente)
          {
@@ -205,12 +188,11 @@ class ventas_servicio extends fs_controller
             if (!$this->servicio->idalbaran)
             {
                $this->generar_albaran();
-               
             }
-            
          }
          
          $this->modificar_detalles();
+         $this->get_historico();
       }
       else
          $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " de cliente no encontrado!");
@@ -882,4 +864,57 @@ class ventas_servicio extends fs_controller
          }
       }
    }
+   
+   private function get_historico()
+   {
+      $this->historico = array();
+      $orden = 0;
+      $this->factura = FALSE;
+
+      if($this->servicio->idalbaran)
+      {
+         /// albaran
+         $sql = "SELECT * FROM albaranescli WHERE idalbaran = " . $this->servicio->var2str($this->servicio->idalbaran)
+                 . " ORDER BY idalbaran ASC;";
+
+         $data = $this->db->select($sql);
+         if($data)
+         {
+            foreach($data as $d)
+            {
+               $albaran = new albaran_cliente($d);
+               $this->historico[] = array(
+                   'orden' => $orden,
+                   'documento' => FS_ALBARAN,
+                   'modelo' => $albaran
+               );
+               $orden++;
+
+               if($albaran->idfactura)
+               {
+                  /// factura
+                  $sql2 = "SELECT * FROM facturascli WHERE idfactura = " . $albaran->var2str($albaran->idfactura)
+                          . " ORDER BY idfactura ASC;";
+
+                  $data2 = $this->db->select($sql2);
+                  if($data2)
+                  {
+                     $this->factura = true;
+                     foreach($data2 as $d2)
+                     {
+                        $factura = new factura_cliente($d2);
+                        $this->historico[] = array(
+                            'orden' => $orden,
+                            'documento' => 'factura',
+                            'modelo' => $factura
+                        );
+                        $orden++;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
 }
