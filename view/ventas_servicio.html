@@ -108,27 +108,27 @@
    <div class="container-fluid">
       <div class="row">
          <div class="col-md-8 col-sm-8 col-xs-8">
-            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
-               <span class="glyphicon glyphicon-refresh"></span>
-            </a>
-            <div class="btn-group">
+            <div class="btn-group hidden-xs">
                <a class="btn btn-sm btn-default" href="index.php?page=ventas_servicios">
                   <span class="glyphicon glyphicon-arrow-left"></span>
-                  <span class="hidden-xs">&nbsp; Volver</span>
+                  <span class="hidden-xs">&nbsp;Volver</span>
+               </a>
+               <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+                  <span class="glyphicon glyphicon-refresh"></span>
                </a>
             </div>
             <div class="btn-group">
                <a id="b_imprimir" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-print"></span>
-                  <span class="hidden-xs">&nbsp; Imprimir</span>
+                  <span class="hidden-xs">&nbsp;Imprimir</span>
                </a>
                {if="$fsc->empresa->can_send_mail()"}
                <a id="b_enviar" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-envelope"></span>
                   {if="$fsc->servicio->femail"}
-                  <span class="hidden-xs">&nbsp; Reenviar</span>
+                  <span class="hidden-xs">&nbsp;Reenviar</span>
                   {else}
-                  <span class="hidden-xs">&nbsp; Enviar</span>
+                  <span class="hidden-xs">&nbsp;Enviar</span>
                   {/if}
                </a>
                {/if}
