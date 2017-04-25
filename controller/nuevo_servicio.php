@@ -59,6 +59,7 @@ class nuevo_servicio extends fs_controller
    public $servicio;
    public $setup;
    public $solucion;
+   public $nuevocli_setup;
    
    public function __construct()
    {
@@ -121,24 +122,33 @@ class nuevo_servicio extends fs_controller
                   'st_fechainicio' => "Fecha de Inicio",
                   'st_fechafin' => "Fecha de finalización",
                   'st_garantia' => "Garantía",
-                  'nuevocli_cifnif_req' => 0,
-                  'nuevocli_direccion' => 0,
-                  'nuevocli_direccion_req' => 0,
-                  'nuevocli_codpostal' => 0,
-                  'nuevocli_codpostal_req' => 0,
-                  'nuevocli_pais' => 0,
-                  'nuevocli_pais_req' => 0,
-                  'nuevocli_provincia' => 0,
-                  'nuevocli_provincia_req' => 0,
-                  'nuevocli_ciudad' => 0,
-                  'nuevocli_ciudad_req' => 0,
-                  'nuevocli_telefono1' => 0,
-                  'nuevocli_telefono1_req' => 0,
-                  'nuevocli_telefono2' => 0,
-                  'nuevocli_telefono2_req' => 0,
-                  'nuevocli_codgrupo' => '',
               ),
               FALSE
+      );
+      
+      //opciones nuevo cliente:
+      $this->nuevocli_setup = $fsvar->array_get(
+         array(
+            'nuevocli_cifnif_req' => 0,
+            'nuevocli_direccion' => 0,
+            'nuevocli_direccion_req' => 0,
+            'nuevocli_codpostal' => 0,
+            'nuevocli_codpostal_req' => 0,
+            'nuevocli_pais' => 0,
+            'nuevocli_pais_req' => 0,
+            'nuevocli_provincia' => 0,
+            'nuevocli_provincia_req' => 0,
+            'nuevocli_ciudad' => 0,
+            'nuevocli_ciudad_req' => 0,
+            'nuevocli_telefono1' => 0,
+            'nuevocli_telefono1_req' => 0,
+            'nuevocli_telefono2' => 0,
+            'nuevocli_telefono2_req' => 0,
+            'nuevocli_email' => 0,
+            'nuevocli_email_req' => 0,
+            'nuevocli_codgrupo' => '',
+         ),
+         FALSE
       );
       
       if( isset($_REQUEST['buscar_cliente']) )
@@ -181,7 +191,7 @@ class nuevo_servicio extends fs_controller
                      $this->new_advice('Ya existe un cliente con ese '.FS_CIFNIF.'. Se ha seleccionado.');
                   }
                }
-               
+
                if(!$this->cliente_s)
                {
                   $this->cliente_s = new cliente();
@@ -191,24 +201,29 @@ class nuevo_servicio extends fs_controller
                   $this->cliente_s->cifnif = $_POST['nuevo_cifnif'];
                   $this->cliente_s->personafisica = isset($_POST['personafisica']);
                   
-                  if( isset($_POST['nuevo_grupo']) )
+                  if( isset($_POST['nuevo_email']) )
                   {
-                     if($_POST['nuevo_grupo'] != '')
-                     {
-                        $this->cliente_s->codgrupo = $_POST['nuevo_grupo'];
-                     }
+                     $this->cliente_s->email = $_POST['nuevo_email'];
                   }
                   
+                  if( isset($_POST['codgrupo']) )
+                  {
+                     if($_POST['codgrupo'] != '')
+                     {
+                        $this->cliente_s->codgrupo = $_POST['codgrupo'];
+                     }
+                  }
+
                   if( isset($_POST['nuevo_telefono1']) )
                   {
                      $this->cliente_s->telefono1 = $_POST['nuevo_telefono1'];
                   }
-                  
+
                   if( isset($_POST['nuevo_telefono2']) )
                   {
                      $this->cliente_s->telefono2 = $_POST['nuevo_telefono2'];
                   }
-                  
+
                   if( $this->cliente_s->save() )
                   {
                      if($this->empresa->contintegrada)
@@ -216,45 +231,45 @@ class nuevo_servicio extends fs_controller
                         /// forzamos crear la subcuenta
                         $this->cliente_s->get_subcuenta($this->empresa->codejercicio);
                      }
-                     
+
                      $dircliente = new direccion_cliente();
                      $dircliente->codcliente = $this->cliente_s->codcliente;
                      $dircliente->codpais = $this->empresa->codpais;
                      $dircliente->provincia = $this->empresa->provincia;
                      $dircliente->ciudad = $this->empresa->ciudad;
-                     
+
                      if( isset($_POST['nuevo_pais']) )
                      {
                         $dircliente->codpais = $_POST['nuevo_pais'];
                      }
-                     
+
                      if( isset($_POST['nuevo_provincia']) )
                      {
                         $dircliente->provincia = $_POST['nuevo_provincia'];
                      }
-                     
+
                      if( isset($_POST['nuevo_ciudad']) )
                      {
                         $dircliente->ciudad = $_POST['nuevo_ciudad'];
                      }
-                     
+
                      if( isset($_POST['nuevo_codpostal']) )
                      {
                         $dircliente->codpostal = $_POST['nuevo_codpostal'];
                      }
-                     
+
                      if( isset($_POST['nuevo_direccion']) )
                      {
                         $dircliente->direccion = $_POST['nuevo_direccion'];
                      }
-                     
+
                      if( $dircliente->save() )
                      {
                         $this->new_message('Cliente agregado correctamente.');
                      }
                   }
                   else
-                     $this->new_error_msg("¡Imposible guardar la dirección del cliente!");  
+                     $this->new_error_msg("¡Imposible guardar la dirección del cliente!");
                }
             }
          }
