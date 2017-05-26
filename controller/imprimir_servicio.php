@@ -2,7 +2,7 @@
 
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2014-2016    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014-2017    Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -435,14 +435,17 @@ class imprimir_servicio extends fs_controller
                   'dato2' => $this->servicio->solucion
               )
       );
-      $pdf_doc->add_table_row(
-              array(
-                  'campo1' => "<b>Fecha prevista de inicio:</b>",
-                  'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
-                  'campo2' => "<b>Fecha prevista de finalización:</b>",
-                  'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
-              )
-      );
+      if($this->setup['servicios_mostrar_fechainicio'] AND $this->setup['servicios_mostrar_fechafin'])
+      {
+         $pdf_doc->add_table_row(
+                 array(
+                     'campo1' => "<b>Fecha prevista de inicio:</b>",
+                     'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
+                     'campo2' => "<b>Fecha prevista de finalización:</b>",
+                     'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
+                 )
+         );
+      }
       $pdf_doc->save_table(
               array(
                   'cols' => array(

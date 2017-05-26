@@ -105,7 +105,7 @@
          <div class="btn-group">
             <a class="btn btn-sm btn-success" href="index.php?page=nuevo_servicio">
                <span class="glyphicon glyphicon-plus"></span>
-               <span class="hidden-xs">&nbsp; Nuevo</span>
+               <span class="hidden-xs">&nbsp;Nuevo</span>
             </a>
             {loop="$fsc->extensions"}
                {if="$value->type=='button'"}
@@ -117,7 +117,7 @@
       <div class="col-sm-4 col-xs-6 text-right">
          <a id="b_buscar_lineas" class="btn btn-sm btn-info" title="Buscar en las líneas">
             <span class="glyphicon glyphicon-search"></span> 
-            <span class="hidden-xs">&nbsp; Líneas</span>
+            <span class="hidden-xs">&nbsp;Líneas</span>
          </a>
          <div class="btn-group">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
@@ -211,7 +211,7 @@
       <li role="presentation" class="active">
          <a href="#servicios" aria-controls="servicios" role="tab" data-toggle="tab">
             <span class="glyphicon glyphicon-search"></span>
-            <span class="hidden-xs text-capitalize">&nbsp; {#FS_SERVICIOS#}</span>
+            <span class="hidden-xs text-capitalize">&nbsp;{#FS_SERVICIOS#}</span>
             <span class="hidden-xs badge">{$fsc->num_resultados}</span>
          </a>
       </li>
@@ -456,7 +456,11 @@
                <td></td>
                <td></td>
                <td></td>
+               <td></td>
                {if="$fsc->servicios_setup['servicios_mostrar_material']"}
+               <td></td>
+               {/if}
+               {if="$fsc->servicios_setup['usar_direccion']"}
                <td></td>
                {/if}
                <td colspan="2" class="text-right">
