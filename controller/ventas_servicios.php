@@ -42,6 +42,7 @@ class ventas_servicios extends fbase_controller {
    public $desde;
    public $detalle_sat;
    public $editable;
+   public $estado;
    public $estados;
    public $fechainicio;
    public $fechafin;
@@ -88,20 +89,10 @@ class ventas_servicios extends fbase_controller {
 
       $this->order = 'fecha DESC';
       if (isset($_GET['order'])) {
-         if ($_GET['order'] == 'fecha_desc') {
-            $this->order = 'fecha DESC';
-         } else if ($_GET['order'] == 'fecha_asc') {
-            $this->order = 'fecha ASC';
-         } else if ($_GET['order'] == 'codigo_desc') {
-            $this->order = 'codigo DESC';
-         } else if ($_GET['order'] == 'codigo_asc') {
-            $this->order = 'codigo ASC';
-         } else if ($_GET['order'] == 'prioridad_desc') {
-            $this->order = 'prioridad DESC';
-         } else if ($_GET['order'] == 'prioridad_asc') {
-            $this->order = 'prioridad ASC';
-         } else if ($_GET['order'] == 'total_desc') {
-            $this->order = 'total DESC';
+         $orden_l = $this->orden();
+         if( isset($orden_l[$_GET['order']]) )
+         {
+            $this->order = $orden_l[$_GET['order']]['orden'];
          }
 
          setcookie('ventas_serv_order', $this->order, time() + FS_COOKIES_EXPIRE);
@@ -137,58 +128,7 @@ class ventas_servicios extends fbase_controller {
          if (isset($_POST['delete'])) {
             $this->delete_servicio();
          } else {
-            if (isset($_REQUEST['codcliente'])) {
-               if ($_REQUEST['codcliente'] != '') {
-                  $cli0 = new cliente();
-                  $this->cliente = $cli0->get($_REQUEST['codcliente']);
-               }
-            }
-            if (isset($_REQUEST['codagente'])) {
-               $this->codagente = $_REQUEST['codagente'];
-            }
-            if (isset($_REQUEST['estado'])) {
-               $this->estado = $_REQUEST['estado'];
-            }
-
-            //estados de los filtros:
-            if (isset($_POST['editable'])) {
-               $this->editable = TRUE;
-               setcookie('serv_editable', $this->editable, time() + FS_COOKIES_EXPIRE);
-            } else if (isset($_COOKIE['serv_editable']) AND ! isset($_POST['filtros'])) {
-               $this->editable = TRUE;
-            } else {
-               $this->editable = FALSE;
-               setcookie('serv_editable', $this->editable, time() - FS_COOKIES_EXPIRE);
-            }
-
-            if (isset($_POST['activo'])) {
-               $this->activo = TRUE;
-               setcookie('serv_activo', $this->activo, time() + FS_COOKIES_EXPIRE);
-            } else if (isset($_COOKIE['serv_activo']) AND ! isset($_POST['filtros'])) {
-               $this->activo = TRUE;
-            } else {
-               $this->activo = FALSE;
-               setcookie('serv_activo', $this->activo, time() - FS_COOKIES_EXPIRE);
-            }
-
-            if (isset($_REQUEST['codserie'])) {
-               $this->codserie = $_REQUEST['codserie'];
-            }
-            if (isset($_REQUEST['fechainicio'])) {
-               $this->fechainicio = $_REQUEST['fechainicio'];
-            }
-            if (isset($_REQUEST['fechafin'])) {
-               $this->fechafin = $_REQUEST['fechafin'];
-            }
-            if (isset($_REQUEST['garantia'])) {
-               $this->garantia = TRUE;
-            }
-            if (isset($_REQUEST['desde'])) {
-               $this->desde = $_REQUEST['desde'];
-            }
-            if (isset($_REQUEST['hasta'])) {
-               $this->hasta = $_REQUEST['hasta'];
-            }
+            $this->set_filtros();
          }
 
          $this->buscar();
@@ -236,6 +176,61 @@ class ventas_servicios extends fbase_controller {
           'st_garantia' => "Garantía"
               ), FALSE
       );
+   }
+
+   public function set_filtros() {
+      if (isset($_REQUEST['codcliente'])) {
+         if ($_REQUEST['codcliente'] != '') {
+            $cli0 = new cliente();
+            $this->cliente = $cli0->get($_REQUEST['codcliente']);
+         }
+      }
+      if (isset($_REQUEST['codagente'])) {
+         $this->codagente = $_REQUEST['codagente'];
+      }
+      
+      if (isset($_REQUEST['estado'])) {
+         $this->estado = $_REQUEST['estado'];
+      }
+
+      if (isset($_POST['editable'])) {
+         $this->editable = TRUE;
+         setcookie('serv_editable', $this->editable, time() + FS_COOKIES_EXPIRE);
+      } else if (isset($_COOKIE['serv_editable']) AND ! isset($_POST['filtros'])) {
+         $this->editable = TRUE;
+      } else {
+         $this->editable = FALSE;
+         setcookie('serv_editable', $this->editable, time() - FS_COOKIES_EXPIRE);
+      }
+
+      if (isset($_POST['activo'])) {
+         $this->activo = TRUE;
+         setcookie('serv_activo', $this->activo, time() + FS_COOKIES_EXPIRE);
+      } else if (isset($_COOKIE['serv_activo']) AND ! isset($_POST['filtros'])) {
+         $this->activo = TRUE;
+      } else {
+         $this->activo = FALSE;
+         setcookie('serv_activo', $this->activo, time() - FS_COOKIES_EXPIRE);
+      }
+
+      if (isset($_REQUEST['codserie'])) {
+         $this->codserie = $_REQUEST['codserie'];
+      }
+      if (isset($_REQUEST['fechainicio'])) {
+         $this->fechainicio = $_REQUEST['fechainicio'];
+      }
+      if (isset($_REQUEST['fechafin'])) {
+         $this->fechafin = $_REQUEST['fechafin'];
+      }
+      if (isset($_REQUEST['garantia'])) {
+         $this->garantia = TRUE;
+      }
+      if (isset($_REQUEST['desde'])) {
+         $this->desde = $_REQUEST['desde'];
+      }
+      if (isset($_REQUEST['hasta'])) {
+         $this->hasta = $_REQUEST['hasta'];
+      }
    }
 
    public function buscar_lineas() {
@@ -351,6 +346,9 @@ class ventas_servicios extends fbase_controller {
       if ($this->estado != '') {
          $sql .= $where . "idestado = " . $this->estado;
          $where = ' AND ';
+      } else if (!$this->activo) {
+         $sql .= $where . " idestado IN (SELECT id FROM estados_servicios WHERE activo=TRUE) ";
+         $where = ' AND ';
       }
 
       if ($this->cliente) {
@@ -390,10 +388,6 @@ class ventas_servicios extends fbase_controller {
 
       if (!$this->editable) {
          $sql .= $where . "idalbaran IS NULL";
-         $where = ' AND ';
-      }
-      if (!$this->activo) {
-         $sql .= $where . " idestado IN (SELECT id FROM estados_servicios WHERE activo=TRUE) ";
          $where = ' AND ';
       }
 
@@ -537,6 +531,47 @@ class ventas_servicios extends fbase_controller {
       }
 
       return $lineas;
+   }
+   
+   public function orden()
+   {
+      return array(
+          'fecha_desc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>',
+              'texto' => 'Fecha',
+              'orden' => 'fecha DESC'
+          ),
+          'fecha_asc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>',
+              'texto' => 'Fecha',
+              'orden' => 'fecha ASC'
+          ),
+          'codigo_desc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>',
+              'texto' => 'Código',
+              'orden' => 'codigo DESC'
+          ),
+          'codigo_asc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>',
+              'texto' => 'Código',
+              'orden' => 'codigo ASC'
+          ),
+          'prioridad_asc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>',
+              'texto' => 'Prioridad',
+              'orden' => 'prioridad ASC'
+          ),
+          'prioridad_desc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>',
+              'texto' => 'Prioridad',
+              'orden' => 'prioridad DESC'
+          ),
+          'total_desc' => array(
+              'icono' => '<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>',
+              'texto' => 'Total',
+              'orden' => 'total DESC'
+          )
+      );
    }
 
 }
