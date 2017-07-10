@@ -18,12 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if( !defined('FS_SERVICIOS') )
-{
-   define('FS_SERVICIOS', 'servicios');
+if (!defined('FS_SERVICIOS')) {
+    define('FS_SERVICIOS', 'servicios');
 }
 
-if( !defined('FS_SERVICIO') )
-{
-   define('FS_SERVICIO', 'servicio');
+if (!defined('FS_SERVICIO')) {
+    define('FS_SERVICIO', 'servicio');
 }

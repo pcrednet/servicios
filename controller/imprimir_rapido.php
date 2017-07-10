@@ -26,122 +26,129 @@ require_model('servicio_cliente.php');
  *
  * @author carlos
  */
-class imprimir_rapido extends fs_controller
-{
-   public $agente;
-   public $cliente;
-   public $servicio;
-   public $setup;
-   
-   public function __construct()
-   {
-      parent::__construct(__CLASS__, 'Imprimir Rápido', 'Servicio', FALSE, FALSE);
-   }
-   
-   protected function private_core()
-   {
-      $this->agente = FALSE;
-      $this->cliente = FALSE;
-      $this->servicio = FALSE;
-      
-      /// cargamos la configuración de servicios
-      $fsvar = new fs_var();
-      $this->setup = $fsvar->array_get(
-         array(
-            'servicios_diasfin' => 10,
-            'servicios_material' => 0,
-            'servicios_mostrar_material' => 0,
-            'servicios_material_estado' => 0,
-            'servicios_mostrar_material_estado' => 0,             
-            'servicios_accesorios' => 0,
-            'servicios_mostrar_accesorios' => 0,             
-            'servicios_descripcion' => 0,
-            'servicios_mostrar_descripcion' => 0,            
-            'servicios_solucion' => 0,
-            'servicios_mostrar_solucion' => 0,             
-            'servicios_fechafin' => 0,
-            'servicios_mostrar_fechafin' => 0,             
-            'servicios_fechainicio' => 0,
-            'servicios_mostrar_fechainicio' => 0,
-            'servicios_mostrar_garantia' => 0,
-            'servicios_garantia' => 0,
-            'servicios_condiciones' => "Condiciones del deposito:\nLos presupuestos realizados tienen una".
-               " validez de 15 días.\nUna vez avisado al cliente para que recoja el producto este dispondrá".
-               " de un plazo máximo de 2 meses para recogerlo, de no ser así y no haber aviso por parte del".
-               " cliente se empezará a cobrar 1 euro al día por gastos de almacenaje.\nLos accesorios y".
-               " productos externos al equipo no especificados en este documento no podrán ser reclamados en".
-               " caso de disconformidad con el técnico.", 
-            'st_servicio' => "Servicio",
-            'st_servicios' => "Servicios",
-            'st_material' => "Material",
-            'st_material_estado' => "Estado del material entregado",
-            'st_accesorios' => "Accesorios que entrega",
-            'st_descripcion' => "Descripción de la averia",
-            'st_solucion' => "Solución",
-            'st_fechainicio' => "Fecha de Inicio",
-            'st_fechafin' => "Fecha de finalización",
-            'st_garantía' => "Garantía"
-         ),
-         FALSE
-      );
-      
-      if( isset($_REQUEST['id']) )
-      {
-         $serv = new servicio_cliente();
-         $this->servicio = $serv->get($_REQUEST['id']);
-      }
-      
-      if($this->servicio)
-      {
-         $this->agente = $this->user->get_agente();
+class imprimir_rapido extends fs_controller {
+
+      publ c $agent
+       pub ic $clien
+        pu lic $servi
+    
+    p blic $s
+
+       pub ic funct on __construc {
+          parent::__construct(__CLASS_ , 'Imprimir Rápido , 'Servicio , FALS , FALSE
+     
+
+     protecte  functio  private_core(  
+        $this->agente = FALSE;
+          $this->clien e = FALS
+            $this->serv c o = FA
+
+        /// cargamos la configuración de servicios
+          $fsv r = n w fs_var(
+            $this->s t p = $fsvar->array_
+                      
+                           'servici s_ ias
+                           'servicio _m te
+                           'servicios_mostra _m te
+                           'servicios_mater al es
+                           'servicios_mostrar_mater al es
+                ervicios_accesorios' =  0 
+  ervicios_mostrar_accesorios' =  0 
+  ripcion' => 0,
+            's rar_descripcion' => 0,
+            's
+                            'servici s_ os ' => 0,
+            'servici s_ ec
+                servicios_mostrar_fe ha in
+                       'servicios_fechainici '  > 
+                mostrar_fechainicio' => 0,
+                   rvicios_mostrar_garantia' => 0,
+                      cios_garantia' => 0,
+            ' diciones' => "Condic on s  \nLos presupuestos real za os tienen una" .
+            " validez de 15 días.\nUna vez avisado  que recoja el producto este dispondrá" .
+            " de un plazo máximo de 2 meses para reco  así y no haber aviso por parte del" .
+            " cliente se empezará a cobrar 1 euro al dí almacenaje.\nLos accesorios y" .
+            " productos externos al equipo no especificad ento no podrán ser reclamados en" .
+            " caso de disconformidad con el técnico.",
+     icio' => "Servicio",
+            'st_servi icios",
+            'st_mate erial",
+            'st_materi  "Estado del  at rial entreg
+                     'st_accesorios' => "Accesorios que entrega",
+       cripcion' => "D sc ipción de la averia",
+    solucion' => "So uc ón",
+            'st_fechai cha de Inicio ,
+              => "Fecha de fi al zación",
+          ía' => "Garan ía 
+                ), FALS
+
+                
+        if ( ss t($_REQUES {
+   $se w 
+                te(;
+            $this->s r   ($_RE U ST[ id']);
+        }
+
+ 
+                ($this->servici ) {
+            $this->agente 
+                - nte();
+
+            t iente();
+            $this->cliente = $cli
+                vicio->c d lie te);
+     
+
+                    $this->sha e extensions();
+    }
+
+    public function li
+                i
+                     $prioridad = array();
+
+                  
+         * En  ervicio_servicio:: r nos devuel e un ar r a  yos  los prioridades,
+                 * pero como queremos también el id, pues hay que hacer este bucle para sacarlos.
+                 * /
+                  foreach ($this->servicio->prioridad() as $i => $value) {
+                     pr ioridad[] = array('id_p
+
+        rioridad' =  $ ,  no bre_pri   ;
+        }
+
+                return $priori ad 
+    }
+
+    public fun ti n condic
          
-         $cliente = new cliente();
-         $this->cliente = $cliente->get($this->servicio->codcliente);
-      }
-      
-      $this->share_extensions();
-   }
-   
-   public function listar_prioridad()
-   {
-      $prioridad = array();
+          retu n nl2br($th
+        s rvicio _condici nes']);
+    }
 
-      /**
-       * En servicio_servicio::prioridad() nos devuelve un array con todos los prioridades,
-       * pero como queremos también el id, pues hay que hacer este bucle para sacarlos.
-       */
-      foreach($this->servicio->prioridad() as $i => $value)
-      {
-         $prioridad[] = array('id_prioridad' => $i, 'nombre_prioridad' => $value);
-      }
+                  e func ion share_extensions() {
+        $extensiones
+                r
+                         array(
+                'na = imir_servici _ in_det
+                     
 
-      return $prioridad;
-   }
-   
-   public function condiciones()
-   {
-      return nl2br($this->setup['servicios_condiciones']);
-   }
-   
-   private function share_extensions()
-   {
-      $extensiones = array(
-        array(
-              'name' => 'imprimir_servicio_sin_detalle',
-              'page_from' => __CLASS__,
-              'page_to' => 'ventas_servicio',
-              'type' => 'pdf',
-              'text' => ucfirst(FS_SERVICIO).' sin líneas',
-              'params' => ''
-          ),
-      );
-      foreach($extensiones as $ext)
-      {
-         $fsext = new fs_extension($ext);
-         if( !$fsext->save() )
-         {
-            $this->new_error_msg('Error al guardar la extensión '.$ext['name']);
-         }
-      }
-   }
+        from' =  _ CLASS__,
+                'page_t ervicio',
+                ',
+                'text' => uc IO) .   s n líne
+               pa
+
+        ams' => ''
+            ),
+        )
+                ch ($ext ns on  {
+                  
+                ext = new fs_extensi n( ext);
+                  $fsext > ave )) {
+              
+                ew_ rror_msg('Error a l  . $ext['name']);
+            }
+        }
+    }
+
 }
