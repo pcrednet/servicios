@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2015-2017    Carlos Garcia Gomez         neorazorx@gmail.com
@@ -18,17 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('agente.php');
-require_model('cliente.php');
-require_model('contrato_servicio.php');
-require_model('forma_pago.php');
-
 /**
  * Description of editar_contrato_servicio
  *
  * @author carlos
  */
-class editar_contrato_servicio extends fs_controller {
+class editar_contrato_servicio extends fs_controller
+{
 
     public $agente;
     public $allow_delete;
@@ -37,11 +32,13 @@ class editar_contrato_servicio extends fs_controller {
     public $contrato;
     public $forma_pago;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Editar contrato', 'ventas', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         /// ¿El usuario tiene permiso para eliminar en esta página?
         $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
 
@@ -97,7 +94,8 @@ class editar_contrato_servicio extends fs_controller {
         }
     }
 
-    public function periodos() {
+    public function periodos()
+    {
         $peridos = array(
             '+1day' => 'día',
             '+2days' => '2 días',
@@ -117,7 +115,8 @@ class editar_contrato_servicio extends fs_controller {
         return $peridos;
     }
 
-    private function comprobar_upload() {
+    private function comprobar_upload()
+    {
         if (!file_exists('tmp/' . FS_TMP_NAME . 'contratosservicios')) {
             mkdir('tmp/' . FS_TMP_NAME . 'contratosservicios');
         }
@@ -142,7 +141,8 @@ class editar_contrato_servicio extends fs_controller {
         }
     }
 
-    public function get_documentos() {
+    public function get_documentos()
+    {
         $doclist = array();
         $folder = 'tmp/' . FS_TMP_NAME . 'contratosservicios/' . $this->contrato->idcontrato;
 
@@ -162,10 +162,10 @@ class editar_contrato_servicio extends fs_controller {
         return $doclist;
     }
 
-    private function human_filesize($bytes, $decimals = 2) {
+    private function human_filesize($bytes, $decimals = 2)
+    {
         $sz = 'BKMGTP';
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
     }
-
 }

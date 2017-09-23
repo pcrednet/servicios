@@ -1,8 +1,7 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2014-2016    Carlos Garcia Gomez        neorazorx@gmail.com
+ * Copyright (C) 2014-2017    Carlos Garcia Gomez        neorazorx@gmail.com
  * Copyright (C) 2014-2015    Francesc Pineda Segarra    shawe.ewahs@gmail.com
  * Copyright (C) 2015         Luis Miguel Pérez Romero   luismipr@gmail.com
  *
@@ -20,24 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('almacen.php');
-require_model('articulo.php');
-require_model('asiento_factura.php');
-require_model('cliente.php');
-require_model('divisa.php');
-require_model('familia.php');
-require_model('forma_pago.php');
-require_model('grupo_clientes.php');
-require_model('impuesto.php');
-require_model('pais.php');
-require_model('servicio_cliente.php');
-require_model('presupuesto_cliente.php');
-require_model('serie.php');
-require_model('tarifa.php');
-require_model('estado_servicio.php');
-require_model('fabricante.php');
+require_once 'plugins/facturacion_base/extras/fbase_controller.php';
 
-class nuevo_servicio extends fs_controller {
+class nuevo_servicio extends fbase_controller
+{
 
     public $agente;
     public $almacen;
@@ -62,35 +47,17 @@ class nuevo_servicio extends fs_controller {
     public $solucion;
     public $nuevocli_setup;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Nuevo servicio...', 'ventas', FALSE, FALSE, TRUE);
     }
 
-    protected function private_core() {
-        $this->agente = FALSE;
-        $this->almacen = new almacen();
-        $this->cliente = new cliente();
-        $this->cliente_s = FALSE;
-        $this->descripcion = NULL;
-        $this->direccion = FALSE;
-        $this->divisa = new divisa();
-        $this->estado = new estado_servicio();
-        $this->fabricante = new fabricante();
-        $this->familia = new familia();
-        $this->forma_pago = new forma_pago();
-        $this->grupo = new grupo_clientes();
-        $this->impuesto = new impuesto();
-        $this->pais = new pais();
-        $this->prioridad = 3;
-        $this->results = array();
-        $this->serie = new serie();
-        $this->servicio = new servicio_cliente();
-        $this->solucion = NULL;
-
+    private function cargar_config()
+    {
         /// cargamos la configuración de servicios
         $fsvar = new fs_var();
         $this->setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -121,12 +88,12 @@ class nuevo_servicio extends fs_controller {
             'st_fechainicio' => "Fecha de Inicio",
             'st_fechafin' => "Fecha de finalización",
             'st_garantia' => "Garantía",
-                ), FALSE
+            ), FALSE
         );
 
         //opciones nuevo cliente:
         $this->nuevocli_setup = $fsvar->array_get(
-                array(
+            array(
             'nuevocli_cifnif_req' => 0,
             'nuevocli_direccion' => 0,
             'nuevocli_direccion_req' => 0,
@@ -145,11 +112,37 @@ class nuevo_servicio extends fs_controller {
             'nuevocli_email' => 0,
             'nuevocli_email_req' => 0,
             'nuevocli_codgrupo' => '',
-                ), FALSE
+            ), FALSE
         );
+    }
+
+    protected function private_core()
+    {
+        parent::private_core();
+        $this->agente = FALSE;
+        $this->almacen = new almacen();
+        $this->cliente = new cliente();
+        $this->cliente_s = FALSE;
+        $this->descripcion = NULL;
+        $this->direccion = FALSE;
+        $this->divisa = new divisa();
+        $this->estado = new estado_servicio();
+        $this->fabricante = new fabricante();
+        $this->familia = new familia();
+        $this->forma_pago = new forma_pago();
+        $this->grupo = new grupo_clientes();
+        $this->impuesto = new impuesto();
+        $this->pais = new pais();
+        $this->prioridad = 3;
+        $this->results = array();
+        $this->serie = new serie();
+        $this->servicio = new servicio_cliente();
+        $this->solucion = NULL;
+
+        $this->cargar_config();
 
         if (isset($_REQUEST['buscar_cliente'])) {
-            $this->buscar_cliente();
+            $this->fbase_buscar_cliente($_REQUEST['buscar_cliente']);
         } else if (isset($_REQUEST['datoscliente'])) {
             $this->datos_cliente();
         } else if (isset($_REQUEST['new_articulo'])) {
@@ -186,10 +179,8 @@ class nuevo_servicio extends fs_controller {
                             $this->cliente_s->email = $_POST['nuevo_email'];
                         }
 
-                        if (isset($_POST['codgrupo'])) {
-                            if ($_POST['codgrupo'] != '') {
-                                $this->cliente_s->codgrupo = $_POST['codgrupo'];
-                            }
+                        if (isset($_POST['codgrupo']) && $_POST['codgrupo'] != '') {
+                            $this->cliente_s->codgrupo = $_POST['codgrupo'];
                         }
 
                         if (isset($_POST['nuevo_telefono1'])) {
@@ -235,8 +226,9 @@ class nuevo_servicio extends fs_controller {
                             if ($dircliente->save()) {
                                 $this->new_message('Cliente agregado correctamente.');
                             }
-                        } else
+                        } else {
                             $this->new_error_msg("¡Imposible guardar la dirección del cliente!");
+                        }
                     }
                 }
             }
@@ -253,8 +245,9 @@ class nuevo_servicio extends fs_controller {
             if (isset($_POST['codagente'])) {
                 $agente = new agente();
                 $this->agente = $agente->get($_POST['codagente']);
-            } else
+            } else {
                 $this->agente = $this->user->get_agente();
+            }
 
             if (isset($_POST['numlineas'])) {
                 $this->nuevo_servicio_cliente();
@@ -274,24 +267,13 @@ class nuevo_servicio extends fs_controller {
         }
     }
 
-    public function url() {
+    public function url()
+    {
         return 'index.php?page=' . __CLASS__;
     }
 
-    private function buscar_cliente() {
-        /// desactivamos la plantilla HTML
-        $this->template = FALSE;
-
-        $json = array();
-        foreach ($this->cliente->search($_REQUEST['buscar_cliente']) as $cli) {
-            $json[] = array('value' => $cli->razonsocial, 'data' => $cli->codcliente);
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode(array('query' => $_REQUEST['buscar_cliente'], 'suggestions' => $json));
-    }
-
-    private function datos_cliente() {
+    private function datos_cliente()
+    {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;
 
@@ -299,7 +281,8 @@ class nuevo_servicio extends fs_controller {
         echo json_encode($this->cliente->get($_REQUEST['datoscliente']));
     }
 
-    private function new_articulo() {
+    private function new_articulo()
+    {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;
 
@@ -339,7 +322,8 @@ class nuevo_servicio extends fs_controller {
         echo json_encode($this->results);
     }
 
-    private function new_search() {
+    private function new_search()
+    {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;
 
@@ -366,14 +350,14 @@ class nuevo_servicio extends fs_controller {
             $this->results[$i]->cantidad = 1;
 
             $this->results[$i]->stockalm = $this->results[$i]->stockfis;
-            if ($multi_almacen AND isset($_REQUEST['codalmacen'])) {
+            if ($multi_almacen && isset($_REQUEST['codalmacen'])) {
                 $this->results[$i]->stockalm = $stock->total_from_articulo($this->results[$i]->referencia, $_REQUEST['codalmacen']);
             }
         }
 
         /// ejecutamos las funciones de las extensiones
         foreach ($this->extensions as $ext) {
-            if ($ext->type == 'function' AND $ext->params == 'new_search') {
+            if ($ext->type == 'function' && $ext->params == 'new_search') {
                 $name = $ext->text;
                 $name($this->db, $this->results);
             }
@@ -382,17 +366,21 @@ class nuevo_servicio extends fs_controller {
         /// buscamos el grupo de clientes y la tarifa
         if (isset($_REQUEST['codcliente'])) {
             $cliente = $this->cliente->get($_REQUEST['codcliente']);
-            if ($cliente) {
-                if ($cliente->codgrupo) {
-                    $grupo0 = new grupo_clientes();
-                    $tarifa0 = new tarifa();
+            $tarifa0 = new tarifa();
 
-                    $grupo = $grupo0->get($cliente->codgrupo);
-                    if ($grupo) {
-                        $tarifa = $tarifa0->get($grupo->codtarifa);
-                        if ($tarifa) {
-                            $tarifa->set_precios($this->results);
-                        }
+            if ($cliente && $cliente->codtarifa) {
+                $tarifa = $tarifa0->get($cliente->codtarifa);
+                if ($tarifa) {
+                    $tarifa->set_precios($this->results);
+                }
+            } else if ($cliente && $cliente->codgrupo) {
+                $grupo0 = new grupo_clientes();
+
+                $grupo = $grupo0->get($cliente->codgrupo);
+                if ($grupo) {
+                    $tarifa = $tarifa0->get($grupo->codtarifa);
+                    if ($tarifa) {
+                        $tarifa->set_precios($this->results);
                     }
                 }
             }
@@ -402,7 +390,8 @@ class nuevo_servicio extends fs_controller {
         echo json_encode($this->results);
     }
 
-    private function get_precios_articulo() {
+    private function get_precios_articulo()
+    {
         /// cambiamos la plantilla HTML
         $this->template = 'ajax/nueva_venta_precios';
 
@@ -410,7 +399,8 @@ class nuevo_servicio extends fs_controller {
         $this->articulo = $articulo->get($_POST['referencia4precios']);
     }
 
-    public function get_tarifas_articulo($ref) {
+    public function get_tarifas_articulo($ref)
+    {
         $tarlist = array();
         $articulo = new articulo();
         $tarifa = new tarifa();
@@ -433,15 +423,13 @@ class nuevo_servicio extends fs_controller {
      * así para añadir tipos no hay que tocar la vista.
      * @return type
      */
-    public function tipos_a_guardar() {
-        $tipos = array();
-
-        $tipos[] = array('tipo' => 'servicio', 'nombre' => ucfirst(FS_SERVICIO) . ' de cliente');
-
-        return $tipos;
+    public function tipos_a_guardar()
+    {
+        return array('tipo' => 'servicio', 'nombre' => ucfirst(FS_SERVICIO) . ' de cliente');
     }
 
-    private function nuevo_servicio_cliente() {
+    private function nuevo_servicio_cliente()
+    {
         $continuar = TRUE;
 
         $cliente = $this->cliente->get($_POST['cliente']);
@@ -545,7 +533,7 @@ class nuevo_servicio extends fs_controller {
                         $linea->idservicio = $servicio->idservicio;
                         $linea->descripcion = $_POST['desc_' . $i];
 
-                        if (!$serie->siniva AND $cliente->regimeniva != 'Exento') {
+                        if (!$serie->siniva && $cliente->regimeniva != 'Exento') {
                             $imp0 = $this->impuesto->get_by_iva($_POST['iva_' . $i]);
                             if ($imp0) {
                                 $linea->codimpuesto = $imp0->codimpuesto;
@@ -562,19 +550,20 @@ class nuevo_servicio extends fs_controller {
                         $linea->cantidad = floatval($_POST['cantidad_' . $i]);
                         $linea->dtopor = floatval($_POST['dto_' . $i]);
                         $linea->pvpsindto = ($linea->pvpunitario * $linea->cantidad);
-                        $linea->pvptotal = floatval($_POST['neto_' . $i]);
 
+                        // Descuento Unificado Equivalente
+                        $due_linea = $this->fbase_calc_due(array($linea->dtopor));
+                        $linea->pvptotal = $linea->cantidad * $linea->pvpunitario * $due_linea;
+                        
                         $articulo = $art0->get($_POST['referencia_' . $i]);
                         if ($articulo) {
                             $linea->referencia = $articulo->referencia;
+                            if ($_POST['codcombinacion_' . $i]) {
+                                $linea->codcombinacion = $_POST['codcombinacion_' . $i];
+                            }
                         }
 
                         if ($linea->save()) {
-                            $servicio->neto += $linea->pvptotal;
-                            $servicio->totaliva += ($linea->pvptotal * $linea->iva / 100);
-                            $servicio->totalirpf += ($linea->pvptotal * $linea->irpf / 100);
-                            $servicio->totalrecargo += ($linea->pvptotal * $linea->recargo / 100);
-
                             if ($linea->irpf > $servicio->irpf) {
                                 $servicio->irpf = $linea->irpf;
                             }
@@ -584,37 +573,42 @@ class nuevo_servicio extends fs_controller {
                         }
                     }
                 }
-
+                
                 if ($continuar) {
-                    /// redondeamos
-                    $servicio->neto = round($servicio->neto, FS_NF0);
-                    $servicio->totaliva = round($servicio->totaliva, FS_NF0);
-                    $servicio->totalirpf = round($servicio->totalirpf, FS_NF0);
-                    $servicio->totalrecargo = round($servicio->totalrecargo, FS_NF0);
-                    $servicio->total = $servicio->neto + $servicio->totaliva - $servicio->totalirpf + $servicio->totalrecargo;
+                    /// obtenemos los subtotales por impuesto
+                    foreach ($this->fbase_get_subtotales_documento($servicio->get_lineas()) as $subt) {
+                        $servicio->neto += $subt['neto'];
+                        $servicio->totaliva += $subt['iva'];
+                        $servicio->totalirpf += $subt['irpf'];
+                        $servicio->totalrecargo += $subt['recargo'];
+                    }
 
-                    if (abs(floatval($_POST['atotal']) - $servicio->total) >= .02) {
+                    $servicio->total = round($servicio->neto + $servicio->totaliva - $servicio->totalirpf + $servicio->totalrecargo, FS_NF0);
+
+                    if (abs(floatval($_POST['atotal']) - $servicio->total) > .01) {
                         $this->new_error_msg("El total difiere entre el controlador y la vista (" .
-                                $servicio->total . " frente a " . $_POST['atotal'] . "). Debes informar del error.");
+                            $servicio->total . " frente a " . $_POST['atotal'] . "). Debes informar del error.");
                         $servicio->delete();
                     } else if ($servicio->save()) {
                         $this->new_message("<a href='" . $servicio->url() . "'>" . ucfirst(FS_SERVICIO) . "</a> guardado correctamente.");
                         $this->new_change(ucfirst(FS_SERVICIO) . " a Cliente " . $servicio->codigo, $servicio->url(), TRUE);
                         header('Location: ' . $servicio->url($nuevo = TRUE));
-                    } else
+                    } else {
                         $this->new_error_msg("¡Imposible actualizar el <a href='" . $servicio->url() . "'>" . FS_SERVICIO . "</a>!");
-                }
-                else if ($servicio->delete()) {
+                    }
+                } else if ($servicio->delete()) {
                     $this->new_message(ucfirst(FS_SERVICIO) . " eliminado correctamente.");
-                } else
+                } else {
                     $this->new_error_msg("¡Imposible eliminar el <a href='" . $servicio->url() . "'>" . FS_SERVICIO . "</a>!");
-            } else
+                }
+            } else {
                 $this->new_error_msg("¡Imposible guardar el " . FS_SERVICIO . "!");
+            }
         }
     }
 
-    public function fechafin() {
+    public function fechafin()
+    {
         return date('d-m-Y', strtotime('+' . $this->setup['servicios_diasfin'] . ' days'));
     }
-
 }

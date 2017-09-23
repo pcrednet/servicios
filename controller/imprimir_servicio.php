@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2014-2017    Carlos Garcia Gomez  neorazorx@gmail.com
@@ -22,14 +21,12 @@
 require_once 'plugins/facturacion_base/extras/fs_pdf.php';
 require_once 'extras/phpmailer/class.phpmailer.php';
 require_once 'extras/phpmailer/class.smtp.php';
-require_model('cliente.php');
-require_model('impuesto.php');
-require_model('servicio_cliente.php');
 
 /**
  * Esta clase agrupa los procedimientos de imprimir/enviar presupuestos y servicios.
  */
-class imprimir_servicio extends fs_controller {
+class imprimir_servicio extends fs_controller
+{
 
     public $cliente;
     public $impresion;
@@ -37,11 +34,13 @@ class imprimir_servicio extends fs_controller {
     public $servicio;
     public $setup;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'imprimir', 'ventas', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         $this->cliente = FALSE;
 
         /// obtenemos los datos de configuración de impresión
@@ -58,7 +57,7 @@ class imprimir_servicio extends fs_controller {
 
         /// cargamos la configuración de servicios
         $this->setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -92,7 +91,7 @@ class imprimir_servicio extends fs_controller {
             'st_fechainicio' => "Fecha de Inicio",
             'st_fechafin' => "Fecha de finalización",
             'st_garantía' => "Garantía"
-                ), FALSE
+            ), FALSE
         );
 
         if (isset($_REQUEST['id'])) {
@@ -112,7 +111,8 @@ class imprimir_servicio extends fs_controller {
         $this->share_extensions();
     }
 
-    private function share_extensions() {
+    private function share_extensions()
+    {
         $extensiones = array(
             array(
                 'name' => 'imprimir_servicio',
@@ -139,7 +139,8 @@ class imprimir_servicio extends fs_controller {
         }
     }
 
-    private function generar_pdf_servicio($archivo = FALSE) {
+    private function generar_pdf_servicio($archivo = FALSE)
+    {
         if (!$archivo) {
             /// desactivamos la plantilla HTML
             $this->template = FALSE;
@@ -176,22 +177,22 @@ class imprimir_servicio extends fs_controller {
                 $pdf_doc->new_table();
                 if ($this->impresion['print_dto']) {
                     $pdf_doc->add_table_header(
-                            array(
-                                'descripcion' => '<b>Descripción</b>',
-                                'cantidad' => '<b>Cantidad</b>',
-                                'pvp' => '<b>PVP</b>',
-                                'dto' => '<b>DTO</b>',
-                                'importe' => '<b>Importe</b>'
-                            )
+                        array(
+                            'descripcion' => '<b>Descripción</b>',
+                            'cantidad' => '<b>Cantidad</b>',
+                            'pvp' => '<b>PVP</b>',
+                            'dto' => '<b>DTO</b>',
+                            'importe' => '<b>Importe</b>'
+                        )
                     );
                 } else {
                     $pdf_doc->add_table_header(
-                            array(
-                                'descripcion' => '<b>Descripción</b>',
-                                'cantidad' => '<b>Cantidad</b>',
-                                'pvp' => '<b>PVP</b>',
-                                'importe' => '<b>Importe</b>'
-                            )
+                        array(
+                            'descripcion' => '<b>Descripción</b>',
+                            'cantidad' => '<b>Cantidad</b>',
+                            'pvp' => '<b>PVP</b>',
+                            'importe' => '<b>Importe</b>'
+                        )
                     );
                 }
 
@@ -213,17 +214,17 @@ class imprimir_servicio extends fs_controller {
                     $linea_actual++;
                 }
                 $pdf_doc->save_table(
-                        array(
-                            'fontSize' => 8,
-                            'cols' => array(
-                                'cantidad' => array('justification' => 'right'),
-                                'pvp' => array('justification' => 'right'),
-                                'dto' => array('justification' => 'right'),
-                                'importe' => array('justification' => 'right')
-                            ),
-                            'width' => 520,
-                            'shaded' => 0
-                        )
+                    array(
+                        'fontSize' => 8,
+                        'cols' => array(
+                            'cantidad' => array('justification' => 'right'),
+                            'pvp' => array('justification' => 'right'),
+                            'dto' => array('justification' => 'right'),
+                            'importe' => array('justification' => 'right')
+                        ),
+                        'width' => 520,
+                        'shaded' => 0
+                    )
                 );
 
                 if ($linea_actual == count($lineas)) {
@@ -306,7 +307,8 @@ class imprimir_servicio extends fs_controller {
         }
     }
 
-    private function generar_pdf_datos_cliente(&$pdf_doc, &$lppag) {
+    private function generar_pdf_datos_cliente(&$pdf_doc, &$lppag)
+    {
         /*
          * Esta es la tabla con los datos del cliente:
          * Servicio:             Fecha:
@@ -315,26 +317,26 @@ class imprimir_servicio extends fs_controller {
          */
         $pdf_doc->new_table();
         $pdf_doc->add_table_row(
-                array(
-                    'campo1' => "<b>" . $this->setup['st_servicio'] . ":</b>",
-                    'dato1' => $this->servicio->codigo,
-                    'campo2' => "<b>Fecha:</b>",
-                    'dato2' => $this->servicio->fecha
-                )
+            array(
+                'campo1' => "<b>" . $this->setup['st_servicio'] . ":</b>",
+                'dato1' => $this->servicio->codigo,
+                'campo2' => "<b>Fecha:</b>",
+                'dato2' => $this->servicio->fecha
+            )
         );
         $pdf_doc->add_table_row(
-                array(
-                    'campo1' => "<b>Cliente:</b>",
-                    'dato1' => $pdf_doc->fix_html($this->servicio->nombrecliente),
-                    'campo2' => "<b>" . FS_CIFNIF . ":</b>",
-                    'dato2' => $this->servicio->cifnif
-                )
+            array(
+                'campo1' => "<b>Cliente:</b>",
+                'dato1' => $pdf_doc->fix_html($this->servicio->nombrecliente),
+                'campo2' => "<b>" . FS_CIFNIF . ":</b>",
+                'dato2' => $this->servicio->cifnif
+            )
         );
 
         $row = array(
             'campo1' => "<b>Dirección:</b>",
             'dato1' => $pdf_doc->fix_html($this->servicio->direccion . ' CP: ' . $this->servicio->codpostal .
-                    ' - ' . $this->servicio->ciudad . ' (' . $this->servicio->provincia . ')'),
+                ' - ' . $this->servicio->ciudad . ' (' . $this->servicio->provincia . ')'),
             'campo2' => "<b>Teléfonos:</b>",
             'dato2' => ''
         );
@@ -352,17 +354,17 @@ class imprimir_servicio extends fs_controller {
         }
         $pdf_doc->add_table_row($row);
         $pdf_doc->save_table(
-                array(
-                    'cols' => array(
-                        'campo1' => array('justification' => 'right'),
-                        'dato1' => array('justification' => 'left'),
-                        'campo2' => array('justification' => 'right'),
-                        'dato2' => array('justification' => 'left')
-                    ),
-                    'showLines' => 0,
-                    'width' => 520,
-                    'shaded' => 0
-                )
+            array(
+                'cols' => array(
+                    'campo1' => array('justification' => 'right'),
+                    'dato1' => array('justification' => 'left'),
+                    'campo2' => array('justification' => 'right'),
+                    'dato2' => array('justification' => 'left')
+                ),
+                'showLines' => 0,
+                'width' => 520,
+                'shaded' => 0
+            )
         );
 
         $pdf_doc->pdf->ezText("\n", 10);
@@ -371,57 +373,58 @@ class imprimir_servicio extends fs_controller {
         /* Esta es la tabla de los datos del servicio y trabajos a realizar */
         $pdf_doc->new_table();
         $pdf_doc->add_table_row(
-                array(
-                    'campo1' => "<b>" . $this->setup['st_material'] . ":</b>",
-                    'dato1' => $pdf_doc->fix_html($this->servicio->material),
-                    'campo2' => "<b>" . $this->setup['st_material_estado'] . ":</b>",
-                    'dato2' => $this->servicio->material_estado
-                )
+            array(
+                'campo1' => "<b>" . $this->setup['st_material'] . ":</b>",
+                'dato1' => $pdf_doc->fix_html($this->servicio->material),
+                'campo2' => "<b>" . $this->setup['st_material_estado'] . ":</b>",
+                'dato2' => $this->servicio->material_estado
+            )
         );
         $pdf_doc->add_table_row(
-                array(
-                    'campo1' => "<b>" . $this->setup['st_accesorios'] . ":</b>",
-                    'dato1' => $pdf_doc->fix_html($this->servicio->accesorios),
-                    'campo2' => "",
-                    'dato2' => ""
-                )
+            array(
+                'campo1' => "<b>" . $this->setup['st_accesorios'] . ":</b>",
+                'dato1' => $pdf_doc->fix_html($this->servicio->accesorios),
+                'campo2' => "",
+                'dato2' => ""
+            )
         );
         $pdf_doc->add_table_row(
-                array(
-                    'campo1' => "<b>" . $this->setup['st_descripcion'] . ":</b>",
-                    'dato1' => $pdf_doc->fix_html($this->servicio->descripcion),
-                    'campo2' => "<b>" . $this->setup['st_solucion'] . ": </b>",
-                    'dato2' => $this->servicio->solucion
-                )
+            array(
+                'campo1' => "<b>" . $this->setup['st_descripcion'] . ":</b>",
+                'dato1' => $pdf_doc->fix_html($this->servicio->descripcion),
+                'campo2' => "<b>" . $this->setup['st_solucion'] . ": </b>",
+                'dato2' => $this->servicio->solucion
+            )
         );
         if ($this->setup['servicios_mostrar_fechainicio'] AND $this->setup['servicios_mostrar_fechafin']) {
             $pdf_doc->add_table_row(
-                    array(
-                        'campo1' => "<b>Fecha prevista de inicio:</b>",
-                        'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
-                        'campo2' => "<b>Fecha prevista de finalización:</b>",
-                        'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
-                    )
+                array(
+                    'campo1' => "<b>Fecha prevista de inicio:</b>",
+                    'dato1' => $pdf_doc->fix_html($this->servicio->fechainicio),
+                    'campo2' => "<b>Fecha prevista de finalización:</b>",
+                    'dato2' => $pdf_doc->fix_html($this->servicio->fechafin)
+                )
             );
         }
         $pdf_doc->save_table(
-                array(
-                    'cols' => array(
-                        'campo1' => array('justification' => 'left'),
-                        'dato1' => array('justification' => 'left'),
-                        'campo2' => array('justification' => 'left'),
-                        'dato2' => array('justification' => 'left')
-                    ),
-                    'showLines' => 0,
-                    'width' => 520,
-                    'shaded' => 0
-                )
+            array(
+                'cols' => array(
+                    'campo1' => array('justification' => 'left'),
+                    'dato1' => array('justification' => 'left'),
+                    'campo2' => array('justification' => 'left'),
+                    'dato2' => array('justification' => 'left')
+                ),
+                'showLines' => 0,
+                'width' => 520,
+                'shaded' => 0
+            )
         );
 
         $pdf_doc->pdf->ezText("\n", 10);
     }
 
-    private function enviar_email($doc) {
+    private function enviar_email($doc)
+    {
         if ($this->empresa->can_send_mail()) {
             $razonsocial = $this->servicio->nombrecliente;
             if ($this->cliente) {
@@ -480,7 +483,8 @@ class imprimir_servicio extends fs_controller {
         }
     }
 
-    private function get_lineas_iva($lineas) {
+    private function get_lineas_iva($lineas)
+    {
         $retorno = array();
         $lineasiva = array();
 
@@ -510,5 +514,4 @@ class imprimir_servicio extends fs_controller {
 
         return $retorno;
     }
-
 }
