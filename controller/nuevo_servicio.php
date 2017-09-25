@@ -538,18 +538,18 @@ class nuevo_servicio extends fbase_controller
                             if ($imp0) {
                                 $linea->codimpuesto = $imp0->codimpuesto;
                                 $linea->iva = floatval($_POST['iva_' . $i]);
-                                $linea->recargo = floatval($_POST['recargo_' . $i]);
+                                $linea->recargo = floatval(fs_filter_input_post('recargo_' . $i, 0));
                             } else {
                                 $linea->iva = floatval($_POST['iva_' . $i]);
-                                $linea->recargo = floatval($_POST['recargo_' . $i]);
+                                $linea->recargo = floatval(fs_filter_input_post('recargo_' . $i, 0));
                             }
                         }
 
-                        $linea->irpf = floatval($_POST['irpf_' . $i]);
+                        $linea->irpf = floatval(fs_filter_input_post('irpf_' . $i, 0));
                         $linea->pvpunitario = floatval($_POST['pvp_' . $i]);
                         $linea->cantidad = floatval($_POST['cantidad_' . $i]);
-                        $linea->dtopor = floatval($_POST['dto_' . $i]);
-                        $linea->pvpsindto = ($linea->pvpunitario * $linea->cantidad);
+                        $linea->dtopor = floatval(fs_filter_input_post('dto_' . $i, 0));
+                        $linea->pvpsindto = $linea->pvpunitario * $linea->cantidad;
 
                         // Descuento Unificado Equivalente
                         $due_linea = $this->fbase_calc_due(array($linea->dtopor));
