@@ -441,6 +441,14 @@ class servicio_cliente extends fs_model {
         } else
             return FALSE;
     }
+    
+    public function get_by_cod($cod) {
+        $servicio = $this->db->select("SELECT * FROM " . $this->table_name . " WHERE codigo = " . $this->var2str($cod) . ";");
+        if ($servicio) {
+            return new servicio_cliente($servicio[0]);
+        } else
+            return FALSE;
+    }
 
     public function exists() {
         if (is_null($this->idservicio)) {
