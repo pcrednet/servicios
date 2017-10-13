@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2015-2016    Carlos Garcia Gomez         neorazorx@gmail.com
@@ -24,7 +23,8 @@
  *
  * @author carlos
  */
-class estado_servicio extends fs_model {
+class estado_servicio extends fs_model
+{
 
     /**
      * Clave primaria.
@@ -57,7 +57,8 @@ class estado_servicio extends fs_model {
      */
     public $albaran;
 
-    public function __construct($e = FALSE) {
+    public function __construct($e = FALSE)
+    {
         parent::__construct('estados_servicios');
         if ($e) {
             $this->id = $this->intval($e['id']);
@@ -74,14 +75,16 @@ class estado_servicio extends fs_model {
         }
     }
 
-    protected function install() {
+    protected function install()
+    {
         return "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES" .
-                " ('1','Pendiente',TRUE,FALSE,'FFFBD9')," .
-                " ('2','En proceso',TRUE,FALSE,'D9EDF7')," .
-                " ('100','Terminado',FALSE,TRUE,'DFF0D8');";
+            " ('1','Pendiente',TRUE,FALSE,'FFFBD9')," .
+            " ('2','En proceso',TRUE,FALSE,'D9EDF7')," .
+            " ('100','Terminado',FALSE,TRUE,'DFF0D8');";
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $data = $this->db->select("SELECT * FROM estados_servicios WHERE id = " . $this->var2str($id) . ";");
         if ($data) {
             return new estado_servicio($data[0]);
@@ -89,7 +92,8 @@ class estado_servicio extends fs_model {
             return FALSE;
     }
 
-    public function get_nuevo_id() {
+    public function get_nuevo_id()
+    {
         $num = 1;
         $data = $this->db->select("SELECT id FROM estados_servicios;");
         if ($data) {
@@ -103,40 +107,44 @@ class estado_servicio extends fs_model {
         return $num;
     }
 
-    public function exists() {
+    public function exists()
+    {
         if (is_null($this->id)) {
             return FALSE;
         } else
             return $this->db->select("SELECT * FROM estados_servicios WHERE id = " . $this->var2str($this->id) . ";");
     }
 
-    public function save() {
+    public function save()
+    {
         $this->descripcion = $this->no_html($this->descripcion);
         $this->color = $this->no_html($this->color);
 
         if ($this->exists()) {
             $sql = "UPDATE estados_servicios SET descripcion = " . $this->var2str($this->descripcion) .
-                    ", activo = " . $this->var2str($this->activo) .
-                    ", albaran = " . $this->var2str($this->albaran) .
-                    ", color = " . $this->var2str($this->color) .
-                    "  WHERE id = " . $this->var2str($this->id) . ";";
+                ", activo = " . $this->var2str($this->activo) .
+                ", albaran = " . $this->var2str($this->albaran) .
+                ", color = " . $this->var2str($this->color) .
+                "  WHERE id = " . $this->var2str($this->id) . ";";
         } else {
             $sql = "INSERT INTO estados_servicios (id,descripcion,activo,albaran,color) VALUES ("
-                    . $this->var2str($this->id) . ","
-                    . $this->var2str($this->descripcion) . ","
-                    . $this->var2str($this->activo) . ","
-                    . $this->var2str($this->albaran) . ","
-                    . $this->var2str($this->color) . ");";
+                . $this->var2str($this->id) . ","
+                . $this->var2str($this->descripcion) . ","
+                . $this->var2str($this->activo) . ","
+                . $this->var2str($this->albaran) . ","
+                . $this->var2str($this->color) . ");";
         }
 
         return $this->db->exec($sql);
     }
 
-    public function delete() {
+    public function delete()
+    {
         return $this->db->exec("DELETE FROM estados_servicios WHERE id = " . $this->var2str($this->id) . ";");
     }
 
-    public function all() {
+    public function all()
+    {
         $elist = array();
 
         $data = $this->db->select("SELECT * FROM estados_servicios ORDER BY id ASC;");
@@ -148,7 +156,8 @@ class estado_servicio extends fs_model {
         return $elist;
     }
 
-    public function tiene_servicios($id) {
+    public function tiene_servicios($id)
+    {
         $tiene = FALSE;
 
         if ($this->db->table_exists('servicioscli')) {
@@ -160,5 +169,4 @@ class estado_servicio extends fs_model {
 
         return $tiene;
     }
-
 }

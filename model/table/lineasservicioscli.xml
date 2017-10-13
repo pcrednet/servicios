@@ -89,6 +89,10 @@
         <tipo>double precision</tipo>
         <nulo>YES</nulo>
     </columna>
+    <columna>
+        <nombre>codcombinacion</nombre>
+        <tipo>character varying(18)</tipo>
+    </columna>
     <restriccion>
         <nombre>lineasservicioscli_pkey</nombre>
         <consulta>PRIMARY KEY (idlinea)</consulta>

@@ -1,8 +1,7 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2016    Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2016-2017    Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,16 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('cliente.php');
-require_model('servicio_cliente.php');
-require_model('terminal_caja.php');
-
 /**
  * Description of imprimir_servicio_ticket
  *
  * @author carlos
  */
-class imprimir_servicio_ticket extends fs_controller {
+class imprimir_servicio_ticket extends fs_controller
+{
 
     public $cliente;
     public $servicio;
@@ -35,17 +31,19 @@ class imprimir_servicio_ticket extends fs_controller {
     public $terminal;
     public $terminales;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Ticket ' . FS_SERVICIO, 'ventas', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         $this->share_extension();
 
         /// cargamos la configuración de servicios
         $fsvar = new fs_var();
         $this->setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -79,7 +77,7 @@ class imprimir_servicio_ticket extends fs_controller {
             'st_fechainicio' => "Fecha de Inicio",
             'st_fechafin' => "Fecha de finalización",
             'st_garantía' => "Garantía"
-                ), FALSE
+            ), FALSE
         );
 
         /// cargamos el servicios
@@ -110,7 +108,8 @@ class imprimir_servicio_ticket extends fs_controller {
         }
     }
 
-    public function url() {
+    public function url()
+    {
         if ($this->servicio) {
             return parent::url() . '&id=' . $this->servicio->idservicio;
         } else {
@@ -118,7 +117,8 @@ class imprimir_servicio_ticket extends fs_controller {
         }
     }
 
-    private function share_extension() {
+    private function share_extension()
+    {
         $fsext = new fs_extension();
         $fsext->name = 'imprimir_ticket';
         $fsext->from = __CLASS__;
@@ -128,7 +128,8 @@ class imprimir_servicio_ticket extends fs_controller {
         $fsext->save();
     }
 
-    private function imprimir() {
+    private function imprimir()
+    {
         $medio = $this->terminal->anchopapel / 2.5;
         $this->terminal->add_linea_big($this->terminal->center_text($this->terminal->sanitize($this->empresa->nombre), $medio) . "\n");
 
@@ -138,7 +139,7 @@ class imprimir_servicio_ticket extends fs_controller {
             $this->terminal->add_linea("\n");
 
         $this->terminal->add_linea(
-                $this->terminal->center_text($this->terminal->sanitize($this->empresa->direccion) . " - " . $this->terminal->sanitize($this->empresa->ciudad)) . "\n"
+            $this->terminal->center_text($this->terminal->sanitize($this->empresa->direccion) . " - " . $this->terminal->sanitize($this->empresa->ciudad)) . "\n"
         );
         $this->terminal->add_linea($this->terminal->center_text(FS_CIFNIF . ": " . $this->empresa->cifnif));
         $this->terminal->add_linea("\n\n");
@@ -178,18 +179,18 @@ class imprimir_servicio_ticket extends fs_controller {
         if ($lineas) {
             $width = $this->terminal->anchopapel - 15;
             $this->terminal->add_linea(
-                    sprintf("%3s", "Ud.") . " " .
-                    sprintf("%-" . $width . "s", "Articulo") . " " .
-                    sprintf("%10s", "TOTAL") . "\n"
+                sprintf("%3s", "Ud.") . " " .
+                sprintf("%-" . $width . "s", "Articulo") . " " .
+                sprintf("%10s", "TOTAL") . "\n"
             );
             $this->terminal->add_linea(
-                    sprintf("%3s", "---") . " " .
-                    sprintf("%-" . $width . "s", substr("--------------------------------------------------------", 0, $width - 1)) . " " .
-                    sprintf("%10s", "----------") . "\n"
+                sprintf("%3s", "---") . " " .
+                sprintf("%-" . $width . "s", substr("--------------------------------------------------------", 0, $width - 1)) . " " .
+                sprintf("%10s", "----------") . "\n"
             );
             foreach ($lineas as $col) {
                 $linea = sprintf("%3s", $col->cantidad) . " " . sprintf("%-" . $width . "s", substr($this->terminal->sanitize($col->descripcion), 0, $width - 1)) . " " .
-                        sprintf("%10s", $this->show_numero($col->total_iva())) . "\n";
+                    sprintf("%10s", $this->show_numero($col->total_iva())) . "\n";
 
                 $this->terminal->add_linea($linea);
             }
@@ -200,7 +201,7 @@ class imprimir_servicio_ticket extends fs_controller {
             }
             $this->terminal->add_linea($lineaiguales . "\n");
             $this->terminal->add_linea(
-                    'TOTAL A PAGAR: ' . sprintf("%" . ($this->terminal->anchopapel - 15) . "s", $this->show_precio($this->servicio->total, $this->servicio->coddivisa)) . "\n"
+                'TOTAL A PAGAR: ' . sprintf("%" . ($this->terminal->anchopapel - 15) . "s", $this->show_precio($this->servicio->total, $this->servicio->coddivisa)) . "\n"
             );
             $this->terminal->add_linea($lineaiguales . "\n");
         }
@@ -211,5 +212,4 @@ class imprimir_servicio_ticket extends fs_controller {
         $this->terminal->add_linea($lineaiguales);
         $this->terminal->cortar_papel();
     }
-
 }

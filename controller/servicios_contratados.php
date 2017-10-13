@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2015-2017    Carlos Garcia Gomez         neorazorx@gmail.com
@@ -18,19 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('cliente.php');
-require_model('contrato_servicio.php');
-require_model('ejercicio.php');
-require_model('estado_servicio.php');
-require_model('grupo_clientes.php');
-require_model('servicio_cliente.php');
-
 /**
  * Description of servicios_contratados
  *
  * @author carlos
  */
-class servicios_contratados extends fs_controller {
+class servicios_contratados extends fs_controller
+{
 
     private $cliente;
     public $grupo;
@@ -40,11 +33,13 @@ class servicios_contratados extends fs_controller {
     public $resultados;
     public $total;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Servicios contratados', 'Ventas', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         $this->share_extensions();
 
         $this->cliente = new cliente();
@@ -53,7 +48,7 @@ class servicios_contratados extends fs_controller {
         // cargamos la configuración
         $fsvar = new fs_var();
         $this->nuevocli_setup = $fsvar->array_get(
-                array(
+            array(
             'nuevocli_cifnif_req' => 0,
             'nuevocli_direccion' => 0,
             'nuevocli_direccion_req' => 0,
@@ -71,7 +66,7 @@ class servicios_contratados extends fs_controller {
             'nuevocli_telefono2_req' => 0,
             'nuevocli_codgrupo' => '',
             'cal_inicio' => "09:00",
-                ), FALSE
+            ), FALSE
         );
 
         $this->mostrar = 'todo';
@@ -213,14 +208,15 @@ class servicios_contratados extends fs_controller {
         $this->total = $contrato->count();
     }
 
-    private function share_extensions() {
+    private function share_extensions()
+    {
         $fsext = new fs_extension();
         $fsext->name = 'btn_servicios';
         $fsext->from = __CLASS__;
         $fsext->to = 'ventas_servicios';
         $fsext->type = 'button';
         $fsext->text = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>'
-                . '<span class="hidden-xs">&nbsp; Contratos</span>';
+            . '<span class="hidden-xs">&nbsp; Contratos</span>';
         $fsext->save();
 
         $fsext2 = new fs_extension();
@@ -232,7 +228,8 @@ class servicios_contratados extends fs_controller {
         $fsext2->save();
     }
 
-    public function anterior_url() {
+    public function anterior_url()
+    {
         $url = '';
 
         if ($this->offset > 0) {
@@ -242,7 +239,8 @@ class servicios_contratados extends fs_controller {
         return $url;
     }
 
-    public function siguiente_url() {
+    public function siguiente_url()
+    {
         $url = '';
 
         if (count($this->resultados) == FS_ITEM_LIMIT) {
@@ -252,7 +250,8 @@ class servicios_contratados extends fs_controller {
         return $url;
     }
 
-    public function aux_class_fservicio($date) {
+    public function aux_class_fservicio($date)
+    {
         $time = strtotime($date);
 
         if (is_null($date)) {
@@ -266,7 +265,8 @@ class servicios_contratados extends fs_controller {
         }
     }
 
-    public function nombrecliente($cod) {
+    public function nombrecliente($cod)
+    {
         $nombre = '-';
 
         $cliente = $this->cliente->get($cod);
@@ -277,7 +277,8 @@ class servicios_contratados extends fs_controller {
         return $nombre;
     }
 
-    private function buscar_cliente() {
+    private function buscar_cliente()
+    {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;
 
@@ -290,7 +291,8 @@ class servicios_contratados extends fs_controller {
         echo json_encode(array('query' => $_REQUEST['buscar_cliente'], 'suggestions' => $json));
     }
 
-    private function minicron() {
+    private function minicron()
+    {
         $this->template = FALSE;
 
         $contrato = new contrato_servicio();
@@ -364,5 +366,4 @@ class servicios_contratados extends fs_controller {
             $contratos = $contrato->all($offset, 'fsiguiente_servicio ASC');
         }
     }
-
 }

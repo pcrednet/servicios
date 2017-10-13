@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2014-2017    Carlos Garcia Gomez  neorazorx@gmail.com
@@ -21,16 +20,9 @@
  */
 
 require_once 'plugins/facturacion_base/extras/fbase_controller.php';
-require_model('agente.php');
-require_model('articulo.php');
-require_model('cliente.php');
-require_model('detalle_sat.php');
-require_model('detalle_servicio.php');
-require_model('estado_servicio.php');
-require_model('servicio_cliente.php');
-require_model('registro_sat.php');
 
-class ventas_servicios extends fbase_controller {
+class ventas_servicios extends fbase_controller
+{
 
     public $activo;
     public $agente;
@@ -61,11 +53,13 @@ class ventas_servicios extends fbase_controller {
     public $total_resultados;
     public $total_resultados_txt;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, ucfirst(FS_SERVICIOS) . ' a clientes', 'ventas');
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         parent::private_core();
         $this->cargar_config();
 
@@ -134,10 +128,11 @@ class ventas_servicios extends fbase_controller {
         }
     }
 
-    private function cargar_config() {
+    private function cargar_config()
+    {
         $fsvar = new fs_var();
         $this->servicios_setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -157,12 +152,12 @@ class ventas_servicios extends fbase_controller {
             'servicios_garantia' => 0,
             'cal_inicio' => "09:00",
             'usar_direccion' => 0
-                ), FALSE
+            ), FALSE
         );
 
         /* Cargamos traduccion */
         $this->st = $fsvar->array_get(
-                array(
+            array(
             'st_servicio' => "Servicio",
             'st_servicios' => "Servicios",
             'st_material' => "Material",
@@ -173,11 +168,12 @@ class ventas_servicios extends fbase_controller {
             'st_fechafin' => "Fecha de fin",
             'st_solucion' => "Solución",
             'st_garantia' => "Garantía"
-                ), FALSE
+            ), FALSE
         );
     }
 
-    public function set_filtros() {
+    public function set_filtros()
+    {
         if (isset($_REQUEST['codcliente'])) {
             if ($_REQUEST['codcliente'] != '') {
                 $cli0 = new cliente();
@@ -232,7 +228,8 @@ class ventas_servicios extends fbase_controller {
         }
     }
 
-    public function buscar_lineas() {
+    public function buscar_lineas()
+    {
         /// cambiamos la plantilla HTML
         $this->template = 'ajax/ventas_lineas_servicios';
 
@@ -246,7 +243,8 @@ class ventas_servicios extends fbase_controller {
         }
     }
 
-    private function delete_servicio() {
+    private function delete_servicio()
+    {
         $serv = new servicio_cliente();
         $serv1 = $serv->get($_POST['delete']);
         if ($serv1) {
@@ -261,7 +259,8 @@ class ventas_servicios extends fbase_controller {
             $this->new_error_msg("¡" . ucfirst(FS_SERVICIO) . " no encontrado!");
     }
 
-    private function share_extension() {
+    private function share_extension()
+    {
         /// añadimos las extensiones para clientes, agentes y artículos
         $extensiones = array(
             array(
@@ -297,7 +296,8 @@ class ventas_servicios extends fbase_controller {
         }
     }
 
-    private function buscar() {
+    private function buscar()
+    {
         $this->resultados = array();
         $this->num_resultados = 0;
         $query = $this->agente->no_html(strtolower($this->query));
@@ -308,11 +308,11 @@ class ventas_servicios extends fbase_controller {
             $sql .= $where;
             if (is_numeric($query)) {
                 $sql .= "(codigo LIKE '%" . $query . "%' OR numero2 LIKE '%" . $query . "%' OR observaciones LIKE '%" . $query . "%'"
-                        . "OR material LIKE '%" . $query . "%'"
-                        . "OR material_estado LIKE '%" . $query . "%'"
-                        . "OR accesorios LIKE '%" . $query . "%'"
-                        . "OR descripcion LIKE '%" . $query . "%'"
-                        . "OR solucion LIKE '%" . $query . "%'";
+                    . "OR material LIKE '%" . $query . "%'"
+                    . "OR material_estado LIKE '%" . $query . "%'"
+                    . "OR accesorios LIKE '%" . $query . "%'"
+                    . "OR descripcion LIKE '%" . $query . "%'"
+                    . "OR solucion LIKE '%" . $query . "%'";
 
                 if ($this->servicios_setup['usar_direccion']) {
                     $sql .= " OR direccion LIKE '%" . $query . "%'";
@@ -321,12 +321,12 @@ class ventas_servicios extends fbase_controller {
                 $sql .= ")";
             } else {
                 $sql .= "(lower(codigo) LIKE '%" . $query . "%' OR lower(numero2) LIKE '%" . $query . "%' "
-                        . "OR lower(observaciones) LIKE '%" . str_replace(' ', '%', $query) . "%'"
-                        . "OR lower(material) LIKE '%" . $query . "%'"
-                        . "OR lower(material_estado) LIKE '%" . $query . "%'"
-                        . "OR lower(accesorios) LIKE '%" . $query . "%'"
-                        . "OR lower(descripcion) LIKE '%" . $query . "%'"
-                        . "OR lower(solucion) LIKE '%" . $query . "%'";
+                    . "OR lower(observaciones) LIKE '%" . str_replace(' ', '%', $query) . "%'"
+                    . "OR lower(material) LIKE '%" . $query . "%'"
+                    . "OR lower(material_estado) LIKE '%" . $query . "%'"
+                    . "OR lower(accesorios) LIKE '%" . $query . "%'"
+                    . "OR lower(descripcion) LIKE '%" . $query . "%'"
+                    . "OR lower(solucion) LIKE '%" . $query . "%'";
 
                 if ($this->servicios_setup['usar_direccion']) {
                     $sql .= " OR lower(direccion) LIKE '%" . $query . "%'";
@@ -417,7 +417,8 @@ class ventas_servicios extends fbase_controller {
         }
     }
 
-    private function importar_sat() {
+    private function importar_sat()
+    {
         $this->registro_sat = new registro_sat();
         $this->detalle_sat = new detalle_sat();
         $this->cliente = new cliente();
@@ -487,7 +488,8 @@ class ventas_servicios extends fbase_controller {
         $this->avisosat = '2';
     }
 
-    public function paginas() {
+    public function paginas()
+    {
         $codcliente = '';
         if ($this->cliente) {
             $codcliente = $this->cliente->codcliente;
@@ -495,14 +497,14 @@ class ventas_servicios extends fbase_controller {
         $total = $this->num_resultados;
 
         $url = $this->url() . "&query=" . $this->query
-                . "&codserie=" . $this->codserie
-                . "&codagente=" . $this->codagente
-                . "&estado=" . $this->estado
-                . "&codcliente=" . $codcliente
-                . "&desde=" . $this->desde
-                . "&hasta=" . $this->hasta
-                . "&fechainicio=" . $this->fechainicio
-                . "&fechafin=" . $this->fechafin;
+            . "&codserie=" . $this->codserie
+            . "&codagente=" . $this->codagente
+            . "&estado=" . $this->estado
+            . "&codcliente=" . $codcliente
+            . "&desde=" . $this->desde
+            . "&hasta=" . $this->hasta
+            . "&fechainicio=" . $this->fechainicio
+            . "&fechafin=" . $this->fechafin;
         if ($this->garantia) {
             $url .= "&garantia=TRUE";
         }
@@ -516,7 +518,8 @@ class ventas_servicios extends fbase_controller {
         return $this->fbase_paginas($url, $total, $this->offset);
     }
 
-    public function lineasservicios($idservicio) {
+    public function lineasservicios($idservicio)
+    {
         $lineas = array();
 
         $sql = "SELECT descripcion,cantidad FROM lineasservicioscli where idservicio = " . $this->agente->var2str($idservicio);
@@ -532,7 +535,8 @@ class ventas_servicios extends fbase_controller {
         return $lineas;
     }
 
-    public function orden() {
+    public function orden()
+    {
         return array(
             'fecha_desc' => array(
                 'icono' => '<span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>',
@@ -571,5 +575,4 @@ class ventas_servicios extends fbase_controller {
             )
         );
     }
-
 }

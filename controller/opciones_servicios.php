@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2015-2017    Carlos Garcia Gomez        neorazorx@gmail.com
@@ -19,14 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('estado_servicio.php');
-
 /**
  * Description of opciones_servicios
  *
  * @author carlos
  */
-class opciones_servicios extends fs_controller {
+class opciones_servicios extends fs_controller
+{
 
     public $allow_delete;
     public $estado;
@@ -34,11 +32,13 @@ class opciones_servicios extends fs_controller {
     public $servicios_setup;
     public $st;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Opciones', 'Servicios', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         /// ¿El usuario tiene permiso para eliminar en esta página?
         $this->allow_delete = $this->user->allow_delete_on(__CLASS__);
 
@@ -50,7 +50,7 @@ class opciones_servicios extends fs_controller {
         /// cargamos la configuración
         $fsvar = new fs_var();
         $this->servicios_setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -98,7 +98,7 @@ class opciones_servicios extends fs_controller {
             'cal_fin' => "20:00",
             'cal_intervalo' => "30",
             'usar_direccion' => 0
-                ), FALSE
+            ), FALSE
         );
 
         if (isset($_POST['servicios_setup'])) {
@@ -178,18 +178,20 @@ class opciones_servicios extends fs_controller {
         }
     }
 
-    private function share_extensions() {
+    private function share_extensions()
+    {
         $fsext = new fs_extension();
         $fsext->name = 'opciones_servicios';
         $fsext->from = __CLASS__;
         $fsext->to = 'ventas_servicios';
         $fsext->type = 'button';
         $fsext->text = '<span class="glyphicon glyphicon-wrench" aria-hidden="true">'
-                . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
+            . '</span><span class="hidden-xs">&nbsp; Opciones</span>';
         $fsext->save();
     }
 
-    private function check_menu() {
+    private function check_menu()
+    {
         if (!$this->page->get('ventas_servicios')) {
             if (file_exists(__DIR__)) {
                 /// activamos las páginas del plugin
@@ -214,5 +216,4 @@ class opciones_servicios extends fs_controller {
             $this->load_menu(TRUE);
         }
     }
-
 }

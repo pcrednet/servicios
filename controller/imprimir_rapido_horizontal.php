@@ -1,8 +1,7 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2015-2016    Carlos Garcia Gomez         neorazorx@gmail.com
+ * Copyright (C) 2015-2017    Carlos Garcia Gomez         neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,26 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_model('cliente.php');
-require_model('servicio_cliente.php');
-
 /**
  * Description of imprimir_rapido
  *
  * @author carlos
  */
-class imprimir_rapido_horizontal extends fs_controller {
+class imprimir_rapido_horizontal extends fs_controller
+{
 
     public $agente;
     public $cliente;
     public $servicio;
     public $setup;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Imprimir Rápido Horizontal', 'Servicio', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         $this->agente = FALSE;
         $this->cliente = FALSE;
         $this->servicio = FALSE;
@@ -45,7 +44,7 @@ class imprimir_rapido_horizontal extends fs_controller {
         /// cargamos la configuración de servicios
         $fsvar = new fs_var();
         $this->setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_diasfin' => 10,
             'servicios_material' => 0,
             'servicios_mostrar_material' => 0,
@@ -79,7 +78,7 @@ class imprimir_rapido_horizontal extends fs_controller {
             'st_fechainicio' => "Fecha de Inicio",
             'st_fechafin' => "Fecha de finalización",
             'st_garantía' => "Garantía"
-                ), FALSE
+            ), FALSE
         );
 
         if (isset($_REQUEST['id'])) {
@@ -97,7 +96,8 @@ class imprimir_rapido_horizontal extends fs_controller {
         $this->share_extensions();
     }
 
-    public function listar_prioridad() {
+    public function listar_prioridad()
+    {
         $prioridad = array();
 
         /**
@@ -111,11 +111,13 @@ class imprimir_rapido_horizontal extends fs_controller {
         return $prioridad;
     }
 
-    public function condiciones() {
+    public function condiciones()
+    {
         return nl2br($this->setup['servicios_condiciones']);
     }
 
-    private function share_extensions() {
+    private function share_extensions()
+    {
         $extensiones = array(
             array(
                 'name' => 'imprimir_servicio_sin_detalles_horizontal',
@@ -133,5 +135,4 @@ class imprimir_rapido_horizontal extends fs_controller {
             }
         }
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
  * Copyright (C) 2015-2016  Carlos Garcia Gomez         neorazorx@gmail.com
@@ -23,7 +22,8 @@
  *
  * @author carlos
  */
-class contrato_servicio extends fs_model {
+class contrato_servicio extends fs_model
+{
 
     public $idcontrato;
     public $codcliente;
@@ -36,7 +36,8 @@ class contrato_servicio extends fs_model {
     public $periodo;
     public $fsiguiente_servicio;
 
-    public function __construct($c = FALSE) {
+    public function __construct($c = FALSE)
+    {
         parent::__construct('contratoservicioscli');
         if ($c) {
             $this->idcontrato = $this->intval($c['idcontrato']);
@@ -72,15 +73,18 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    protected function install() {
+    protected function install()
+    {
         return '';
     }
 
-    public function url() {
+    public function url()
+    {
         return 'index.php?page=editar_contrato_servicio&id=' . $this->idcontrato;
     }
 
-    public function observaciones($len = 60) {
+    public function observaciones($len = 60)
+    {
         if (mb_strlen($this->observaciones) > $len) {
             return substr($this->observaciones, 0, $len) . '...';
         } else {
@@ -88,7 +92,8 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    public function caducado() {
+    public function caducado()
+    {
         if (is_null($this->fecha_renovacion)) {
             return FALSE;
         } else {
@@ -96,7 +101,8 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $data = $this->db->select("SELECT * FROM contratoservicioscli WHERE idcontrato = " . $this->var2str($id) . ";");
         if ($data) {
             return new contrato_servicio($data[0]);
@@ -105,7 +111,8 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    public function exists() {
+    public function exists()
+    {
         if (is_null($this->idcontrato)) {
             return FALSE;
         } else {
@@ -113,32 +120,33 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    public function save() {
+    public function save()
+    {
         if ($this->exists()) {
             $sql = "UPDATE contratoservicioscli SET codcliente = " . $this->var2str($this->codcliente)
-                    . ", codagente = " . $this->var2str($this->codagente)
-                    . ", fecha_alta = " . $this->var2str($this->fecha_alta)
-                    . ", fecha_renovacion = " . $this->var2str($this->fecha_renovacion)
-                    . ", observaciones = " . $this->var2str($this->observaciones)
-                    . ", codpago = " . $this->var2str($this->codpago)
-                    . ", importe_anual = " . $this->var2str($this->importe_anual)
-                    . ", periodo = " . $this->var2str($this->periodo)
-                    . ", fsiguiente_servicio = " . $this->var2str($this->fsiguiente_servicio)
-                    . " WHERE idcontrato = " . $this->var2str($this->idcontrato) . ";";
+                . ", codagente = " . $this->var2str($this->codagente)
+                . ", fecha_alta = " . $this->var2str($this->fecha_alta)
+                . ", fecha_renovacion = " . $this->var2str($this->fecha_renovacion)
+                . ", observaciones = " . $this->var2str($this->observaciones)
+                . ", codpago = " . $this->var2str($this->codpago)
+                . ", importe_anual = " . $this->var2str($this->importe_anual)
+                . ", periodo = " . $this->var2str($this->periodo)
+                . ", fsiguiente_servicio = " . $this->var2str($this->fsiguiente_servicio)
+                . " WHERE idcontrato = " . $this->var2str($this->idcontrato) . ";";
 
             return $this->db->exec($sql);
         } else {
             $sql = "INSERT INTO contratoservicioscli (codcliente,codagente,fecha_alta,"
-                    . "fecha_renovacion,observaciones,codpago,importe_anual,periodo,"
-                    . "fsiguiente_servicio) VALUES (" . $this->var2str($this->codcliente)
-                    . "," . $this->var2str($this->codagente)
-                    . "," . $this->var2str($this->fecha_alta)
-                    . "," . $this->var2str($this->fecha_renovacion)
-                    . "," . $this->var2str($this->observaciones)
-                    . "," . $this->var2str($this->codpago)
-                    . "," . $this->var2str($this->importe_anual)
-                    . "," . $this->var2str($this->periodo)
-                    . "," . $this->var2str($this->fsiguiente_servicio) . ");";
+                . "fecha_renovacion,observaciones,codpago,importe_anual,periodo,"
+                . "fsiguiente_servicio) VALUES (" . $this->var2str($this->codcliente)
+                . "," . $this->var2str($this->codagente)
+                . "," . $this->var2str($this->fecha_alta)
+                . "," . $this->var2str($this->fecha_renovacion)
+                . "," . $this->var2str($this->observaciones)
+                . "," . $this->var2str($this->codpago)
+                . "," . $this->var2str($this->importe_anual)
+                . "," . $this->var2str($this->periodo)
+                . "," . $this->var2str($this->fsiguiente_servicio) . ");";
 
             if ($this->db->exec($sql)) {
                 $this->idcontrato = $this->db->lastval();
@@ -148,11 +156,13 @@ class contrato_servicio extends fs_model {
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         return $this->db->exec("DELETE FROM contratoservicioscli WHERE idcontrato = " . $this->var2str($this->idcontrato) . ";");
     }
 
-    public function all($offset = 0, $order = 'fecha_alta DESC') {
+    public function all($offset = 0, $order = 'fecha_alta DESC')
+    {
         $clist = array();
 
         $data = $this->db->select_limit("SELECT * FROM contratoservicioscli ORDER BY " . $order, FS_ITEM_LIMIT, $offset);
@@ -164,7 +174,8 @@ class contrato_servicio extends fs_model {
         return $clist;
     }
 
-    public function count() {
+    public function count()
+    {
         $data = $this->db->select("SELECT COUNT(idcontrato) as total FROM contratoservicioscli;");
         if ($data) {
             return intval($data[0]['total']);
@@ -172,5 +183,4 @@ class contrato_servicio extends fs_model {
             return 0;
         }
     }
-
 }

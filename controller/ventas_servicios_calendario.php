@@ -1,8 +1,7 @@
 <?php
-
 /*
  * This file is part of FacturaScripts
- * Copyright (C) 2015  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2015-2017  Carlos Garcia Gomez  neorazorx@gmail.com
  * Copyright (C) 2015  Luis Miguel Pérez Romero  luismipr@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +23,8 @@
  *
  * @author luismi
  */
-require_model('agente.php');
-require_model('articulo.php');
-require_model('cliente.php');
-require_model('servicio_cliente.php');
-require_model('estado_servicios.php');
-
-class ventas_servicios_calendario extends fs_controller {
+class ventas_servicios_calendario extends fs_controller
+{
 
     public $servicio;
     public $cliente;
@@ -40,11 +34,13 @@ class ventas_servicios_calendario extends fs_controller {
     public $estado;
     public $datos;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(__CLASS__, 'Calendario', 'Servicios', FALSE, FALSE);
     }
 
-    protected function private_core() {
+    protected function private_core()
+    {
         $this->share_extensions();
         $this->servicio = new servicio_cliente();
         $this->agente = new agente();
@@ -54,12 +50,12 @@ class ventas_servicios_calendario extends fs_controller {
         // cargamos las opciones del calendario
         $fsvar = new fs_var();
         $this->servicios_setup = $fsvar->array_get(
-                array(
+            array(
             'servicios_mostrar_fechainicio' => 0,
             'cal_inicio' => "09:00",
             'cal_fin' => "20:00",
             'cal_intervalo' => "30"
-                ), FALSE
+            ), FALSE
         );
 
         if (isset($_REQUEST['buscar_cliente'])) {
@@ -85,7 +81,8 @@ class ventas_servicios_calendario extends fs_controller {
         }
     }
 
-    private function buscar_cliente() {
+    private function buscar_cliente()
+    {
         /// desactivamos la plantilla HTML
         $this->template = FALSE;
 
@@ -99,18 +96,20 @@ class ventas_servicios_calendario extends fs_controller {
         echo json_encode(array('query' => $_REQUEST['buscar_cliente'], 'suggestions' => $json));
     }
 
-    private function share_extensions() {
+    private function share_extensions()
+    {
         $fsext = new fs_extension();
         $fsext->name = 'ventas_servicios_calendario';
         $fsext->from = __CLASS__;
         $fsext->to = 'ventas_servicios';
         $fsext->type = 'button';
         $fsext->text = '<span class="glyphicon glyphicon-calendar" aria-hidden="true">'
-                . '</span><span class="hidden-xs">&nbsp; Calendario</span>';
+            . '</span><span class="hidden-xs">&nbsp; Calendario</span>';
         $fsext->save();
     }
 
-    public function get_datos() {
+    public function get_datos()
+    {
         $servlist = array();
         $sql = " FROM servicioscli ";
         $where = 'WHERE ';
@@ -159,7 +158,8 @@ class ventas_servicios_calendario extends fs_controller {
      * @access public
      * @return strtotime
      */
-    public function formatDate($date) {
+    public function formatDate($date)
+    {
         return strtotime(substr($date, 6, 4) . "-" . substr($date, 3, 2) . "-" . substr($date, 0, 2) . " " . substr($date, 10, 6)) * 1000;
     }
 
@@ -168,7 +168,8 @@ class ventas_servicios_calendario extends fs_controller {
      * @access public
      * @return class
      */
-    public function class_prioridad($prioridad) {
+    public function class_prioridad($prioridad)
+    {
         $class = '';
         if ($prioridad == '1') {
             $class = 'event-important';
@@ -182,5 +183,4 @@ class ventas_servicios_calendario extends fs_controller {
 
         return $class;
     }
-
 }
