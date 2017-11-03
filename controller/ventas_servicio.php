@@ -437,7 +437,7 @@ class ventas_servicio extends fbase_controller
 
                 $this->servicio->total = round($this->servicio->neto + $this->servicio->totaliva - $this->servicio->totalirpf + $this->servicio->totalrecargo, FS_NF0);
 
-                if (abs(floatval($_POST['atotal']) - $this->servicio->total) > .01) {
+                if (abs(floatval($_POST['atotal']) - $this->servicio->total) >= .02) {
                     $this->new_error_msg("El total difiere entre el controlador y la vista (" . $this->servicio->total .
                         " frente a " . $_POST['atotal'] . "). Debes informar del error.");
                 }

@@ -585,7 +585,7 @@ class nuevo_servicio extends fbase_controller
 
                     $servicio->total = round($servicio->neto + $servicio->totaliva - $servicio->totalirpf + $servicio->totalrecargo, FS_NF0);
 
-                    if (abs(floatval($_POST['atotal']) - $servicio->total) > .01) {
+                    if (abs(floatval($_POST['atotal']) - $servicio->total) >= .02) {
                         $this->new_error_msg("El total difiere entre el controlador y la vista (" .
                             $servicio->total . " frente a " . $_POST['atotal'] . "). Debes informar del error.");
                         $servicio->delete();
