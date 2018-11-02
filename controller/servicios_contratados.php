@@ -323,7 +323,12 @@ class servicios_contratados extends fs_controller
                                 $servicio->coddivisa = $this->empresa->coddivisa;
                                 $servicio->codejercicio = $ejercicio->codejercicio;
                                 $servicio->codpago = $con->codpago;
-                                $servicio->codserie = $cliente->codserie;
+                                $servicio->codpago = $con->codpago;
+                                if ($cliente->codserie == null){
+                                    $servicio->codserie = $this->empresa->codserie;
+                                }
+                                else
+                                    $servicio->codserie = $cliente->codserie;
                                 $servicio->fecha = $con->fsiguiente_servicio;
                                 $servicio->fechainicio = $con->fsiguiente_servicio . ' ' . $this->nuevocli_setup['cal_inicio'];
                                 $servicio->idestado = $idestado;
