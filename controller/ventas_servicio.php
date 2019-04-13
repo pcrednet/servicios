@@ -566,28 +566,28 @@ class ventas_servicio extends fbase_controller
                     $n->descripcion .= "\n";
 
                     if ($this->setup['servicios_material_linea']) {
-                        $n->descripcion .= $this->setup['st_material'] . ": " . $this->servicio->material . "\n";
+                        $n->descripcion .= $this->setup['st_material'] . ": \n" . $this->servicio->material . "\n\n";
                     }
                     if ($this->setup['servicios_material_estado_linea']) {
-                        $n->descripcion .= $this->setup['st_material_estado'] . ": " . $this->servicio->material_estado . "\n";
+                        $n->descripcion .= $this->setup['st_material_estado'] . ": \n" . $this->servicio->material_estado . "\n\n";
                     }
                     if ($this->setup['servicios_accesorios_linea']) {
-                        $n->descripcion .= $this->setup['st_accesorios'] . ": " . $this->servicio->accesorios . "\n";
+                        $n->descripcion .= $this->setup['st_accesorios'] . ": \n" . $this->servicio->accesorios . "\n\n";
                     }
                     if ($this->setup['servicios_descripcion_linea']) {
-                        $n->descripcion .= $this->setup['st_descripcion'] . ": " . $this->servicio->descripcion . "\n";
+                        $n->descripcion .= $this->setup['st_descripcion'] . ": \n" . $this->servicio->descripcion . "\n\n";
                     }
                     if ($this->setup['servicios_solucion_linea']) {
-                        $n->descripcion .= $this->setup['st_solucion'] . ": " . $this->servicio->solucion . "\n";
+                        $n->descripcion .= $this->setup['st_solucion'] . ": \n" . $this->servicio->solucion . "\n\n";
                     }
                     if ($this->setup['servicios_fechainicio_linea']) {
-                        $n->descripcion .= $this->setup['st_fechainicio'] . ": " . $this->servicio->fechainicio . "   ";
+                        $n->descripcion .= $this->setup['st_fechainicio'] . ": \n" . $this->servicio->fechainicio . "   ";
                     }
                     if ($this->setup['servicios_fechafin_linea']) {
-                        $n->descripcion .= $this->setup['st_fechafin'] . ": " . $this->servicio->fechafin . "   ";
+                        $n->descripcion .= $this->setup['st_fechafin'] . ": \n" . $this->servicio->fechafin . "   ";
                     }
                     if ($this->setup['servicios_garantia_linea']) {
-                        $n->descripcion .= $this->setup['st_garantia'] . ": " . $this->servicio->garantia . "\n";
+                        $n->descripcion .= $this->setup['st_garantia'] . ": \n" . $this->servicio->garantia . "\n\n";
                     }
                 }
 
